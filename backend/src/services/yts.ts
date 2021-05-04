@@ -30,8 +30,8 @@ const Movies = {
 		agent.getParams('', params),
 };
 
-const yts = {
+const ytsService = {
 	Movies,
 };
 
-export default yts;
+export default ytsService;

@@ -18,8 +18,8 @@ const Movies = {
 		agent.get('precompiled/data_top100_207.json'),
 };
 
-const bay = {
+const bayService = {
 	Movies,
 };
 
-export default bay;
+export default bayService;

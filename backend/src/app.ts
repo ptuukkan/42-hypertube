@@ -1,9 +1,9 @@
 import 'config';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'morgan';
-import searchRouter from 'routes/search';
 import createError from 'http-errors';
 import axios from 'axios';
+import mountRoutes from 'routes';
 const debug = require('debug')('app');
 
 const app = express();
@@ -12,7 +12,7 @@ const PORT = process.env.PORT;
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/search', searchRouter);
+mountRoutes(app);
 
 app.use((_req: Request, _res: Response, next: NextFunction) => {
 	next(createError(404));
