@@ -13,7 +13,7 @@ interface IYtsMovieData {
 	movies: IYtsMovie[];
 }
 
-interface IYtsMovie {
+export interface IYtsMovie {
 	id: number;
 	url: string;
 	imdb_code: string;
@@ -27,7 +27,7 @@ const agent = new AxiosAgent(process.env.YTS_API);
 
 const Movies = {
 	list: (params: URLSearchParams): Promise<IYtsMovieEnvelope> =>
-		agent.getParams(params),
+		agent.getParams('', params),
 };
 
 const yts = {

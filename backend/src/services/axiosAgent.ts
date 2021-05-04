@@ -6,6 +6,7 @@ export class AxiosAgent {
 	}
 	responseBody = (response: AxiosResponse) => response.data;
 
-	getParams = (params: URLSearchParams) =>
-		axios.get('', { params: params }).then(this.responseBody);
+	get = (url: string) => axios.get(url).then(this.responseBody);
+	getParams = (url: string, params: URLSearchParams) =>
+		axios.get(url, { params: params }).then(this.responseBody);
 }
