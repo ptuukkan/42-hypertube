@@ -29,11 +29,56 @@ export interface IUserDocument extends IUser, Document {
 }
 
 const UserSchema = new Schema<IUserDocument>({
-	email: { type: String, required: true, unique: true },
-	username: { type: String, required: true, unique: true },
-	firstName: { type: String, required: true },
-	lastName: { type: String, required: true },
-	password: { type: String, required: true },
+	email: {
+		type: String,
+		required: true,
+		unique: true,
+		validate: {
+			validator: (email: string) =>
+				/[a-zA-Z\d!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z\d!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z\d](?:[a-zA-Z\d-]*[a-zA-Z\d])?\.)+[a-zA-Z\d](?:[a-zA-Z\d-]*[a-zA-Z\d])?/.test(
+					email
+				),
+			message: () => 'Email must be a valid address.',
+		},
+	},
+	username: {
+		type: String,
+		required: true,
+		unique: true,
+		minLength: [3, 'Username must be at least 3 characters.'],
+		maxLength: [255, 'Username must not be over 255 characters.'],
+	},
+	firstName: {
+		type: String,
+		required: true,
+		minLength: [2, 'First name must be at least 2 characters.'],
+		maxLength: [255, 'First name must not be over 255 characters.'],
+		validate: {
+			validator: (name: string) => /^[A-Za-z]+$/.test(name),
+			message: () => 'First name must be only letters.',
+		},
+	},
+	lastName: {
+		type: String,
+		required: true,
+		minLength: [2, 'Last name must be at least 2 characters.'],
+		maxLength: [255, 'Last name must not be over 255 characters.'],
+		validate: {
+			validator: (name: string) => /^[A-Za-z]+$/.test(name),
+			message: () => 'Last name must be only letters.',
+		},
+	},
+	password: {
+		type: String,
+		required: true,
+		minLength: [4, 'Password must be at least 4 characters.'],
+		maxLength: [255, 'Password must not be over 255 characters.'],
+		validate: {
+			validator: (password: string) =>
+				/[A-Za-z]+/.test(password) && /\d+/.test(password),
+			message: () => 'Password must have both letters and numbers.',
+		},
+	},
 	language: {
 		type: String,
 		enum: Object.values(Language),
