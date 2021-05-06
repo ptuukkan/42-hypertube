@@ -6,6 +6,7 @@ import mongoose, { Schema, Document, HookNextFunction } from 'mongoose';
 const uniqueValidator = require('mongoose-unique-validator');
 
 const HASH_ROUNDS = 10;
+const EMAIL_REGEX = /[a-zA-Z\d!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z\d!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z\d](?:[a-zA-Z\d-]*[a-zA-Z\d])?\.)+[a-zA-Z\d](?:[a-zA-Z\d-]*[a-zA-Z\d])?/;
 
 export enum Language {
 	ENGLISH = 'en',
@@ -34,10 +35,7 @@ const UserSchema = new Schema<IUserDocument>({
 		required: true,
 		unique: true,
 		validate: {
-			validator: (email: string) =>
-				/[a-zA-Z\d!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z\d!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z\d](?:[a-zA-Z\d-]*[a-zA-Z\d])?\.)+[a-zA-Z\d](?:[a-zA-Z\d-]*[a-zA-Z\d])?/.test(
-					email
-				),
+			validator: (email: string) => EMAIL_REGEX.test(email),
 			message: () => 'Email must be a valid address.',
 		},
 	},
