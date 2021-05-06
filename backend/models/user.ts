@@ -108,7 +108,7 @@ UserSchema.virtual('fullName').get(function (this: IUserDocument): String {
 
 /**
  * To check if password is valid on login
- * @param password regular string password
+ * @param password regular string
  * @returns Boolean as a Promsise if the password is valid or not
  */
 UserSchema.methods.isPasswordValid = function (
