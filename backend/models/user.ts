@@ -2,7 +2,7 @@ import { genSalt, hash, compare } from 'bcrypt';
 import mongoose, { Schema, Document, HookNextFunction } from 'mongoose';
 
 // TODO with import this gives type error when applying plugin below
-//import uniqueValidator from "mongoose-unique-validator";
+// import uniqueValidator from "mongoose-unique-validator";
 const uniqueValidator = require('mongoose-unique-validator');
 
 const HASH_ROUNDS = 10;
@@ -85,6 +85,9 @@ const UserSchema = new Schema<IUserDocument>({
 	profilePicName: { type: String, default: 'blank-profile.png' },
 });
 
+/**
+ * When user is valid then on save the password is hashed and saved
+ */
 UserSchema.pre<IUserDocument>('save', async function (next: HookNextFunction) {
 	if (!this.isModified('password')) {
 		return next();
@@ -103,6 +106,11 @@ UserSchema.virtual('fullName').get(function (this: IUserDocument): String {
 	return `${this.firstName} ${this.lastName}`;
 });
 
+/**
+ * To check if password is valid on login
+ * @param password regular string password
+ * @returns Boolean as a Promsise if the password is valid or not
+ */
 UserSchema.methods.isPasswordValid = function (
 	password: string
 ): Promise<boolean> {
