@@ -1,9 +1,9 @@
 import { Application } from 'express';
-import testRoutes from './test';
+import movieRouter from 'routes/movie';
 
 const mountRoutes = (app: Application) => {
 	// Regular routes (without middleware)
-	app.use('/api/testNoAuth', testRoutes);
+	app.use('/api/movies', movieRouter);
 
 	// routes with middleware
 	// app.use('/api/testNoAuth', MIDDLEWARE, testRoutes);
