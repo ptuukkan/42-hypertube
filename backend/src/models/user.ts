@@ -124,6 +124,7 @@ UserSchema.methods.checkAndUpdatePassword = async function (
 	password: string
 ): Promise<void> {
 	this.password = password;
+	// Throws error if invalid format
 	await this.validate();
 	const salt = await genSalt(HASH_ROUNDS);
 	const hashPass = await hash(password, salt);

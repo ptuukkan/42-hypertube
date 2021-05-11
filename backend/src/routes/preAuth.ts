@@ -17,10 +17,10 @@ preAuthRouter.post('/register', registerController);
 
 preAuthRouter.post('/send-reset-password', sendResetPasswordController);
 
-// Confirm user from email link and redirect to frontend
+// Confirm link from email, check code and redirect to frontend
 preAuthRouter.get('/confirm-email/:code', checkCode, confirmUserController);
 
-// Check user is eligible to reset password
+// Reset link from email, check code and redirect to frontend
 preAuthRouter.get('/reset-password/:code', checkCode, validResetCodeController);
 
 // Update users password in db

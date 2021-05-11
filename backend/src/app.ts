@@ -28,11 +28,11 @@ app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
 		return next(err);
 	}
 	if (err instanceof createError.HttpError) {
-		res.status(err.statusCode).send({ status: 'ERROR', message: err.message });
+		res.status(err.statusCode).json({ status: 'ERROR', message: err.message });
 	} else if (axios.isAxiosError(err) && err.response) {
 		res
 			.status(err.response.status)
-			.send({ status: 'ERROR', message: err.response.statusText });
+			.json({ status: 'ERROR', message: err.response.statusText });
 	} else if (err instanceof mongoose.Error.ValidationError) {
 		res.status(400).json({
 			status: 'ERROR',

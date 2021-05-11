@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import Mail from 'nodemailer/lib/mailer';
 
 const sendEmail = (
 	to: string,
@@ -8,12 +9,12 @@ const sendEmail = (
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
-			user: 'ollesusteem',
-			pass: 'vironialukutaha19',
+			user: process.env.GMAIL_USER,
+			pass: process.env.GMAIL_PASS,
 		},
 	});
 
-	const options = {
+	const options: Mail.Options = {
 		from: '"Raymond From Hypertube" raymond.holt@hypertube.com',
 		to: to,
 		subject: subject,
