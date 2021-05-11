@@ -27,6 +27,7 @@ const agent = new AxiosAgent(process.env.YTS_API);
 
 const makeParams = (key: string, value: string) => {
 	const params = new URLSearchParams();
+	params.append('limit', "50");
 	params.append(key, value);
 	return params;
 };
