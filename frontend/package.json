@@ -4,7 +4,7 @@
   "description": "Hypertube Frontend",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.11.4",
+    "@artsy/fresnel": "^1.5.0",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
@@ -21,6 +21,8 @@
     "react-final-form": "^6.5.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.3",
     "typescript": "^4.2.4",
     "web-vitals": "^1.1.1"
   },
@@ -49,6 +51,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.14.0"
+    "@babel/core": "^7.14.0",
+    "@types/react-router-dom": "^5.1.7"
   }
 }
