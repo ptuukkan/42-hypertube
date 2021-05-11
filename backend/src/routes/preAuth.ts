@@ -7,7 +7,7 @@ import {
 	resetPasswordController,
 	sendResetPasswordController,
 	validResetCodeController,
-} from 'controllers/preAuth/reserPassword';
+} from 'controllers/preAuth/resetPassword';
 
 const preAuthRouter = Router();
 

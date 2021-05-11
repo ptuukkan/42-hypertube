@@ -12,11 +12,11 @@ export const sendResetPasswordController = asyncHandler(async (req, res) => {
 	const RESET = LinkType.RESET;
 
 	const user = await Usermodel.findOne({ email });
-	if (!user) throw createError(400, 'Invalid email');
+	if (!user) throw createError(400, 'Invalid email.');
 
 	const link = await LinkModel.findOne({ user: user._id, linkType: RESET });
 	if (link)
-		throw createError(400, 'Reset password link has already been requested');
+		throw createError(400, 'Reset password link has already been requested.');
 
 	const code = getRandomString();
 	const title = 'Reset your password for Hypertube';
@@ -37,11 +37,13 @@ export const resetPasswordController = asyncHandler(async (req, res) => {
 	const { userId, code } = req.codePayload!;
 	const password = req.body.password;
 
+	if (!password) throw createError(400, 'Value for `password` is required.');
+
 	const user = await UserModel.findOne({ _id: userId });
-	if (!user) throw createError(400, 'User not found');
+	if (!user) throw createError(400, 'User not found.');
 
 	if (await user.isPasswordValid(password))
-		throw createError(400, 'Entered password is same as the old password');
+		throw createError(400, 'Entered password is same as the old password.');
 
 	// Throws error if password does not meet requirements
 	await user.checkAndUpdatePassword(password);

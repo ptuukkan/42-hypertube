@@ -5,6 +5,8 @@ import Usermodel, { IUserDocument } from 'models/user';
 export const loginController = asyncHandler(async (req, res) => {
 	const { username, password } = req.body;
 
+	if (!password) throw createError(401, 'Value for `password` is required.');
+
 	const user: IUserDocument | null = await Usermodel.findOne({ username });
 
 	if (!user) throw createError(401, 'User not found.');
