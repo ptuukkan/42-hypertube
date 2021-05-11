@@ -1,10 +1,11 @@
 import { IMovieThumbnail } from 'models/movie';
 import { IBayMovie } from 'services/bay';
-import { IYtsMovie } from 'services/yts';
+import { IOmdbMovieDetails } from 'services/omdb';
+import { IYtsMovie, IYtsMovieDetails } from 'services/yts';
 
 export const ytsMovieList: IYtsMovie[] = [
 	{
-		id: 8462,
+		id: '8462',
 		imdb_code: 'tt4154756',
 		title_english: 'Avengers: Infinity War',
 		year: 2018,
@@ -14,7 +15,7 @@ export const ytsMovieList: IYtsMovie[] = [
 			'https://yts.mx/assets/images/movies/avengers_infinity_war_2018/medium-cover.jpg',
 	},
 	{
-		id: 7709,
+		id: '7709',
 		imdb_code: 'tt1825683',
 		title_english: 'Black Panther',
 		year: 2018,
@@ -24,7 +25,7 @@ export const ytsMovieList: IYtsMovie[] = [
 			'https://yts.mx/assets/images/movies/black_panther_2018/medium-cover.jpg',
 	},
 	{
-		id: 8539,
+		id: '8539',
 		imdb_code: 'tt5463162',
 		title_english: 'Deadpool 2',
 		year: 2018,
@@ -91,274 +92,262 @@ export const dupBayMovieList: IBayMovie[] = [
 
 export const thumbnailList20: IMovieThumbnail[] = [
 	{
-			"title": "Aladdin",
-			"year": 2019,
-			"coverImage": "https://yts.mx/assets/images/movies/aladdin_2019/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Comedy",
-					"Family",
-					"Fantasy",
-					"Musical",
-					"Romance"
-			],
-			"rating": 6.9,
-			"imdb": "tt6139732"
+		title: 'Aladdin',
+		year: 2019,
+		coverImage:
+			'https://yts.mx/assets/images/movies/aladdin_2019/medium-cover.jpg',
+		genres: [
+			'Action',
+			'Adventure',
+			'Comedy',
+			'Family',
+			'Fantasy',
+			'Musical',
+			'Romance',
+		],
+		rating: 6.9,
+		imdb: 'tt6139732',
 	},
 	{
-			"title": "Alita: Battle Angel",
-			"year": 2019,
-			"coverImage": "https://yts.mx/assets/images/movies/alita_battle_angel_2019/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Sci-Fi",
-					"Thriller"
-			],
-			"rating": 7.3,
-			"imdb": "tt0437086"
+		title: 'Alita: Battle Angel',
+		year: 2019,
+		coverImage:
+			'https://yts.mx/assets/images/movies/alita_battle_angel_2019/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Sci-Fi', 'Thriller'],
+		rating: 7.3,
+		imdb: 'tt0437086',
 	},
 	{
-			"title": "Ant-Man and the Wasp",
-			"year": 2018,
-			"coverImage": "https://yts.mx/assets/images/movies/ant_man_and_the_wasp_2018/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Comedy",
-					"Sci-Fi"
-			],
-			"rating": 7,
-			"imdb": "tt5095030"
+		title: 'Ant-Man and the Wasp',
+		year: 2018,
+		coverImage:
+			'https://yts.mx/assets/images/movies/ant_man_and_the_wasp_2018/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Comedy', 'Sci-Fi'],
+		rating: 7,
+		imdb: 'tt5095030',
 	},
 	{
-			"title": "Aquaman",
-			"year": 2018,
-			"coverImage": "https://yts.mx/assets/images/movies/aquaman_2018/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Fantasy",
-					"Sci-Fi"
-			],
-			"rating": 6.9,
-			"imdb": "tt1477834"
+		title: 'Aquaman',
+		year: 2018,
+		coverImage:
+			'https://yts.mx/assets/images/movies/aquaman_2018/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Fantasy', 'Sci-Fi'],
+		rating: 6.9,
+		imdb: 'tt1477834',
 	},
 	{
-			"title": "Avengers: Endgame",
-			"year": 2019,
-			"coverImage": "https://yts.mx/assets/images/movies/avengers_endgame_2019/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Drama",
-					"Sci-Fi"
-			],
-			"rating": 8.4,
-			"imdb": "tt4154796"
+		title: 'Avengers: Endgame',
+		year: 2019,
+		coverImage:
+			'https://yts.mx/assets/images/movies/avengers_endgame_2019/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Drama', 'Sci-Fi'],
+		rating: 8.4,
+		imdb: 'tt4154796',
 	},
 	{
-			"title": "Avengers: Infinity War",
-			"year": 2018,
-			"coverImage": "https://yts.mx/assets/images/movies/avengers_infinity_war_2018/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Drama",
-					"Fantasy",
-					"Sci-Fi"
-			],
-			"rating": 8.4,
-			"imdb": "tt4154756"
+		title: 'Avengers: Infinity War',
+		year: 2018,
+		coverImage:
+			'https://yts.mx/assets/images/movies/avengers_infinity_war_2018/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Drama', 'Fantasy', 'Sci-Fi'],
+		rating: 8.4,
+		imdb: 'tt4154756',
 	},
 	{
-			"title": "Beauty and the Beast",
-			"year": 2017,
-			"coverImage": "https://yts.mx/assets/images/movies/beauty_and_the_beast_2017/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Family",
-					"Fantasy",
-					"Musical",
-					"Romance"
-			],
-			"rating": 7.1,
-			"imdb": "tt2771200"
+		title: 'Beauty and the Beast',
+		year: 2017,
+		coverImage:
+			'https://yts.mx/assets/images/movies/beauty_and_the_beast_2017/medium-cover.jpg',
+		genres: ['Action', 'Family', 'Fantasy', 'Musical', 'Romance'],
+		rating: 7.1,
+		imdb: 'tt2771200',
 	},
 	{
-			"title": "Big Hero 6",
-			"year": 2014,
-			"coverImage": "https://yts.mx/assets/images/movies/big_hero_6_2014/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Animation",
-					"Comedy",
-					"Drama",
-					"Family",
-					"Sci-Fi"
-			],
-			"rating": 7.8,
-			"imdb": "tt2245084"
+		title: 'Big Hero 6',
+		year: 2014,
+		coverImage:
+			'https://yts.mx/assets/images/movies/big_hero_6_2014/medium-cover.jpg',
+		genres: [
+			'Action',
+			'Adventure',
+			'Animation',
+			'Comedy',
+			'Drama',
+			'Family',
+			'Sci-Fi',
+		],
+		rating: 7.8,
+		imdb: 'tt2245084',
 	},
 	{
-			"title": "Black Panther",
-			"year": 2018,
-			"coverImage": "https://yts.mx/assets/images/movies/black_panther_2018/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Sci-Fi"
-			],
-			"rating": 7.3,
-			"imdb": "tt1825683"
+		title: 'Black Panther',
+		year: 2018,
+		coverImage:
+			'https://yts.mx/assets/images/movies/black_panther_2018/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Sci-Fi'],
+		rating: 7.3,
+		imdb: 'tt1825683',
 	},
 	{
-			"title": "Captain Marvel",
-			"year": 2019,
-			"coverImage": "https://yts.mx/assets/images/movies/captain_marvel_2019/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Sci-Fi"
-			],
-			"rating": 6.9,
-			"imdb": "tt4154664"
+		title: 'Captain Marvel',
+		year: 2019,
+		coverImage:
+			'https://yts.mx/assets/images/movies/captain_marvel_2019/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Sci-Fi'],
+		rating: 6.9,
+		imdb: 'tt4154664',
 	},
 	{
-			"title": "Deadpool",
-			"year": 2016,
-			"coverImage": "https://yts.mx/assets/images/movies/deadpool_2016/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Comedy",
-					"Romance",
-					"Sci-Fi"
-			],
-			"rating": 8,
-			"imdb": "tt1431045"
+		title: 'Deadpool',
+		year: 2016,
+		coverImage:
+			'https://yts.mx/assets/images/movies/deadpool_2016/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Comedy', 'Romance', 'Sci-Fi'],
+		rating: 8,
+		imdb: 'tt1431045',
 	},
 	{
-			"title": "Deadpool 2",
-			"year": 2018,
-			"coverImage": "https://yts.mx/assets/images/movies/deadpool_2_2018/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Comedy",
-					"Sci-Fi"
-			],
-			"rating": 7.7,
-			"imdb": "tt5463162"
+		title: 'Deadpool 2',
+		year: 2018,
+		coverImage:
+			'https://yts.mx/assets/images/movies/deadpool_2_2018/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Comedy', 'Sci-Fi'],
+		rating: 7.7,
+		imdb: 'tt5463162',
 	},
 	{
-			"title": "Doctor Strange",
-			"year": 2016,
-			"coverImage": "https://yts.mx/assets/images/movies/doctor_strange_2016/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Fantasy",
-					"Sci-Fi"
-			],
-			"rating": 7.5,
-			"imdb": "tt1211837"
+		title: 'Doctor Strange',
+		year: 2016,
+		coverImage:
+			'https://yts.mx/assets/images/movies/doctor_strange_2016/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Fantasy', 'Sci-Fi'],
+		rating: 7.5,
+		imdb: 'tt1211837',
 	},
 	{
-			"title": "Fantastic Beasts and Where to Find Them",
-			"year": 2016,
-			"coverImage": "https://yts.mx/assets/images/movies/fantastic_beasts_and_where_to_find_them_2016/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Family",
-					"Fantasy"
-			],
-			"rating": 7.3,
-			"imdb": "tt3183660"
+		title: 'Fantastic Beasts and Where to Find Them',
+		year: 2016,
+		coverImage:
+			'https://yts.mx/assets/images/movies/fantastic_beasts_and_where_to_find_them_2016/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Family', 'Fantasy'],
+		rating: 7.3,
+		imdb: 'tt3183660',
 	},
 	{
-			"title": "Fast & Furious Presents: Hobbs & Shaw",
-			"year": 2019,
-			"coverImage": "https://yts.mx/assets/images/movies/fast_furious_presents_hobbs_shaw_2019/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Thriller"
-			],
-			"rating": 6.4,
-			"imdb": "tt6806448"
+		title: 'Fast & Furious Presents: Hobbs & Shaw',
+		year: 2019,
+		coverImage:
+			'https://yts.mx/assets/images/movies/fast_furious_presents_hobbs_shaw_2019/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Thriller'],
+		rating: 6.4,
+		imdb: 'tt6806448',
 	},
 	{
-			"title": "Guardians of the Galaxy",
-			"year": 2014,
-			"coverImage": "https://yts.mx/assets/images/movies/Guardians_of_the_Galaxy_2014/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Comedy",
-					"Sci-Fi"
-			],
-			"rating": 8,
-			"imdb": "tt2015381"
+		title: 'Guardians of the Galaxy',
+		year: 2014,
+		coverImage:
+			'https://yts.mx/assets/images/movies/Guardians_of_the_Galaxy_2014/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Comedy', 'Sci-Fi'],
+		rating: 8,
+		imdb: 'tt2015381',
 	},
 	{
-			"title": "Guardians of the Galaxy Vol. 2",
-			"year": 2017,
-			"coverImage": "https://yts.mx/assets/images/movies/guardians_of_the_galaxy_vol_2_2017/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Comedy",
-					"Sci-Fi"
-			],
-			"rating": 7.6,
-			"imdb": "tt3896198"
+		title: 'Guardians of the Galaxy Vol. 2',
+		year: 2017,
+		coverImage:
+			'https://yts.mx/assets/images/movies/guardians_of_the_galaxy_vol_2_2017/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Comedy', 'Sci-Fi'],
+		rating: 7.6,
+		imdb: 'tt3896198',
 	},
 	{
-			"title": "How to Train Your Dragon: The Hidden World",
-			"year": 2019,
-			"coverImage": "https://yts.mx/assets/images/movies/how_to_train_your_dragon_the_hidden_world_2019/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Animation",
-					"Comedy",
-					"Family",
-					"Fantasy"
-			],
-			"rating": 7.5,
-			"imdb": "tt2386490"
+		title: 'How to Train Your Dragon: The Hidden World',
+		year: 2019,
+		coverImage:
+			'https://yts.mx/assets/images/movies/how_to_train_your_dragon_the_hidden_world_2019/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Animation', 'Comedy', 'Family', 'Fantasy'],
+		rating: 7.5,
+		imdb: 'tt2386490',
 	},
 	{
-			"title": "Incredibles 2",
-			"year": 2018,
-			"coverImage": "https://yts.mx/assets/images/movies/incredibles_2_2018/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Animation",
-					"Comedy",
-					"Family",
-					"Sci-Fi"
-			],
-			"rating": 7.6,
-			"imdb": "tt3606756"
+		title: 'Incredibles 2',
+		year: 2018,
+		coverImage:
+			'https://yts.mx/assets/images/movies/incredibles_2_2018/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Animation', 'Comedy', 'Family', 'Sci-Fi'],
+		rating: 7.6,
+		imdb: 'tt3606756',
 	},
 	{
-			"title": "Interstellar",
-			"year": 2014,
-			"coverImage": "https://yts.mx/assets/images/movies/interstellar_2014/medium-cover.jpg",
-			"genres": [
-					"Action",
-					"Adventure",
-					"Drama",
-					"Sci-Fi",
-					"Thriller"
-			],
-			"rating": 8.6,
-			"imdb": "tt0816692"
-	}
-]
+		title: 'Interstellar',
+		year: 2014,
+		coverImage:
+			'https://yts.mx/assets/images/movies/interstellar_2014/medium-cover.jpg',
+		genres: ['Action', 'Adventure', 'Drama', 'Sci-Fi', 'Thriller'],
+		rating: 8.6,
+		imdb: 'tt0816692',
+	},
+];
+
+export const omdbRocketman: IOmdbMovieDetails = {
+	Title: 'Rocketman',
+	Year: '2019',
+	Runtime: '121 min',
+	Genre: 'Biography, Drama, Music, Musical',
+	Director: 'Dexter Fletcher',
+	Writer: 'Lee Hall',
+	Actors: 'Taron Egerton, Jamie Bell, Richard Madden, Bryce Dallas Howard',
+	Plot: "A musical fantasy about the fantastical human story of Elton John's breakthrough years.",
+	Poster:
+		'https://m.media-amazon.com/images/M/MV5BYmIzNjUxZGQtYjg0OS00MmE0LTgwZDAtMzVmODQ2MGI5MTQ5XkEyXkFqcGdeQXVyMTA3MTA4Mzgw._V1_SX300.jpg',
+	imdbRating: '7.3',
+	imdbID: 'tt2066051',
+	Type: 'movie',
+};
+
+export const ytsRocketman: IYtsMovie = {
+	id: '13165',
+	imdb_code: 'tt2066051',
+	title_english: 'Rocketman',
+	year: 2019,
+	rating: 7.3,
+	genres: ['Action', 'Biography', 'Drama', 'Music', 'Musical'],
+	medium_cover_image:
+		'https://yts.mx/assets/images/movies/rocketman_2019/medium-cover.jpg',
+};
+
+export const ytsRocketmanDetails: IYtsMovieDetails = {
+	runtime: 121,
+	description_intro:
+		"A musical fantasy about the fantastical human story of Elton John's breakthrough years.",
+	cast: [
+		{
+			name: 'Taron Egerton',
+			character_name: 'Elton John',
+			url_small_image:
+				'https://yts.mx/assets/images/actors/thumb/nm5473782.jpg',
+			imdb_code: '5473782',
+		},
+		{
+			name: 'Richard Madden',
+			character_name: 'John Reid',
+			url_small_image:
+				'https://yts.mx/assets/images/actors/thumb/nm0534635.jpg',
+			imdb_code: '0534635',
+		},
+		{
+			name: 'Jamie Bell',
+			character_name: 'Bernie Taupin',
+			url_small_image:
+				'https://yts.mx/assets/images/actors/thumb/nm0068260.jpg',
+			imdb_code: '0068260',
+		},
+		{
+			name: 'Stephen Graham',
+			character_name: 'Dick James',
+			url_small_image:
+				'https://yts.mx/assets/images/actors/thumb/nm0334318.jpg',
+			imdb_code: '0334318',
+		},
+	],
+};

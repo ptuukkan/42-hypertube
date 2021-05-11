@@ -1,3 +1,5 @@
+import { IYtsCast } from 'services/yts';
+
 export interface IMovieThumbnailEnvelope {
 	count: number;
 	genres: string[];
@@ -22,3 +24,11 @@ export const dummyThumbnail: IMovieThumbnail = {
 	rating: 9,
 	imdb: 'imdb code',
 };
+
+export interface IMovie extends IMovieThumbnail {
+	summary: string;
+	runtime: number;
+	director?: string;
+	writer?: string;
+	actors?: string | IYtsCast[];
+}

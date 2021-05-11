@@ -4,7 +4,7 @@ import {
 	ytsToThumbnail,
 } from 'application/library';
 import { IQueryParams } from 'controllers/movie';
-import { processParams } from 'controllers/utils';
+import { filterList, paginate } from 'controllers/utils';
 import {
 	bayMovieList,
 	dupBayMovieList,
@@ -104,7 +104,7 @@ describe('Search params', () => {
 	it('category Action', () => {
 		const params = baseParams();
 		params.genre = 'Action';
-		const list = processParams(thumbnailList20, params);
+		const list = filterList(thumbnailList20, params);
 		const notAction = list.some((item) => !item.genres.includes('Action'));
 		expect(notAction).toBe(false);
 		expect(list).toHaveLength(20);
@@ -113,7 +113,7 @@ describe('Search params', () => {
 	it('category Sci-Fi', () => {
 		const params = baseParams();
 		params.genre = 'Sci-Fi';
-		const list = processParams(thumbnailList20, params);
+		const list = filterList(thumbnailList20, params);
 		const notAction = list.some((item) => !item.genres.includes('Sci-Fi'));
 		expect(notAction).toBe(false);
 		expect(list).toHaveLength(15);
@@ -121,7 +121,8 @@ describe('Search params', () => {
 
 	it('order ascending', () => {
 		const params = baseParams();
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list[0].imdb).toBe('tt6139732');
 		expect(list[7].imdb).toBe('tt2245084');
 		expect(list[19].imdb).toBe('tt0816692');
@@ -130,7 +131,8 @@ describe('Search params', () => {
 	it('order descending', () => {
 		const params = baseParams();
 		params.order = 'desc';
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list[0].imdb).toBe('tt0816692');
 		expect(list[12].imdb).toBe('tt2245084');
 		expect(list[19].imdb).toBe('tt6139732');
@@ -139,7 +141,8 @@ describe('Search params', () => {
 	it('sort year', () => {
 		const params = baseParams();
 		params.sort = 'year';
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list[0].imdb).toBe('tt2245084');
 		expect(list[19].imdb).toBe('tt2386490');
 	});
@@ -147,7 +150,8 @@ describe('Search params', () => {
 	it('sort imdb', () => {
 		const params = baseParams();
 		params.sort = 'imdb';
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list[0].imdb).toBe('tt0437086');
 		expect(list[19].imdb).toBe('tt6806448');
 	});
@@ -155,7 +159,8 @@ describe('Search params', () => {
 	it('sort rating', () => {
 		const params = baseParams();
 		params.sort = 'rating';
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list[0].imdb).toBe('tt6806448');
 		expect(list[19].imdb).toBe('tt0816692');
 	});
@@ -163,21 +168,24 @@ describe('Search params', () => {
 	it('limit 0', () => {
 		const params = baseParams();
 		params.limit = 0;
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list).toHaveLength(0);
 	});
 
 	it('limit 5', () => {
 		const params = baseParams();
 		params.limit = 5;
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list).toHaveLength(5);
 	});
 
 	it('limit 30', () => {
 		const params = baseParams();
 		params.limit = 30;
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list).toHaveLength(20);
 	});
 
@@ -185,7 +193,8 @@ describe('Search params', () => {
 		const params = baseParams();
 		params.page = 1;
 		params.limit = 5;
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list).toHaveLength(5);
 		expect(list[0].imdb).toBe('tt6139732');
 	});
@@ -194,7 +203,8 @@ describe('Search params', () => {
 		const params = baseParams();
 		params.page = 2;
 		params.limit = 5;
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list).toHaveLength(5);
 		expect(list[0].imdb).toBe('tt4154756');
 	});
@@ -203,7 +213,8 @@ describe('Search params', () => {
 		const params = baseParams();
 		params.page = 3;
 		params.limit = 7;
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list).toHaveLength(6);
 		expect(list[0].imdb).toBe('tt6806448');
 		expect(list[5].imdb).toBe('tt0816692');
@@ -216,7 +227,8 @@ describe('Search params', () => {
 		params.order = 'desc';
 		params.limit = 2;
 		params.page = 2;
-		const list = processParams(thumbnailList20, params);
+		let list = filterList(thumbnailList20, params);
+		list = paginate(list, params);
 		expect(list).toHaveLength(2);
 		expect(list[0].imdb).toBe('tt4154756');
 	});

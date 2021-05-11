@@ -1,55 +1,28 @@
 import Debug from 'debug';
 import { IMovieThumbnail } from 'models/movie';
 import bayService, { IBayMovie } from 'services/bay';
-import omdbService, { IOmdbMovieDetails } from 'services/omdb';
+import omdbService from 'services/omdb';
 import ytsService, { IYtsMovie } from 'services/yts';
-import { cache } from 'config';
+import { thumbnailCache } from 'config';
+import { omdbDetailsToMovieThumbnail, ytsMovieToMovieThumbnail } from './utils';
 
 const debug = Debug('MyApp');
 
 export const ytsToThumbnail = (ytsMovieList: IYtsMovie[]) => {
 	// All the required data exists in Yts response so only map here.
 	const thumbnailList = ytsMovieList.reduce((list: IMovieThumbnail[], yts) => {
-		if (
-			yts.title_english.length > 0 &&
-			yts.imdb_code.length > 0 &&
-			yts.rating > 0
-		) {
-			const n = {
-				title: yts.title_english,
-				year: yts.year,
-				coverImage: yts.medium_cover_image,
-				genres: yts.genres,
-				rating: yts.rating,
-				imdb: yts.imdb_code,
-			} as IMovieThumbnail;
-			return [...list, n];
-		} else return list;
+		try {
+			return [...list, ytsMovieToMovieThumbnail(yts)];
+		} catch (_error) {
+			return list;
+		}
 	}, []);
 
 	return thumbnailList;
 };
 
-const omdbToThumbnail = async (
-	omdbDetails: IOmdbMovieDetails,
-	imdb: string
-): Promise<IMovieThumbnail> => {
-	if (
-		!(omdbDetails.Title.length > 0 && parseFloat(omdbDetails.imdbRating) > 0)
-	) {
-		Promise.reject('Movie data incomplete');
-	}
-	return {
-		title: omdbDetails.Title,
-		year: parseInt(omdbDetails.Year),
-		coverImage: omdbDetails.Poster,
-		genres: omdbDetails.Genre.split(','),
-		rating: parseFloat(omdbDetails.imdbRating),
-		imdb: imdb,
-	} as IMovieThumbnail;
-};
-
 export const getMovieInfo = async (bayMovieList: IBayMovie[]) => {
+	// Make the promises and then resolve them in parallel.
 	const promiseList = await Promise.allSettled(
 		bayMovieList.map(async (movie) => {
 			if (!movie.imdb) return Promise.reject('No imdb code');
@@ -63,7 +36,7 @@ export const getMovieInfo = async (bayMovieList: IBayMovie[]) => {
 				debug(error);
 				const omdbDetails = await omdbService.details(movie.imdb);
 				if ('Title' in omdbDetails && omdbDetails.Type === 'movie') {
-					return await omdbToThumbnail(omdbDetails, movie.imdb);
+					return omdbDetailsToMovieThumbnail(omdbDetails);
 				} else {
 					return Promise.reject('Movie data not found');
 				}
@@ -120,10 +93,8 @@ export const search = async (query: string) => {
 	let thumbnailList: IMovieThumbnail[] | undefined;
 
 	// First check if we have the results in cache and return immediately if we do.
-	if (process.env.NODE_ENV !== 'test') {
-		thumbnailList = cache.get(query);
-		if (thumbnailList) return thumbnailList;
-	}
+	thumbnailList = thumbnailCache.get(query);
+	if (thumbnailList) return thumbnailList;
 
 	// Re-initialize thumbnailList so it is not undefined.
 	thumbnailList = [];
@@ -143,7 +114,6 @@ export const search = async (query: string) => {
 	]);
 	if (
 		ytsPromiseResult.status === 'fulfilled' &&
-		ytsPromiseResult.value &&
 		ytsPromiseResult.value.data.movie_count > 0
 	) {
 		thumbnailList = ytsToThumbnail(ytsPromiseResult.value.data.movies);
@@ -155,11 +125,10 @@ export const search = async (query: string) => {
 	// Store result in cache only if we got results from either service.
 	// This prevents unwanted behavior in case one or both are down momentarily.
 	if (
-		(ytsPromiseResult.status === 'fulfilled' ||
-			bayPromiseResult.status === 'fulfilled') &&
-		process.env.NODE_ENV !== 'test'
+		ytsPromiseResult.status === 'fulfilled' ||
+		bayPromiseResult.status === 'fulfilled'
 	) {
-		cache.set(query, thumbnailList);
+		thumbnailCache.set(query, thumbnailList);
 	}
 	return thumbnailList;
 };

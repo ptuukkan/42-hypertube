@@ -1,8 +1,9 @@
 import { search } from 'application/library';
 import asyncHandler from 'express-async-handler';
 import { IMovieThumbnailEnvelope } from 'models/movie';
-import { parseParams, processParams } from 'controllers/utils';
+import { filterList, paginate, parseParams } from 'controllers/utils';
 import lodash, { toLower } from 'lodash';
+import { details } from 'application/movie';
 
 export interface IQueryParams {
 	query: string;
@@ -24,12 +25,20 @@ export const searchMovies = asyncHandler(async (req, res) => {
 		.sortedUniqBy(toLower)
 		.value();
 
-	thumbnailList = processParams(thumbnailList, params);
+	thumbnailList = filterList(thumbnailList, params);
+	const count = thumbnailList.length;
+	thumbnailList = paginate(thumbnailList, params);
 
 	const envelope: IMovieThumbnailEnvelope = {
-		count: thumbnailList.length,
+		count: count,
 		genres: genres,
 		movies: thumbnailList,
 	};
 	res.json(envelope);
+});
+
+export const getMovie = asyncHandler(async (req, res) => {
+	const imdbCode = req.params.imdbCode;
+	const movie = await details(imdbCode);
+	res.json(movie);
 });

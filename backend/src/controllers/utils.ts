@@ -3,14 +3,14 @@ import { Request } from 'express';
 import lodash from 'lodash';
 import { dummyThumbnail, IMovieThumbnail } from 'models/movie';
 
-const isString = (text: any): text is string => {
+export const isString = (text: any): text is string => {
 	return typeof text === 'string' || text instanceof String;
 };
 
 // Is this the correct place for this?
 export const parseParams = (req: Request) => {
 	let params: IQueryParams = {
-		query: 'a',
+		query: 'a', // Hard code 'a' => top movies.
 		page: 1,
 		limit: 20,
 		sort: 'title',
@@ -42,14 +42,14 @@ export const parseParams = (req: Request) => {
 	return params;
 };
 
-export const processParams = (
-	list: IMovieThumbnail[],
-	params: IQueryParams
-) => {
+export const filterList = (list: IMovieThumbnail[], params: IQueryParams) => {
 	if (params.genre) {
 		list = list.filter((t) => t.genres.includes(params.genre!));
 	}
+	return list;
+};
 
+export const paginate = (list: IMovieThumbnail[], params: IQueryParams) => {
 	list = lodash(list)
 		.orderBy([params.sort, 'title'], [params.order, 'asc'])
 		.drop((params.page - 1) * params.limit)
