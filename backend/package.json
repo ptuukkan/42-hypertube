@@ -5,7 +5,8 @@
   "main": "app.ts",
   "scripts": {
     "test": "jest",
-    "dev": "DEBUG='app' NODE_PATH=./src ts-node-dev src/app.ts"
+    "dev": "DEBUG='app' NODE_PATH=./src ts-node-dev src/app.ts",
+    "tslint": "tslint -p tsconfig.json -c tslint.json"
   },
   "author": "",
   "license": "ISC",
