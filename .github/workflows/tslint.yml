@@ -1,4 +1,4 @@
-name: Backend TSLint
+name: TSLint
 on: push
 jobs:
   run-tslint:
@@ -12,15 +12,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
-      - name: Install Node.js dependencies
+      - name: Dependencies for backend/
         run: npm install
         working-directory: ./backend
-      - name: Run linters
+      #- name: Dependencies for frontend/
+      #  run: npm install
+      #  working-directory: ./frontend
+      - name: Run backend linters
         run: npm run tslint
-        working-directory: ./backend
-#      - name: TSLint
-#        uses: mooyoul/tslint-actions@v1.1.1
-#        with:
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#          project: backend/tsconfig.json
-#          config: backend/tslint.json
+        working-directory: ./backends
+      #- name: Run frontend linters
+      #  run: npm run tslint
+      #  working-directory: ./frontend
