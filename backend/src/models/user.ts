@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, HookNextFunction } from 'mongoose';
 
 // TODO with import this gives type error when applying plugin below
 // import uniqueValidator from "mongoose-unique-validator";
+// tslint:disable-next-line: no-var-requires
 const uniqueValidator = require('mongoose-unique-validator');
 
 const HASH_ROUNDS = 10;
@@ -105,7 +106,7 @@ UserSchema.pre<IUserDocument>('save', async function (next: HookNextFunction) {
 	}
 });
 
-UserSchema.virtual('fullName').get(function (this: IUserDocument): String {
+UserSchema.virtual('fullName').get(function (this: IUserDocument): string {
 	return `${this.firstName} ${this.lastName}`;
 });
 

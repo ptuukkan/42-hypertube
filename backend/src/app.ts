@@ -6,8 +6,9 @@ import axios from 'axios';
 import mountRoutes from 'routes';
 import mongoose from 'mongoose';
 import { connectToDb, getDbValidationErrors } from 'database';
-const debug = require('debug')('app');
+import Debug from 'debug';
 
+const debug = Debug('MyApp');
 const app = express();
 const PORT = process.env.PORT;
 

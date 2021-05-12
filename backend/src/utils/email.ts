@@ -16,9 +16,9 @@ const sendEmail = (
 
 	const options: Mail.Options = {
 		from: '"Raymond From Hypertube" raymond.holt@hypertube.com',
-		to: to,
-		subject: subject,
-		html: html,
+		to,
+		subject,
+		html,
 	};
 
 	return new Promise((resolve, reject) => {
