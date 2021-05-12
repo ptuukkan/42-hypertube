@@ -15,12 +15,12 @@ jobs:
       - name: Dependencies for backend/
         run: npm install
         working-directory: ./backend
+      - name: Run backend linters
+        run: npm run tslint
+        working-directory: ./backend
       #- name: Dependencies for frontend/
       #  run: npm install
       #  working-directory: ./frontend
-      - name: Run backend linters
-        run: npm run tslint
-        working-directory: ./backends
       #- name: Run frontend linters
       #  run: npm run tslint
       #  working-directory: ./frontend
