@@ -1,5 +1,5 @@
 import { movieCache } from 'config';
-import createError from 'http-errors';
+import { BadRequest, NotFound } from 'http-errors';
 import { IMovie, IMovieThumbnail } from 'models/movie';
 import omdbService, { IOmdbMovieDetails } from 'services/omdb';
 import ytsService, { IYtsMovie, IYtsMovieDetails } from 'services/yts';
@@ -46,7 +46,7 @@ export const buildMovie = (
 
 export const details = async (imdbCode: string) => {
 	if (!imdbCode.match(/^tt\d+$/)) {
-		throw new createError.BadRequest('imdb code not valid');
+		throw new BadRequest('imdb code not valid');
 	}
 
 	const movie = movieCache.get(imdbCode);
@@ -88,6 +88,6 @@ export const details = async (imdbCode: string) => {
 		movieCache.set(imdbCode, movie);
 		return movie;
 	} catch (error) {
-		throw new createError.NotFound('Movie not found: ' + error.message);
+		throw new NotFound('Movie not found: ' + error.message);
 	}
 };
