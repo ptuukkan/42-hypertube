@@ -1,20 +1,20 @@
 import asyncHandler from 'express-async-handler';
-import createError from 'http-errors';
+import { Unauthorized } from 'http-errors';
 import Usermodel, { IUserDocument } from 'models/user';
 
 export const loginController = asyncHandler(async (req, res) => {
 	const { username, password } = req.body;
 
-	if (!password) throw createError(401, 'Value for `password` is required.');
+	if (!password) throw new Unauthorized('Value for `password` is required.');
 
 	const user: IUserDocument | null = await Usermodel.findOne({ username });
 
-	if (!user) throw createError(401, 'User not found.');
+	if (!user) throw new Unauthorized('User not found.');
 
-	if (!user.isConfirmed) throw createError(401, 'User not confirmed.');
+	if (!user.isConfirmed) throw new Unauthorized('User not confirmed.');
 
 	if (!(await user.isPasswordValid(password)))
-		throw createError(401, 'Wrong password.');
+		throw new Unauthorized('Wrong password.');
 
 	// TODO return accessToken
 	res.json({ status: 'OK', accessToken: '' });
