@@ -4,12 +4,13 @@ import Usermodel from 'models/user';
 
 export const confirmUserController = asyncHandler(async (req, res) => {
 	const { userId, code } = req.codePayload!;
+	const APP_URL = process.env.REACT_APP_BASE_URL;
 
 	try {
 		await Usermodel.updateOne({ _id: userId }, { isConfirmed: true });
 	} catch (err) {
 		console.error(err);
-		return res.redirect(302, 'http://localhost:3000/?confirm-email=error');
+		return res.redirect(302, `${APP_URL}?confirm-email=error`);
 	}
 
 	try {
@@ -18,5 +19,5 @@ export const confirmUserController = asyncHandler(async (req, res) => {
 		console.error(err);
 	}
 
-	res.redirect(302, 'http://localhost:3000/?confirm-email=success');
+	res.redirect(302, `${APP_URL}?confirm-email=success`);
 });

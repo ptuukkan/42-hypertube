@@ -4,10 +4,11 @@ import LinkModel, { ILinkDocument, LinkType } from './../models/link';
 export const checkCode = asyncHandler(async (req, res, next) => {
 	const path = req.route.path.split('/')[1];
 	const [userId, code] = req.params.code.split('_');
+	const APP_URL = process.env.REACT_APP_BASE_URL;
 
 	if (!userId || !code) {
 		// Path is reset-password or confirm-email
-		return res.redirect(302, `http://localhost:3000/?${path}=error`);
+		return res.redirect(302, `${APP_URL}?${path}=error`);
 	}
 
 	let link: ILinkDocument | null = null;
@@ -19,7 +20,7 @@ export const checkCode = asyncHandler(async (req, res, next) => {
 		console.error(err);
 	}
 
-	if (!link) return res.redirect(302, `http://localhost:3000/?${path}=error`);
+	if (!link) return res.redirect(302, `${APP_URL}?${path}=error`);
 
 	req.codePayload = { userId, code };
 
