@@ -4,7 +4,7 @@ import {
 	ytsToThumbnail,
 } from 'application/library';
 import { IQueryParams } from 'controllers/movie';
-import { filterList, paginate } from 'controllers/utils';
+import { filterList, paginate } from 'controllers/movie';
 import {
 	bayMovieList,
 	dupBayMovieList,
