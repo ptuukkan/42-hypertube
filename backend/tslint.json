@@ -22,12 +22,28 @@
         }],
         "unnecessary-else": [true, {"allow-else-if": true}],
         "variable-name": {
-            "options": ["check-format", "ban-keywords", "allow-pascal-case", "allow-leading-underscore"]
+            "options": [
+                "check-format",
+                "ban-keywords",
+                "allow-pascal-case",
+                "allow-leading-underscore"
+            ]
         },
         "indent": [true, "tabs", 2],
         "no-consecutive-blank-lines": true,
         "quotemark": [true, "single", "avoid-escape"],
-        "whitespace": [true, "check-branch", "check-decl", "check-operator", "check-separator", "check-rest-spread", "check-type", "check-typecast", "check-type-operator", "check-preblock"]
+        "whitespace": [
+            true,
+            "check-branch",
+            "check-decl",
+            "check-operator",
+            "check-separator",
+            "check-rest-spread",
+            "check-type",
+            "check-typecast",
+            "check-type-operator",
+            "check-preblock"
+        ]
     },
     "rulesDirectory": []
 }

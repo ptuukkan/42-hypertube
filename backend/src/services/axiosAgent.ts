@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-const debug = require('debug')('axios');
+import Debug from 'debug';
+
+const debug = Debug('app');
 
 export class AxiosAgent {
 	axiosInstance: AxiosInstance;
@@ -9,7 +11,9 @@ export class AxiosAgent {
 			baseURL: baseUrl,
 		});
 		this.axiosInstance.interceptors.request.use((config) => {
-			debug(`${config.method} ${config.baseURL} ${config.url} ${config.params}`);
+			debug(
+				`${config.method} ${config.baseURL} ${config.url} ${config.params}`
+			);
 			return config;
 		});
 	}
@@ -18,5 +22,5 @@ export class AxiosAgent {
 
 	get = (url: string) => this.axiosInstance.get(url).then(this.responseBody);
 	getParams = (url: string, params: URLSearchParams) =>
-		this.axiosInstance.get(url, { params: params }).then(this.responseBody);
+		this.axiosInstance.get(url, { params }).then(this.responseBody);
 }
