@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 // import { BackendError } from '../models/errors';
-import { IMovie } from '../models/movie';
+import { IMovieList } from '../models/movie';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
@@ -13,13 +13,13 @@ const requests = {
 	put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
 };
 
-const Browse = {
-	top: (): Promise<{ count: number; movies: IMovie[] }> =>
-		requests.get('movies/top'),
+const Movies = {
+	search: (title: string): Promise<IMovieList> =>
+		requests.get(`movies/search?query=${title}`),
 };
 
 const agent = {
-	Browse,
+	Movies,
 };
 
 export default agent;

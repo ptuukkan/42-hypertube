@@ -14,7 +14,7 @@ export default class ProfileStore {
 
 	getTopMovies = async () => {
 		try {
-			const tempMovies = await agent.Browse.top();
+			const tempMovies = await agent.Movies.search('');
 			runInAction(() => {
 				this.movies = tempMovies;
 			});

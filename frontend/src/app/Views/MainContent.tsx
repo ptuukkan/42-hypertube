@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
 	Dimmer,
+	Header,
 	Item,
 	Label,
 	Loader,
@@ -11,27 +12,44 @@ import {
 } from 'semantic-ui-react';
 import agent from '../services/agent';
 
-export interface MainContetProps {}
+export interface MainContetProps {
+	searchQuery: string;
+}
 
-const MainContet: React.FC<MainContetProps> = () => {
+const MainContent: React.FC<MainContetProps> = ({ searchQuery }) => {
 	const [movies, setMovies] = useState<IMovie[]>([]);
+	const [lastQuery, setLastQuery] = useState('');
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		if (movies.length === 0) {
+		if (movies.length === 0 || searchQuery !== lastQuery) {
 			setLoading(true);
-			agent.Browse.top()
+			agent.Movies.search(searchQuery)
 				.then((movies) => setMovies(movies.movies))
 				.catch((e) => console.log(e))
-				.finally(() => setLoading(false));
+				.finally(() => {
+					setLoading(false);
+					setLastQuery(searchQuery);
+				});
 		}
-	}, [movies.length]);
+	}, [movies.length, searchQuery, lastQuery]);
+	console.log(movies);
+	if (loading) {
+		return (
+			<Dimmer inverted>
+				<Loader />
+			</Dimmer>
+		);
+	}
 
-	return loading ? (
-		<Dimmer active inverted>
-			<Loader />
-		</Dimmer>
-	) : (
+	if (movies.length === 0)
+		return (
+			<Segment style={{ minHeight: 500, padding: 60 }}>
+				<Header>No results :(</Header>
+			</Segment>
+		);
+
+	return (
 		<Segment style={{ minHeight: 500, padding: 60 }}>
 			<Item.Group divided>
 				{movies.map((movie) => (
@@ -50,9 +68,10 @@ const MainContet: React.FC<MainContetProps> = () => {
 								/>
 							</Item.Meta>
 							<Item.Description>
-								{movie.genres.map((genre, i) => (
-									<Label key={i}>{genre}</Label>
-								))}
+								{movie.genres &&
+									movie.genres.map((genre, i) => (
+										<Label key={i}>{genre}</Label>
+									))}
 							</Item.Description>
 						</Item.Content>
 					</Item>
@@ -62,4 +81,4 @@ const MainContet: React.FC<MainContetProps> = () => {
 	);
 };
 
-export default MainContet;
+export default MainContent;

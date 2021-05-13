@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Container, Menu, Image, Popup, Icon, Input } from 'semantic-ui-react';
 
-export interface MobileMenuProps {}
+export interface MobileMenuProps {
+	setQuery: React.Dispatch<React.SetStateAction<string>>;
+	searchQuery: string;
+}
 
-const MobileMenu: React.FC<MobileMenuProps> = () => {
+const MobileMenu: React.FC<MobileMenuProps> = ({ setQuery, searchQuery }) => {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	return (
@@ -38,7 +41,12 @@ const MobileMenu: React.FC<MobileMenuProps> = () => {
 						>
 							<Menu vertical>
 								<Menu.Item>
-									<Input icon="search" placeholder="Search..." />
+									<Input
+										icon="search"
+										placeholder="Search..."
+										onChange={(e) => setQuery(e.target.value)}
+										value={searchQuery}
+									/>
 								</Menu.Item>
 								<Menu.Item
 									as={Link}

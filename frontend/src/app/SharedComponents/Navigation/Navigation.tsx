@@ -6,21 +6,24 @@ import PrivateMenuItems from './PrivateMenuItems';
 
 const { Media, MediaContextProvider } = AppMedia;
 
-export interface NavigationProps {}
+export interface NavigationProps {
+	setQuery: React.Dispatch<React.SetStateAction<string>>;
+	searchQuery: string;
+}
 
-const Navigation: React.FC<NavigationProps> = () => {
+const Navigation: React.FC<NavigationProps> = ({ setQuery, searchQuery }) => {
 	return (
 		<MediaContextProvider>
-				<Menu fixed="top" icon="labeled" borderless>
-						<Fragment>
-							<Media at="xs">
-								<MobileMenu />
-							</Media>
-							<Media greaterThanOrEqual="sm">
-								<PrivateMenuItems />
-							</Media>
-						</Fragment>
-				</Menu>
+			<Menu fixed="top" icon="labeled" borderless>
+				<Fragment>
+					<Media at="xs">
+						<MobileMenu setQuery={setQuery} searchQuery={searchQuery} />
+					</Media>
+					<Media greaterThanOrEqual="sm">
+						<PrivateMenuItems setQuery={setQuery} searchQuery={searchQuery} />
+					</Media>
+				</Fragment>
+			</Menu>
 		</MediaContextProvider>
 	);
 };
