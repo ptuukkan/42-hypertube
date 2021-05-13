@@ -7,8 +7,7 @@ import mountRoutes from 'routes';
 import mongoose from 'mongoose';
 import { connectToDb, getDbValidationErrors } from 'database';
 import Debug from 'debug'
-const cors = require('cors');
-
+import cors from 'cors';
 
 const debug = Debug('MyApp');
 const app = express();

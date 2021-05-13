@@ -7,7 +7,7 @@ import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
 
 const validationSchema = {
 	field: {
-		emailAddress: [Validators.required.validator, Validators.email.validator],
+		email: [Validators.required.validator, Validators.email.validator],
 	},
 };
 
@@ -32,7 +32,7 @@ const Forgot = () => {
 							<Segment stacked>
 								<Field
 									component={TextInput}
-									name="emailAddress"
+									name="email"
 									placeholder="Email address"
 								/>
 								{submitError && !dirtySinceLastSubmit && (

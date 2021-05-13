@@ -1,5 +1,5 @@
 import TextInput from 'app/SharedComponents/form/TextInput';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
@@ -14,11 +14,12 @@ import {
 	Message,
 } from 'semantic-ui-react';
 import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
+import { RootStoreContext } from '../../app/stores/rootStore';
 import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
 
 const validationSchema = {
 	field: {
-		emailAddress: [Validators.required.validator, Validators.email.validator],
+		email: [Validators.required.validator, Validators.email.validator],
 		password: [
 			Validators.required.validator,
 			{
@@ -33,9 +34,12 @@ const formValidation = createFinalFormValidation(validationSchema);
 export interface RegisterProps {}
 
 const Register: React.FC<RegisterProps> = () => {
+	const rootStore = useContext(RootStoreContext);
+	const { registerUser } = rootStore.userStore;
+
 	return (
 		<FinalForm
-			onSubmit={(d) => console.log(d)}
+			onSubmit={registerUser}
 			validate={formValidation.validateForm}
 			render={({
 				handleSubmit,
@@ -56,7 +60,7 @@ const Register: React.FC<RegisterProps> = () => {
 							<Segment stacked>
 								<Field
 									component={TextInput}
-									name="emailAddress"
+									name="email"
 									placeholder="Email address"
 								/>
 								<Field

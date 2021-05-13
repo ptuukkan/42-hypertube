@@ -19,7 +19,7 @@ import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
 
 const validationSchema = {
 	field: {
-		emailAddress: [Validators.required.validator, Validators.email.validator],
+		email: [Validators.required.validator, Validators.email.validator],
 		password: [
 			Validators.required.validator,
 			{
@@ -57,7 +57,7 @@ const Login: React.FC<LoginProps> = () => {
 							<Segment stacked>
 								<Field
 									component={TextInput}
-									name="emailAddress"
+									name="email"
 									placeholder="Email address"
 								/>
 								<Field
