@@ -1,8 +1,10 @@
-const debug = require('debug')('app');
+import Debug from 'debug';
 import { IMovieThumbnail } from 'models/movie';
 import { IBayMovie } from 'services/bay';
 import omdbService, { IOmdbMovieDetails } from 'services/omdb';
 import ytsService, { IYtsMovie } from 'services/yts';
+
+const debug = Debug('MyApp');
 
 export const ytsToThumbnail = (ytsMovieList: IYtsMovie[]) => {
 	// All the required data exists in Yts response so only map here.
@@ -28,7 +30,7 @@ const omdbToThumbnail = (omdbDetails: IOmdbMovieDetails, imdb: string) => {
 		coverImage: omdbDetails.Poster,
 		genres: omdbDetails.Genre.split(','),
 		rating: parseFloat(omdbDetails.imdbRating),
-		imdb: imdb,
+		imdb,
 	};
 	return thumbnail;
 };
@@ -40,7 +42,7 @@ export const getMovieInfo = async (bayMovieList: IBayMovie[]) => {
 			try {
 				const ytsEnvelope = await ytsService.search(movie.imdb);
 				if (ytsEnvelope.status !== 'ok' || ytsEnvelope.data.movie_count !== 1) {
-					throw new Error("status not ok or movie count not 1");
+					throw new Error('status not ok or movie count not 1');
 				}
 				return ytsToThumbnail(ytsEnvelope.data.movies)[0];
 			} catch (error) {
@@ -48,9 +50,8 @@ export const getMovieInfo = async (bayMovieList: IBayMovie[]) => {
 				const omdbDetails = await omdbService.details(movie.imdb);
 				if ('Title' in omdbDetails && omdbDetails.Type === 'movie') {
 					return omdbToThumbnail(omdbDetails, movie.imdb);
-				} else {
-					return Promise.reject('Movie data not found');
 				}
+				return Promise.reject('Movie data not found');
 			}
 		})
 	);
@@ -67,14 +68,14 @@ export const bayToThumbnail = async (
 	thumbnailList: IMovieThumbnail[],
 	bayMovieList: IBayMovie[]
 ) => {
-	// We probably have duplicate movies, first reduce to distinct movies and remove null imdb codes.
+	// We probably have duplicate movies
+	// First reduce to distinct movies and remove null imdb codes.
 	const distinctBayMovies = bayMovieList.reduce(
 		(distinct: IBayMovie[], current) => {
 			if (current.imdb && !distinct.some((d) => d.imdb === current.imdb)) {
 				return [...distinct, current];
-			} else {
-				return distinct;
 			}
+			return distinct;
 		},
 		[]
 	);
@@ -84,9 +85,8 @@ export const bayToThumbnail = async (
 		(movies: IBayMovie[], current) => {
 			if (!thumbnailList.some((m) => m.imdb === current.imdb)) {
 				return [...movies, current];
-			} else {
-				return movies;
 			}
+			return movies;
 		},
 		[]
 	);

@@ -4,6 +4,8 @@ import { Router } from 'express';
 const movieRouter = Router();
 
 movieRouter.get('/top', topMovies);
-movieRouter.get('/search', searchMovies); // search?query=lord+of+the+rings, 400 if query is not supplied
+
+// search?query=lord+of+the+rings, 400 if query is not supplied
+movieRouter.get('/search', searchMovies);
 
 export default movieRouter;

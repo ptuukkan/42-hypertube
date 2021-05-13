@@ -8,10 +8,7 @@ import createError from 'http-errors';
 export const topMovies = asyncHandler(async (_req, res) => {
 	const ytsPromise = ytsService.top();
 	const bayPromise = bayService.top();
-	const [ytsMovies, bayMovies] = await Promise.all([
-		ytsPromise,
-		bayPromise,
-	]);
+	const [ytsMovies, bayMovies] = await Promise.all([ytsPromise, bayPromise]);
 	let thumbnailList = ytsToThumbnail(ytsMovies.data.movies);
 	thumbnailList = await bayToThumbnail(thumbnailList, bayMovies);
 	const envelope: IMovieThumbnailEnvelope = {
@@ -27,17 +24,14 @@ export const topMovies = asyncHandler(async (_req, res) => {
 
 export const searchMovies = asyncHandler(async (req, res) => {
 	let query: string;
-	if (req.query.query && typeof req.query.query === "string") {
+	if (req.query.query && typeof req.query.query === 'string') {
 		query = req.query.query;
 	} else {
 		throw createError(400, 'query was not supplied');
 	}
 	const ytsPromise = ytsService.search(query);
 	const bayPromise = bayService.search(query);
-	const [ytsMovies, bayMovies] = await Promise.all([
-		ytsPromise,
-		bayPromise,
-	]);
+	const [ytsMovies, bayMovies] = await Promise.all([ytsPromise, bayPromise]);
 	let thumbnailList = ytsToThumbnail(ytsMovies.data.movies);
 	thumbnailList = await bayToThumbnail(thumbnailList, bayMovies);
 	const envelope: IMovieThumbnailEnvelope = {

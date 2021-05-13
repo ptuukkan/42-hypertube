@@ -46,10 +46,7 @@ describe('Library', () => {
 	it('Duplicate Bay movies are reduced', async () => {
 		expect.hasAssertions();
 		const imdb = bayMovieList[0].imdb;
-		const bayMovies = bayMovieList.map((m) => ({
-			...m,
-			imdb: imdb,
-		}));
+		const bayMovies = bayMovieList.map((m) => ({ ...m, imdb }));
 		try {
 			let thumbnailList = await bayToThumbnail([], bayMovies);
 			expect(thumbnailList).toHaveLength(1);
@@ -82,5 +79,5 @@ describe('Library', () => {
 		} catch (error) {
 			fail('error');
 		}
-	})
+	});
 });
