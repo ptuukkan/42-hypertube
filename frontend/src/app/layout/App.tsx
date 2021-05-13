@@ -1,11 +1,10 @@
-import React from 'react';
+import MainContent from 'app/Views/MainContent';
+import Register from 'app/Views/Register';
+import Navigation from '../SharedComponents/Navigation/Navigation'
 import { Switch, Route } from 'react-router';
 import { Container } from 'semantic-ui-react';
-import Login from './Login';
-import MainContent from './MainContent';
-import Navigation from './Navigation';
-import Register from './Register';
-
+import Login from '../Views/Login';
+import Forgot from 'app/Views/Forgot';
 
 const App = () => {
 	return (
@@ -14,9 +13,9 @@ const App = () => {
 			<Switch>
 				<Route path="/register" component={Register} />
 				<Route path="/login" component={Login} />
+				<Route path="/forgot" component={Forgot} />
 				<Route exact path="/" component={MainContent} />
 			</Switch>
-			
 		</Container>
 	);
 };

@@ -4,11 +4,13 @@ import logger from 'morgan';
 import createError from 'http-errors';
 import axios from 'axios';
 import mountRoutes from 'routes';
+const cors = require('cors');
 const debug = require('debug')('app');
 
 const app = express();
 const PORT = process.env.PORT;
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

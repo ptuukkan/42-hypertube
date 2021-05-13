@@ -1,6 +1,6 @@
+import { AppMedia } from 'app/SharedComponents/AppMedia';
 import React, { Fragment } from 'react';
 import { Menu } from 'semantic-ui-react';
-import { AppMedia } from './AppMedia';
 import MobileMenu from './MobileMenu';
 import PrivateMenuItems from './PrivateMenuItems';
 
