@@ -4,13 +4,19 @@ import logger from 'morgan';
 import createError from 'http-errors';
 import axios from 'axios';
 import mountRoutes from 'routes';
+import mongoose from 'mongoose';
+import { connectToDb, getDbValidationErrors } from 'database';
+import Debug from 'debug'
 const cors = require('cors');
-const debug = require('debug')('app');
 
+
+const debug = Debug('MyApp');
 const app = express();
+app.use(cors());
 const PORT = process.env.PORT;
 
-app.use(cors());
+connectToDb();
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -26,11 +32,21 @@ app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
 		return next(err);
 	}
 	if (err instanceof createError.HttpError) {
-		res.status(err.statusCode).send(err.message);
+		res.status(err.statusCode).json({ status: 'ERROR', message: err.message });
 	} else if (axios.isAxiosError(err) && err.response) {
-		res.status(err.response.status).send(err.response.statusText);
+		res
+			.status(err.response.status)
+			.json({ status: 'ERROR', message: err.response.statusText });
+	} else if (err instanceof mongoose.Error.ValidationError) {
+		res.status(400).json({
+			status: 'ERROR',
+			message: 'Invalid data',
+			errors: getDbValidationErrors(err),
+		});
+	} else if (err instanceof mongoose.Error) {
+		res.status(500).json({ status: 'ERROR', message: 'DATABASE ERROR' });
 	} else {
-		res.status(500).send('Internal server error');
+		res.status(500).json({ status: 'ERROR', message: 'Internal server error' });
 	}
 });
 

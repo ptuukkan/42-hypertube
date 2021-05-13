@@ -1,13 +1,14 @@
 import { Application } from 'express';
 import movieRouter from 'routes/movie';
+import preAuthRouter from './preAuth';
 
 const mountRoutes = (app: Application) => {
-	// Regular routes (without middleware)
-	app.use('/api/movies', movieRouter);
+	// Public routes
+	app.use('/api/preAuth/', preAuthRouter);
 
-	// routes with middleware
-	// app.use('/api/testNoAuth', MIDDLEWARE, testRoutes);
+	// Private routes
+	// TODO add isAuth middleware
+	app.use('/api/movies', movieRouter);
 };
 
 export default mountRoutes;
-// Then in app.ts import this as mountRoutes and call it with app as the parameter

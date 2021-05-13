@@ -1,0 +1,26 @@
+name: TSLint
+on: push
+jobs:
+  run-tslint:
+    name: Run tslint
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Dependencies for backend/
+        run: npm install
+        working-directory: ./backend
+      - name: Run backend linters
+        run: npm run tslint
+        working-directory: ./backend
+      #- name: Dependencies for frontend/
+      #  run: npm install
+      #  working-directory: ./frontend
+      #- name: Run frontend linters
+      #  run: npm run tslint
+      #  working-directory: ./frontend

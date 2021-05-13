@@ -7,6 +7,12 @@ export interface IOmdbMovieDetails {
 	Genre: string;
 	imdbRating: string;
 	Type: string;
+	imdbID: string;
+	Director: string;
+	Writer: string;
+	Actors: string;
+	Plot: string;
+	Runtime: string;
 }
 
 export interface IOmdbError {

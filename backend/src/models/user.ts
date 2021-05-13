@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, HookNextFunction } from 'mongoose';
 
 // TODO with import this gives type error when applying plugin below
 // import uniqueValidator from "mongoose-unique-validator";
+// tslint:disable-next-line: no-var-requires
 const uniqueValidator = require('mongoose-unique-validator');
 
 const HASH_ROUNDS = 10;
@@ -22,11 +23,13 @@ export interface IUser {
 	password: string;
 	language?: string;
 	profilePicName?: string;
+	isConfirmed?: boolean;
 }
 
 export interface IUserDocument extends IUser, Document {
 	fullName: string;
 	isPasswordValid(password: string): Promise<boolean>;
+	checkAndUpdatePassword(password: string): Promise<void>;
 }
 
 const UserSchema = new Schema<IUserDocument>({
@@ -83,6 +86,7 @@ const UserSchema = new Schema<IUserDocument>({
 		default: Language.ENGLISH,
 	},
 	profilePicName: { type: String, default: 'blank-profile.png' },
+	isConfirmed: { type: Boolean, default: false },
 });
 
 /**
@@ -102,7 +106,7 @@ UserSchema.pre<IUserDocument>('save', async function (next: HookNextFunction) {
 	}
 });
 
-UserSchema.virtual('fullName').get(function (this: IUserDocument): String {
+UserSchema.virtual('fullName').get(function (this: IUserDocument): string {
 	return `${this.firstName} ${this.lastName}`;
 });
 
@@ -115,6 +119,17 @@ UserSchema.methods.isPasswordValid = function (
 	password: string
 ): Promise<boolean> {
 	return compare(password, this.password);
+};
+
+UserSchema.methods.checkAndUpdatePassword = async function (
+	password: string
+): Promise<void> {
+	this.password = password;
+	// Throws error if invalid format
+	await this.validate();
+	const salt = await genSalt(HASH_ROUNDS);
+	const hashPass = await hash(password, salt);
+	return this.updateOne({ password: hashPass });
 };
 
 UserSchema.plugin(uniqueValidator);
