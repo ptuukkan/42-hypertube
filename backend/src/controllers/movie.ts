@@ -19,7 +19,7 @@ export interface IQueryParams {
 }
 
 const parseParams = (req: Request) => {
-	let params: IQueryParams = {
+	const params: IQueryParams = {
 		query: 'a', // Hard code 'a' => top movies.
 		page: 1,
 		limit: 20,
@@ -85,8 +85,8 @@ export const searchMovies = asyncHandler(async (req, res) => {
 	thumbnailList = paginate(thumbnailList, params);
 
 	const envelope: IMovieThumbnailEnvelope = {
-		count: count,
-		genres: genres,
+		count,
+		genres,
 		movies: thumbnailList,
 	};
 	res.json(envelope);

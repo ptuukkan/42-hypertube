@@ -37,9 +37,8 @@ export const getMovieInfo = async (bayMovieList: IBayMovie[]) => {
 				const omdbDetails = await omdbService.details(movie.imdb);
 				if ('Title' in omdbDetails && omdbDetails.Type === 'movie') {
 					return omdbDetailsToMovieThumbnail(omdbDetails);
-				} else {
-					return Promise.reject('Movie data not found');
 				}
+				return Promise.reject('Movie data not found');
 			}
 		})
 	);

@@ -10,7 +10,7 @@ export const buildMovie = (
 	ytsDetails: IYtsMovieDetails | undefined,
 	omdbDetails: IOmdbMovieDetails | undefined
 ) => {
-	let movieThumbnail: IMovieThumbnail | undefined = undefined;
+	let movieThumbnail: IMovieThumbnail | undefined;
 	if (!ytsMovie && !omdbDetails)
 		throw new Error('no movie data to build movie from');
 
@@ -20,13 +20,14 @@ export const buildMovie = (
 	} else {
 		movieThumbnail = omdbDetailsToMovieThumbnail(omdbDetails!);
 	}
-	let movie: IMovie = {
+	const movie: IMovie = {
 		...movieThumbnail,
 		summary: '',
 		runtime: 0,
 	};
 
-	// Then assign rest of the properties. We want omdb plot over yts, and yts actors over omdb.
+	// Then assign rest of the properties.
+	// We want omdb plot over yts, and yts actors over omdb.
 	if (omdbDetails) {
 		movie.writer = omdbDetails.Writer;
 		movie.director = omdbDetails.Director;
@@ -49,12 +50,12 @@ export const details = async (imdbCode: string) => {
 		throw new BadRequest('imdb code not valid');
 	}
 
-	const movie = movieCache.get(imdbCode);
-	if (movie) return movie;
+	const cachedMovie = movieCache.get(imdbCode);
+	if (cachedMovie) return cachedMovie;
 
-	let ytsMovie: IYtsMovie | undefined = undefined;
-	let ytsDetails: IYtsMovieDetails | undefined = undefined;
-	let omdbDetails: IOmdbMovieDetails | undefined = undefined;
+	let ytsMovie: IYtsMovie | undefined;
+	let ytsDetails: IYtsMovieDetails | undefined;
+	let omdbDetails: IOmdbMovieDetails | undefined;
 
 	// Get yts and omdb data in parallel.
 	const ytsPromise = ytsService.search(imdbCode);
@@ -88,6 +89,6 @@ export const details = async (imdbCode: string) => {
 		movieCache.set(imdbCode, movie);
 		return movie;
 	} catch (error) {
-		throw new NotFound('Movie not found: ' + error.message);
+		throw new NotFound(`Movie not found: ${error.message}`);
 	}
 };
