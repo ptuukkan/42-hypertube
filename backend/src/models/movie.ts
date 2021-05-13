@@ -1,5 +1,8 @@
+import { IYtsCast } from 'services/yts';
+
 export interface IMovieThumbnailEnvelope {
 	count: number;
+	genres: string[];
 	movies: IMovieThumbnail[];
 }
 
@@ -10,4 +13,22 @@ export interface IMovieThumbnail {
 	genres: string[];
 	rating: number;
 	imdb: string;
+}
+
+// Used for type checking.
+export const dummyThumbnail: IMovieThumbnail = {
+	title: 'Movie Title',
+	year: 1999,
+	coverImage: 'Cover Image',
+	genres: ['genre1', 'genre2'],
+	rating: 9,
+	imdb: 'imdb code',
+};
+
+export interface IMovie extends IMovieThumbnail {
+	summary: string;
+	runtime: number;
+	director?: string;
+	writer?: string;
+	actors?: string | IYtsCast[];
 }
