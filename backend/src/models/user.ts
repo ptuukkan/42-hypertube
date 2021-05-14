@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { genSalt, hash, compare } from 'bcryptjs';
 import mongoose, { Schema, Document, HookNextFunction } from 'mongoose';
 
 // TODO with import this gives type error when applying plugin below
 // import uniqueValidator from "mongoose-unique-validator";
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+/* eslint-disable @typescript-eslint/no-var-requires */
 const uniqueValidator = require('mongoose-unique-validator');
 
 const HASH_ROUNDS = 10;
