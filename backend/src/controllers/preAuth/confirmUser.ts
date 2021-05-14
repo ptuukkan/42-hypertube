@@ -4,7 +4,7 @@ import Usermodel from 'models/user';
 
 export const confirmUserController = asyncHandler(async (req, res) => {
 	const { userId, code } = req.codePayload!;
-	const APP_URL = process.env.REACT_APP_BASE_URL;
+	const APP_URL = process.env.REACT_APP_BASE_URL!;
 
 	try {
 		await Usermodel.updateOne({ _id: userId }, { isConfirmed: true });

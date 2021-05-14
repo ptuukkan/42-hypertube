@@ -8,9 +8,9 @@ import mongoose from 'mongoose';
 import { connectToDb, getDbValidationErrors } from 'database';
 import Debug from 'debug';
 
-const debug = Debug('MyApp');
+const debug = Debug('app');
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT!;
 
 connectToDb();
 

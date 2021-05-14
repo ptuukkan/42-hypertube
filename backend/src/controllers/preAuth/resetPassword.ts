@@ -27,9 +27,9 @@ export const sendResetPasswordController = asyncHandler(async (req, res) => {
 	res.status(200).json({ status: 'OK' });
 });
 
-export const validResetCodeController = (req: Request, res: Response) => {
+export const validResetCodeController = (req: Request, res: Response): void => {
 	const code = req.params.code;
-	const APP_URL = process.env.REACT_APP_BASE_URL;
+	const APP_URL = process.env.REACT_APP_BASE_URL!;
 
 	res.redirect(302, `${APP_URL}reset-password/${code}`);
 };
