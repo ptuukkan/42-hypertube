@@ -8,7 +8,6 @@ import mongoose, { Schema, Document, HookNextFunction } from 'mongoose';
 const uniqueValidator = require('mongoose-unique-validator');
 
 const HASH_ROUNDS = 10;
-// eslint-disable-next-line max-len
 const EMAIL_REGEX = /[a-zA-Z\d!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z\d!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z\d](?:[a-zA-Z\d-]*[a-zA-Z\d])?\.)+[a-zA-Z\d](?:[a-zA-Z\d-]*[a-zA-Z\d])?/;
 
 export enum Language {
