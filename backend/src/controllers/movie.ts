@@ -52,14 +52,20 @@ const parseParams = (req: Request) => {
 	return params;
 };
 
-export const filterList = (list: IMovieThumbnail[], params: IQueryParams) => {
+export const filterList = (
+	list: IMovieThumbnail[],
+	params: IQueryParams
+): IMovieThumbnail[] => {
 	if (params.genre) {
 		list = list.filter((t) => t.genres.includes(params.genre!));
 	}
 	return list;
 };
 
-export const paginate = (list: IMovieThumbnail[], params: IQueryParams) => {
+export const paginate = (
+	list: IMovieThumbnail[],
+	params: IQueryParams
+): IMovieThumbnail[] => {
 	list = lodash(list)
 		.orderBy([params.sort, 'title'], [params.order, 'asc'])
 		.drop((params.page - 1) * params.limit)

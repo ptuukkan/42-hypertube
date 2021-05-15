@@ -1,9 +1,9 @@
-import { genSalt, hash, compare } from 'bcrypt';
+import { genSalt, hash, compare } from 'bcryptjs';
 import mongoose, { Schema, Document, HookNextFunction } from 'mongoose';
 
 // TODO with import this gives type error when applying plugin below
 // import uniqueValidator from "mongoose-unique-validator";
-// tslint:disable-next-line: no-var-requires
+/* eslint-disable @typescript-eslint/no-var-requires */
 const uniqueValidator = require('mongoose-unique-validator');
 
 const HASH_ROUNDS = 10;
@@ -112,6 +112,7 @@ UserSchema.virtual('fullName').get(function (this: IUserDocument): string {
 
 /**
  * To check if password is valid on login
+ *
  * @param password regular string
  * @returns Boolean as a Promsise if the password is valid or not
  */

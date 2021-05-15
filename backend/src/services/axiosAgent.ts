@@ -19,9 +19,10 @@ export class AxiosAgent {
 		});
 	}
 
-	responseBody = (response: AxiosResponse) => response.data;
+	responseBody = (response: AxiosResponse): any => response.data;
 
-	get = (url: string) => this.axiosInstance.get(url).then(this.responseBody);
-	getParams = (url: string, params: URLSearchParams) =>
+	get = (url: string): any =>
+		this.axiosInstance.get(url).then(this.responseBody);
+	getParams = (url: string, params: URLSearchParams): any =>
 		this.axiosInstance.get(url, { params }).then(this.responseBody);
 }

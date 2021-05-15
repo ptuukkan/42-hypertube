@@ -2,7 +2,7 @@ import { Application } from 'express';
 import movieRouter from 'routes/movie';
 import preAuthRouter from './preAuth';
 
-const mountRoutes = (app: Application) => {
+const mountRoutes = (app: Application): void => {
 	// Public routes
 	app.use('/api/preAuth/', preAuthRouter);
 

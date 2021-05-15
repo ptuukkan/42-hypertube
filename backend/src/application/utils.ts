@@ -2,7 +2,9 @@ import { IMovieThumbnail } from 'models/movie';
 import { IOmdbMovieDetails } from 'services/omdb';
 import { IYtsMovie } from 'services/yts';
 
-export const ytsMovieToMovieThumbnail = (ytsMovie: IYtsMovie) => {
+export const ytsMovieToMovieThumbnail = (
+	ytsMovie: IYtsMovie
+): IMovieThumbnail => {
 	if (
 		ytsMovie.title_english.length > 0 &&
 		ytsMovie.imdb_code.length > 0 &&
@@ -20,7 +22,9 @@ export const ytsMovieToMovieThumbnail = (ytsMovie: IYtsMovie) => {
 	throw new Error('ytsMovie data not complete');
 };
 
-export const omdbDetailsToMovieThumbnail = (omdbDetails: IOmdbMovieDetails) => {
+export const omdbDetailsToMovieThumbnail = (
+	omdbDetails: IOmdbMovieDetails
+): IMovieThumbnail => {
 	if (omdbDetails.Title.length > 0 && parseFloat(omdbDetails.imdbRating) > 0) {
 		return {
 			title: omdbDetails.Title,

@@ -2,9 +2,9 @@ import asyncHandler from 'express-async-handler';
 import LinkModel, { ILinkDocument, LinkType } from './../models/link';
 
 export const checkCode = asyncHandler(async (req, res, next) => {
-	const path = req.route.path.split('/')[1];
+	const path: string = req.route.path.split('/')[1];
 	const [userId, code] = req.params.code.split('_');
-	const APP_URL = process.env.REACT_APP_BASE_URL;
+	const APP_URL = process.env.REACT_APP_BASE_URL!;
 
 	if (!userId || !code) {
 		// Path is reset-password or confirm-email

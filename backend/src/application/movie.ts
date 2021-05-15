@@ -9,7 +9,7 @@ export const buildMovie = (
 	ytsMovie: IYtsMovie | undefined,
 	ytsDetails: IYtsMovieDetails | undefined,
 	omdbDetails: IOmdbMovieDetails | undefined
-) => {
+): IMovie => {
 	let movieThumbnail: IMovieThumbnail | undefined;
 	if (!ytsMovie && !omdbDetails)
 		throw new Error('no movie data to build movie from');
@@ -45,7 +45,7 @@ export const buildMovie = (
 	return movie;
 };
 
-export const details = async (imdbCode: string) => {
+export const details = async (imdbCode: string): Promise<IMovie> => {
 	if (!imdbCode.match(/^tt\d+$/)) {
 		throw new BadRequest('imdb code not valid');
 	}
