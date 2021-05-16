@@ -9,10 +9,10 @@ import { connectToDb, getDbValidationErrors } from 'database';
 import Debug from 'debug'
 import cors from 'cors';
 
-const debug = Debug('MyApp');
+const debug = Debug('app');
 const app = express();
 app.use(cors());
-const PORT = process.env.PORT;
+const PORT = process.env.PORT!;
 
 connectToDb();
 

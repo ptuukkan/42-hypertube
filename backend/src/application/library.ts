@@ -6,9 +6,11 @@ import ytsService, { IYtsMovie } from 'services/yts';
 import { thumbnailCache } from 'config';
 import { omdbDetailsToMovieThumbnail, ytsMovieToMovieThumbnail } from './utils';
 
-const debug = Debug('MyApp');
+const debug = Debug('app');
 
-export const ytsToThumbnail = (ytsMovieList: IYtsMovie[]) => {
+export const ytsToThumbnail = (
+	ytsMovieList: IYtsMovie[]
+): IMovieThumbnail[] => {
 	// All the required data exists in Yts response so only map here.
 	const thumbnailList = ytsMovieList.reduce((list: IMovieThumbnail[], yts) => {
 		try {
@@ -21,7 +23,9 @@ export const ytsToThumbnail = (ytsMovieList: IYtsMovie[]) => {
 	return thumbnailList;
 };
 
-export const getMovieInfo = async (bayMovieList: IBayMovie[]) => {
+export const getMovieInfo = async (
+	bayMovieList: IBayMovie[]
+): Promise<IMovieThumbnail[]> => {
 	// Make the promises and then resolve them in parallel.
 	const promiseList = await Promise.allSettled(
 		bayMovieList.map(async (movie) => {
@@ -54,7 +58,7 @@ export const getMovieInfo = async (bayMovieList: IBayMovie[]) => {
 export const bayToThumbnail = async (
 	thumbnailList: IMovieThumbnail[],
 	bayMovieList: IBayMovie[]
-) => {
+): Promise<IMovieThumbnail[]> => {
 	// We probably have duplicate movies
 	// First reduce to distinct movies and remove null imdb codes.
 	const distinctBayMovies = bayMovieList.reduce(
@@ -86,7 +90,7 @@ export const bayToThumbnail = async (
 	return thumbnailList;
 };
 
-export const search = async (query: string) => {
+export const search = async (query: string): Promise<IMovieThumbnail[]> => {
 	let ytsPromise;
 	let bayPromise;
 	let thumbnailList: IMovieThumbnail[] | undefined;
