@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
@@ -15,11 +15,12 @@ import {
 } from 'semantic-ui-react';
 import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
 import TextInput from 'app/SharedComponents/form/TextInput';
+import { RootStoreContext } from '../../app/stores/rootStore';
 import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
 
 const validationSchema = {
 	field: {
-		email: [Validators.required.validator, Validators.email.validator],
+		username: [Validators.required.validator],
 		password: [
 			Validators.required.validator,
 			{
@@ -34,9 +35,12 @@ export interface LoginProps {}
 const formValidation = createFinalFormValidation(validationSchema);
 
 const Login: React.FC<LoginProps> = () => {
+	const rootStore = useContext(RootStoreContext);
+	const { loginUser } = rootStore.userStore;
+
 	return (
 		<FinalForm
-			onSubmit={(d) => console.log(d)}
+			onSubmit={loginUser}
 			validate={formValidation.validateForm}
 			render={({
 				handleSubmit,
@@ -57,8 +61,8 @@ const Login: React.FC<LoginProps> = () => {
 							<Segment stacked>
 								<Field
 									component={TextInput}
-									name="email"
-									placeholder="Email address"
+									name="username"
+									placeholder="username"
 								/>
 								<Field
 									component={TextInput}
@@ -69,7 +73,7 @@ const Login: React.FC<LoginProps> = () => {
 								{submitError && !dirtySinceLastSubmit && (
 									<ErrorMessage message={submitError} />
 								)}
-								<Button color="teal" fluid size="large">
+								<Button disabled={submitting} color="teal" fluid size="large">
 									Login
 								</Button>
 							</Segment>

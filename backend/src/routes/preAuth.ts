@@ -11,7 +11,7 @@ import {
 
 const preAuthRouter = Router();
 
-preAuthRouter.get('/login', loginController);
+preAuthRouter.post('/login', loginController);
 preAuthRouter.post('/register', registerController);
 preAuthRouter.post('/send-reset-password', sendResetPasswordController);
 

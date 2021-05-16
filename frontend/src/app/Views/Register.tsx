@@ -12,10 +12,13 @@ import {
 	Segment,
 	Button,
 	Message,
+	Dimmer,
+	Icon,
 } from 'semantic-ui-react';
 import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
 import { RootStoreContext } from '../../app/stores/rootStore';
 import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
+import { observer } from 'mobx-react-lite';
 
 const validationSchema = {
 	field: {
@@ -34,8 +37,9 @@ const formValidation = createFinalFormValidation(validationSchema);
 export interface RegisterProps {}
 
 const Register: React.FC<RegisterProps> = () => {
+
 	const rootStore = useContext(RootStoreContext);
-	const { registerUser } = rootStore.userStore;
+	const { registerUser, success } = rootStore.userStore;
 
 	return (
 		<FinalForm
@@ -87,7 +91,7 @@ const Register: React.FC<RegisterProps> = () => {
 								{submitError && !dirtySinceLastSubmit && (
 									<ErrorMessage message={submitError} />
 								)}
-								<Button color="teal" fluid size="large">
+								<Button disabled={submitting} color="teal" fluid size="large">
 									Register
 								</Button>
 							</Segment>
@@ -95,6 +99,17 @@ const Register: React.FC<RegisterProps> = () => {
 								Have account? <Link to="/login">Login</Link>
 							</Message>
 						</Grid.Column>
+						<Dimmer
+							active={success}
+							onClickOutside={() => console.log('close')}
+							page
+						>
+							<Header as="h2" icon inverted>
+								<Icon name="heart" />
+								Registeration success!
+								<Header.Subheader>please check your email!</Header.Subheader>
+							</Header>
+						</Dimmer>
 					</Form>
 				</Grid>
 			)}
@@ -102,4 +117,4 @@ const Register: React.FC<RegisterProps> = () => {
 	);
 };
 
-export default Register;
+export default observer(Register);

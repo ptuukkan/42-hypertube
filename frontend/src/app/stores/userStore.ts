@@ -4,10 +4,18 @@ import { ILoginFormValues, IRegisterFormValues, IUser } from '../models/user';
 import { RootStore } from './rootStore';
 import { history } from '../..';
 import { FORM_ERROR } from 'final-form';
+const RegErrorTypes = [
+	'username',
+	'email',
+	'firstname',
+	'lastname',
+	'password',
+];
 
 export default class UserStore {
 	rootStore: RootStore;
 	loading = false;
+	success = false;
 	token: string | null = window.localStorage.getItem('jwt');
 	user: IUser | null = null;
 
@@ -31,30 +39,42 @@ export default class UserStore {
 		window.localStorage.setItem('jwt', this.token);
 	};
 
+	setSuccess = () => {
+		this.success = true;
+		setTimeout(() => {
+			this.success = !this.success;
+		}, 3000);
+	};
+
 	registerUser = async (data: IRegisterFormValues) => {
 		try {
 			await agent.User.register(data);
+			this.setSuccess();
 		} catch (error) {
-			if (error.error_type === 'ValidationError') {
-				/* 				return error.errors.reduce((obj: any, item: IValidationError) => {
-					obj[item.field] = item.message;
+			if (error.response.data.message === 'Invalid data') {
+				return error.response.data.errors.reduce((obj: any, item: string) => {
+					RegErrorTypes.forEach((error) => {
+						if (item.includes(error)) {
+							obj[error] = item;
+						}
+					});
 					return obj;
-				}, {}); */
+				}, {});
 			}
-			return { [FORM_ERROR]: error.message };
+			return { [FORM_ERROR]: error.response.data.errors };
 		}
 	};
 
 	loginUser = async (data: ILoginFormValues) => {
 		try {
 			const user = await agent.User.login(data);
-			/* 			this.setToken(user.token);
+			this.setToken(user.accessToken);
 			runInAction(() => {
 				this.user = user;
-			}); */
+			});
 			history.push('/');
 		} catch (error) {
-			return { [FORM_ERROR]: error.message };
+			return { [FORM_ERROR]: error.response.data.message };
 		}
 	};
 

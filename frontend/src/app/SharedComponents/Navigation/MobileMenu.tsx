@@ -1,14 +1,12 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { Container, Menu, Image, Popup, Icon, Input } from 'semantic-ui-react';
+import { Container, Menu, Image, Popup, Icon } from 'semantic-ui-react';
+import { RootStoreContext } from 'app/stores/rootStore';
 
-export interface MobileMenuProps {
-	setQuery: React.Dispatch<React.SetStateAction<string>>;
-	searchQuery: string;
-}
-
-const MobileMenu: React.FC<MobileMenuProps> = ({ setQuery, searchQuery }) => {
+const MobileMenu = () => {
+	const rootStore = useContext(RootStoreContext);
+	const { logoutUser } = rootStore.userStore;
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	return (
@@ -40,14 +38,6 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ setQuery, searchQuery }) => {
 							onClose={() => setMenuOpen(false)}
 						>
 							<Menu vertical>
-								<Menu.Item>
-									<Input
-										icon="search"
-										placeholder="Search..."
-										onChange={(e) => setQuery(e.target.value)}
-										value={searchQuery}
-									/>
-								</Menu.Item>
 								<Menu.Item
 									as={Link}
 									to="/profile"
@@ -69,12 +59,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ setQuery, searchQuery }) => {
 							</Menu>
 						</Popup>
 
-						<Menu.Item
-							as={Link}
-							to="/"
-							name="logout"
-							onClick={() => console.log('logout')}
-						>
+						<Menu.Item as={Link} to="/" name="logout" onClick={logoutUser}>
 							<Icon name="times" />
 							Logout
 						</Menu.Item>

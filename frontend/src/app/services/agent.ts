@@ -6,6 +6,7 @@ import {
 	ILoginFormValues,
 	IRegisterFormValues,
 	IResetPassword,
+	IUser,
 } from '../models/user';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -22,7 +23,7 @@ const requests = {
 const User = {
 	register: (user: IRegisterFormValues): Promise<void> =>
 		requests.post('/preAuth/register', user),
-	login: (user: ILoginFormValues): Promise<ILoginFormValues> =>
+	login: (user: ILoginFormValues): Promise<IUser> =>
 		requests.post('/preAuth/login', user),
 	verify: (link: string): Promise<void> => requests.get(`/user/verify/${link}`),
 	forget: (data: IForgetPassword): Promise<void> =>

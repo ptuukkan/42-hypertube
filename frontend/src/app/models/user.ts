@@ -9,7 +9,7 @@ export interface IRegisterFormValues {
 
 export interface IUser {
 	username: string;
-	token: string;
+	accessToken: string;
 }
 
 export interface ILoginFormValues {

@@ -7,11 +7,9 @@ const sendEmail = (
 	html: string
 ): Promise<void> => {
 	const transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: process.env.GMAIL_USER,
-			pass: process.env.GMAIL_PASS,
-		},
+		sendmail: true,
+		newline: 'unix',
+		path: '/usr/sbin/sendmail',
 	});
 
 	const options: Mail.Options = {

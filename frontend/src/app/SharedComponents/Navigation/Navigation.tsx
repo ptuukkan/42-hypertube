@@ -1,28 +1,40 @@
 import { AppMedia } from 'app/SharedComponents/AppMedia';
-import React, { Fragment } from 'react';
-import { Menu } from 'semantic-ui-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, Image } from 'semantic-ui-react';
 import MobileMenu from './MobileMenu';
 import PrivateMenuItems from './PrivateMenuItems';
+import PublicMenuItems from './PublicMenuItems';
 
 const { Media, MediaContextProvider } = AppMedia;
 
 export interface NavigationProps {
-	setQuery: React.Dispatch<React.SetStateAction<string>>;
-	searchQuery: string;
+	token: string | null;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ setQuery, searchQuery }) => {
+const Navigation: React.FC<NavigationProps> = ({
+	token,
+}) => {
 	return (
 		<MediaContextProvider>
 			<Menu fixed="top" icon="labeled" borderless>
-				<Fragment>
+				<Menu.Item as={Link} to="/" header>
+					<Image
+						size="small"
+						src={'./logo_128.png'}
+						floated="left"
+						style={{ marginRight: '1em', maxWidth: 50 }}
+					/>
+				</Menu.Item>
+				<Menu.Menu position="right">
 					<Media at="xs">
-						<MobileMenu setQuery={setQuery} searchQuery={searchQuery} />
+						<MobileMenu />
 					</Media>
 					<Media greaterThanOrEqual="sm">
-						<PrivateMenuItems setQuery={setQuery} searchQuery={searchQuery} />
+						{token && <PrivateMenuItems />}
+						{!token && <PublicMenuItems />}
 					</Media>
-				</Fragment>
+				</Menu.Menu>
 			</Menu>
 		</MediaContextProvider>
 	);
