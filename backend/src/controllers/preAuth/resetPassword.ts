@@ -2,7 +2,7 @@ import {
 	addRefreshTokenToRes,
 	createRefreshToken,
 	createAccessToken,
-} from './../../application/tokens';
+} from 'application/tokens';
 import LinkModel, { ILink, LinkType } from 'models/link';
 import UserModel from 'models/user';
 import { BadRequest } from 'http-errors';

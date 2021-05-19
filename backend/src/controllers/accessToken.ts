@@ -3,7 +3,7 @@ import {
 	addRefreshTokenToRes,
 	createRefreshToken,
 	createAccessToken,
-} from '../application/tokens';
+} from 'application/tokens';
 import UserModel from 'models/user';
 import { Unauthorized } from 'http-errors';
 import asyncHandler from 'express-async-handler';
