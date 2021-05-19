@@ -6,7 +6,7 @@ import axios from 'axios';
 import mountRoutes from 'routes';
 import mongoose from 'mongoose';
 import { connectToDb, getDbValidationErrors } from 'database';
-import Debug from 'debug'
+import Debug from 'debug';
 import cors from 'cors';
 
 const debug = Debug('app');
