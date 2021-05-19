@@ -1,4 +1,9 @@
 module.exports = {
+	env: {
+		browser: true,
+		es6: true,
+		jest: true,
+	},
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		ecmaVersion: 2018,
@@ -6,8 +11,9 @@ module.exports = {
 		ecmaFeatures: {
 			jsx: true,
 		},
+		project: './tsconfig.json',
 	},
-	plugins: ['@typescript-eslint', 'react-hooks'],
+	plugins: ['@typescript-eslint', 'react-hooks', 'react', 'prettier'],
 	extends: [
 		'plugin:react/recommended',
 		'plugin:@typescript-eslint/recommended',
