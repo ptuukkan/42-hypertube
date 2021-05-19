@@ -28,7 +28,7 @@ const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
 			) : (
 				<Item.Group divided>
 					{movies.map((movie) => (
-						<Item key={movie.imdb} as={Link} to={movie.imdb}>
+						<Item key={movie.imdb} as={Link} to={`/movies/${movie.imdb}`}>
 							<Item.Image src={movie.coverImage} />
 							<Item.Content>
 								<Item.Header>{movie.title}</Item.Header>

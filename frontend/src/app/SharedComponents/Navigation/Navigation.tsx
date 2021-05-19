@@ -1,4 +1,4 @@
-import { AppMedia } from 'app/SharedComponents/AppMedia';
+import { AppMedia } from 'app/sharedComponents/AppMedia';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Image } from 'semantic-ui-react';
@@ -18,10 +18,10 @@ const Navigation: React.FC<NavigationProps> = ({
 	return (
 		<MediaContextProvider>
 			<Menu fixed="top" icon="labeled" borderless>
-				<Menu.Item as={Link} to="/" header>
+				<Menu.Item as={Link} to={token ? "/movies" : "/"} header>
 					<Image
 						size="small"
-						src={'./logo_128.png'}
+						src={'/logo_128.png'}
 						floated="left"
 						style={{ marginRight: '1em', maxWidth: 50 }}
 					/>

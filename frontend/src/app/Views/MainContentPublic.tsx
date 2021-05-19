@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Header, Segment, Container, Button } from 'semantic-ui-react';
 
-const MainContentPublic = () => {
+interface IProps {
+	token: string | null;
+}
+
+const MainContentPublic: React.FC<IProps> = ({ token }) => {
 	return (
 		<Segment
 			textAlign="center"
@@ -21,16 +25,20 @@ const MainContentPublic = () => {
 				/>
 				<Header
 					as="h2"
-					content="Watch all moveis you like!"
+					content="Watch all movies you like!"
 					style={{
 						fontSize: '1.7em',
 						fontWeight: 'normal',
 						marginTop: '1.5em',
 					}}
 				/>
-				<Button primary as={Link} to="/register" size="huge">
-					Get Started
-				</Button>
+				<Button
+					primary
+					as={Link}
+					to={token ? '/movies' : '/register'}
+					size="huge"
+					content={token ? 'Browse movies' : 'Get started'}
+				></Button>
 			</Container>
 		</Segment>
 	);

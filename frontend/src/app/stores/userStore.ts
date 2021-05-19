@@ -1,6 +1,12 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import agent from '../services/agent';
-import { ILoginFormValues, IRegisterFormValues, IUser } from '../models/user';
+import {
+	IForgetPassword,
+	ILoginFormValues,
+	IRegisterFormValues,
+	IResetPassword,
+	IUser,
+} from '../models/user';
 import { RootStore } from './rootStore';
 import { history } from '../..';
 import { FORM_ERROR } from 'final-form';
@@ -42,7 +48,10 @@ export default class UserStore {
 	setSuccess = () => {
 		this.success = true;
 		setTimeout(() => {
-			this.success = !this.success;
+			runInAction(() => {
+				this.success = !this.success;
+				history.push('/');
+			});
 		}, 3000);
 	};
 
@@ -65,6 +74,15 @@ export default class UserStore {
 		}
 	};
 
+	sendResetPassword = async (data: IResetPassword, link: string) => {
+		try {
+			await agent.User.reset(link, data);
+			this.setSuccess();
+		} catch (error) {
+			return { [FORM_ERROR]: error.message };
+		}
+	};
+
 	loginUser = async (data: ILoginFormValues) => {
 		try {
 			const user = await agent.User.login(data);
@@ -72,7 +90,16 @@ export default class UserStore {
 			runInAction(() => {
 				this.user = user;
 			});
-			history.push('/');
+			history.push('/movies');
+		} catch (error) {
+			return { [FORM_ERROR]: error.response.data.message };
+		}
+	};
+
+	forgetPassword = async (data: IForgetPassword) => {
+		try {
+			await agent.User.forget(data);
+			this.setSuccess();
 		} catch (error) {
 			return { [FORM_ERROR]: error.response.data.message };
 		}

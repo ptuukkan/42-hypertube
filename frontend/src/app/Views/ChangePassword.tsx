@@ -1,27 +1,65 @@
-import React, { useContext } from 'react';
+import TextInput from 'app/sharedComponents/form/TextInput';
+import { RootStoreContext } from 'app/stores/rootStore';
+import { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
-import { Grid, Form, Header, Image, Segment, Button, Dimmer, Icon } from 'semantic-ui-react';
-import TextInput from 'app/sharedComponents/form/TextInput';
+import {
+	Button,
+	Dimmer,
+	Form,
+	Grid,
+	Header,
+	Icon,
+	Image,
+	Segment,
+} from 'semantic-ui-react';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
-import { RootStoreContext } from '../stores/rootStore';
+import { useParams } from 'react-router-dom';
+import { IResetPassword } from 'app/models/user';
+import agent from 'app/services/agent';
+import { FORM_ERROR } from 'final-form';
+import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
 import { observer } from 'mobx-react-lite';
+
+interface IParams {
+	id: string;
+}
 
 const validationSchema = {
 	field: {
-		email: [Validators.required.validator, Validators.email.validator],
+		password: [
+			Validators.required.validator,
+			{
+				validator: passwordComplexity,
+			},
+		]
 	},
 };
 
 const formValidation = createFinalFormValidation(validationSchema);
 
-const Forgot = () => {
+const ChangePassword = () => {
 	const rootStore = useContext(RootStoreContext);
-	const { forgetPassword, success } = rootStore.userStore;
+	const { success, setSuccess } = rootStore.userStore;
+
+	const { id } = useParams<IParams>();
+
+	console.log(id)
+
+	const onSubmit = async (data: IResetPassword) => {
+		try {
+			await agent.User.reset(id, data);
+			setSuccess();
+		} catch (error) {
+			console.log(error)
+			return { [FORM_ERROR]: error.response.data.message };
+		}
+	};
+
 	return (
 		<FinalForm
-			onSubmit={forgetPassword}
+			onSubmit={onSubmit}
 			validate={formValidation.validateForm}
 			render={({ handleSubmit, submitError, dirtySinceLastSubmit }) => (
 				<Grid
@@ -32,13 +70,14 @@ const Forgot = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> Restore your password
+								<Image src="/logo_128.png" /> Create a new password
 							</Header>
 							<Segment stacked>
 								<Field
 									component={TextInput}
-									name="email"
-									placeholder="Email address"
+									name="password"
+									type="password"
+									placeholder="New Password"
 								/>
 								{submitError && !dirtySinceLastSubmit && (
 									<ErrorMessage message={submitError} />
@@ -55,8 +94,8 @@ const Forgot = () => {
 						>
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
-								Restore link is on it's way...!
-								<Header.Subheader>just wait...!</Header.Subheader>
+								Password changed
+								<Header.Subheader>You can login now</Header.Subheader>
 							</Header>
 						</Dimmer>
 					</Form>
@@ -66,4 +105,4 @@ const Forgot = () => {
 	);
 };
 
-export default observer(Forgot);
+export default observer(ChangePassword);

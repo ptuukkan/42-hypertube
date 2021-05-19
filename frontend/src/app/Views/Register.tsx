@@ -1,8 +1,9 @@
-import TextInput from 'app/SharedComponents/form/TextInput';
+import TextInput from 'app/sharedComponents/form/TextInput';
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
+import { history } from '../..';
 import { Link } from 'react-router-dom';
 import {
 	Grid,
@@ -15,9 +16,9 @@ import {
 	Dimmer,
 	Icon,
 } from 'semantic-ui-react';
-import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
-import { RootStoreContext } from '../../app/stores/rootStore';
-import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
+import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
+import { RootStoreContext } from '../stores/rootStore';
+import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import { observer } from 'mobx-react-lite';
 
 const validationSchema = {
@@ -35,6 +36,10 @@ const validationSchema = {
 const formValidation = createFinalFormValidation(validationSchema);
 
 export interface RegisterProps {}
+
+const CloseRegister = () => {
+	history.push('/');
+}
 
 const Register: React.FC<RegisterProps> = () => {
 
@@ -101,7 +106,7 @@ const Register: React.FC<RegisterProps> = () => {
 						</Grid.Column>
 						<Dimmer
 							active={success}
-							onClickOutside={() => console.log('close')}
+							onClickOutside={CloseRegister}
 							page
 						>
 							<Header as="h2" icon inverted>

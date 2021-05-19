@@ -1,16 +1,16 @@
 import { IMovie } from 'app/models/movie';
-import SearchMovies from 'app/SharedComponents/SearchMoves';
+import SearchMovies from 'app/sharedComponents/SearchMovies';
 import React, { useEffect, useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import agent from '../services/agent';
 import Browse from './Browse';
 
-export interface MainContetProps {
+export interface MainContentProps {
 	searchQuery: string;
 	setQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const MainContent: React.FC<MainContetProps> = ({ searchQuery, setQuery }) => {
+const MainContent: React.FC<MainContentProps> = ({ searchQuery, setQuery }) => {
 	const [movies, setMovies] = useState<IMovie[]>([]);
 	const [lastQuery, setLastQuery] = useState('');
 	const [loading, setLoading] = useState(false);
