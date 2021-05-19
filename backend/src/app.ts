@@ -7,6 +7,9 @@ import mountRoutes from 'routes';
 import mongoose from 'mongoose';
 import { connectToDb, getDbValidationErrors } from 'database';
 import Debug from 'debug';
+import cookieParser from 'cookie-parser';
+import { JsonWebTokenError } from 'jsonwebtoken';
+import cors from 'cors';
 
 const debug = Debug('app');
 const app = express();
@@ -14,9 +17,11 @@ const PORT = process.env.PORT!;
 
 connectToDb();
 
+app.use(cors({ origin: process.env.REACT_APP_BASE_URL, credentials: true }));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 mountRoutes(app);
 
 app.use((_req: Request, _res: Response, next: NextFunction) => {
@@ -42,6 +47,8 @@ app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
 		});
 	} else if (err instanceof mongoose.Error) {
 		res.status(500).json({ status: 'ERROR', message: 'DATABASE ERROR' });
+	} else if (err instanceof JsonWebTokenError) {
+		res.status(401).json({ status: 'ERROR', message: err.message });
 	} else {
 		res.status(500).json({ status: 'ERROR', message: 'Internal server error' });
 	}

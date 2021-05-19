@@ -1,6 +1,13 @@
+import {
+	addRefreshTokenToRes,
+	createRefreshToken,
+	createAccessToken,
+	revokeRefreshToken,
+} from 'application/tokens';
 import asyncHandler from 'express-async-handler';
 import { Unauthorized } from 'http-errors';
 import Usermodel, { IUserDocument } from 'models/user';
+import { Request, Response } from 'express';
 
 export const loginController = asyncHandler(async (req, res) => {
 	const { username, password } = req.body;
@@ -16,6 +23,12 @@ export const loginController = asyncHandler(async (req, res) => {
 	if (!(await user.isPasswordValid(password)))
 		throw new Unauthorized('Wrong password.');
 
-	// TODO return accessToken
-	res.json({ status: 'OK', accessToken: '' });
+	// Set refreshToken cookie and return accessToken
+	addRefreshTokenToRes(res, createRefreshToken(user));
+	res.json({ status: 'OK', accessToken: createAccessToken(user) });
 });
+
+export const logoutController = (_req: Request, res: Response): void => {
+	revokeRefreshToken(res);
+	res.status(200).json({ status: 'OK' });
+};
