@@ -12,11 +12,11 @@ import { observer } from 'mobx-react-lite';
 import ChangePassword from 'app/views/ChangePassword';
 import MainContentPublic from 'app/views/MainContentPublic';
 import { useLocation } from 'react-router-dom';
+import NotFound from 'app/views/NotFound';
 
 const App = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { token } = rootStore.userStore;
-	const [searchQuery, setSearchQuery] = useState('');
 	const [message, setMessage] = useState('');
 	const search = useLocation().search;
 	const emailStatus = new URLSearchParams(search).get('confirm-email');
@@ -53,15 +53,14 @@ const App = () => {
 					component={(props) => (
 						<MainContent
 							{...props}
-							setQuery={setSearchQuery}
-							searchQuery={searchQuery}
 						/>
 					)}
 				/>
 				<Route
-					path="/"
+					exact path="/"
 					render={(props) => <MainContentPublic {...props} token={token} />}
 				/>
+				<Route component={NotFound} />
 			</Switch>
 		</Container>
 	);

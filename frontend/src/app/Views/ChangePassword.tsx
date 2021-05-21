@@ -1,4 +1,5 @@
 import TextInput from 'app/sharedComponents/form/TextInput';
+import { history } from '../..';
 import { RootStoreContext } from 'app/stores/rootStore';
 import { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
@@ -33,11 +34,15 @@ const validationSchema = {
 			{
 				validator: passwordComplexity,
 			},
-		]
+		],
 	},
 };
 
 const formValidation = createFinalFormValidation(validationSchema);
+
+const CloseChangePassword = () => {
+	history.push('/');
+};
 
 const ChangePassword = () => {
 	const rootStore = useContext(RootStoreContext);
@@ -45,14 +50,12 @@ const ChangePassword = () => {
 
 	const { id } = useParams<IParams>();
 
-	console.log(id)
-
 	const onSubmit = async (data: IResetPassword) => {
 		try {
 			await agent.User.reset(id, data);
 			setSuccess();
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 			return { [FORM_ERROR]: error.response.data.message };
 		}
 	};
@@ -87,11 +90,7 @@ const ChangePassword = () => {
 								</Button>
 							</Segment>
 						</Grid.Column>
-						<Dimmer
-							active={success}
-							onClickOutside={() => console.log('close')}
-							page
-						>
+						<Dimmer active={success} onClickOutside={CloseChangePassword} page>
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
 								Password changed

@@ -2,7 +2,17 @@ import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
-import { Grid, Form, Header, Image, Segment, Button, Dimmer, Icon } from 'semantic-ui-react';
+import {
+	Grid,
+	Form,
+	Header,
+	Image,
+	Segment,
+	Button,
+	Dimmer,
+	Icon,
+} from 'semantic-ui-react';
+import { history } from '../..';
 import TextInput from 'app/sharedComponents/form/TextInput';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import { RootStoreContext } from '../stores/rootStore';
@@ -15,6 +25,10 @@ const validationSchema = {
 };
 
 const formValidation = createFinalFormValidation(validationSchema);
+
+const CloseForgot = () => {
+	history.push('/');
+};
 
 const Forgot = () => {
 	const rootStore = useContext(RootStoreContext);
@@ -48,11 +62,7 @@ const Forgot = () => {
 								</Button>
 							</Segment>
 						</Grid.Column>
-						<Dimmer
-							active={success}
-							onClickOutside={() => console.log('close')}
-							page
-						>
+						<Dimmer active={success} onClickOutside={CloseForgot} page>
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
 								Restore link is on it's way...!

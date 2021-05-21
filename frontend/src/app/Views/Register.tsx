@@ -39,10 +39,9 @@ export interface RegisterProps {}
 
 const CloseRegister = () => {
 	history.push('/');
-}
+};
 
 const Register: React.FC<RegisterProps> = () => {
-
 	const rootStore = useContext(RootStoreContext);
 	const { registerUser, success } = rootStore.userStore;
 
@@ -104,11 +103,7 @@ const Register: React.FC<RegisterProps> = () => {
 								Have account? <Link to="/login">Login</Link>
 							</Message>
 						</Grid.Column>
-						<Dimmer
-							active={success}
-							onClickOutside={CloseRegister}
-							page
-						>
+						<Dimmer active={success} onClickOutside={CloseRegister} page>
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
 								Registeration success!

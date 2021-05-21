@@ -4,19 +4,23 @@ import { Input } from 'semantic-ui-react';
 export interface SearchMoviesProps {
 	setQuery: React.Dispatch<React.SetStateAction<string>>;
 	searchQuery: string;
+	loading: boolean
 }
 
 const SearchMovies: React.FC<SearchMoviesProps> = ({
-	setQuery,
 	searchQuery,
+	setQuery,
+	loading,
 }) => {
+	
 	return (
-		<Input
-			icon="search"
-			placeholder="Search..."
-			onChange={(e) => setQuery(e.target.value)}
-			value={searchQuery}
-		/>
+			<Input
+				loading={loading}
+				icon="search"
+				placeholder="Search..."
+				onChange={(e) => setQuery(e.target.value)}
+				value={searchQuery}
+			/>
 	);
 };
 

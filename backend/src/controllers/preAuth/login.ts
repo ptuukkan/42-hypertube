@@ -24,5 +24,5 @@ export const loginController = asyncHandler(async (req, res) => {
 	};
 
 	const token = process.env.SECRET && jwt.sign(jwtUser, process.env.SECRET);
-	res.json({ username: user.username, accessToken: token });
+	res.json({ accessToken: token });
 });

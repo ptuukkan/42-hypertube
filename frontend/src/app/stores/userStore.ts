@@ -104,17 +104,4 @@ export default class UserStore {
 			return { [FORM_ERROR]: error.response.data.message };
 		}
 	};
-
-	getUser = async () => {
-		try {
-			/* 			const user = await agent.User.current(location);
-			 */
-			/* runInAction(() => {
-				this.user = user;
-			}); */
-		} catch (error) {
-			console.log(error);
-			throw error;
-		}
-	};
 }

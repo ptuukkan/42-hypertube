@@ -28,7 +28,7 @@ const Navigation: React.FC<NavigationProps> = ({
 				</Menu.Item>
 				<Menu.Menu position="right">
 					<Media at="xs">
-						<MobileMenu />
+						<MobileMenu token={token}/>
 					</Media>
 					<Media greaterThanOrEqual="sm">
 						{token && <PrivateMenuItems />}

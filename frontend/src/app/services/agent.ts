@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-// import { BackendError } from '../models/errors';
 import { IMovieList } from '../models/movie';
 import {
 	IForgetPassword,

@@ -4,7 +4,11 @@ import { useState } from 'react';
 import { Container, Menu, Image, Popup, Icon } from 'semantic-ui-react';
 import { RootStoreContext } from 'app/stores/rootStore';
 
-const MobileMenu = () => {
+interface IProps {
+	token: string | null;
+}
+
+const MobileMenu: React.FC<IProps> = ({ token }) => {
 	const rootStore = useContext(RootStoreContext);
 	const { logoutUser } = rootStore.userStore;
 	const [menuOpen, setMenuOpen] = useState(false);
@@ -13,7 +17,7 @@ const MobileMenu = () => {
 		<Fragment>
 			<Menu fixed="top">
 				<Container>
-					<Menu.Item as={Link} to="/" header>
+					<Menu.Item as={Link} to={token ? '/movies' : '/'} header>
 						<Image
 							size="small"
 							src={'./logo_128.png'}
@@ -37,32 +41,55 @@ const MobileMenu = () => {
 							onOpen={() => setMenuOpen(true)}
 							onClose={() => setMenuOpen(false)}
 						>
-							<Menu vertical>
-								<Menu.Item
-									as={Link}
-									to="/profile"
-									name="myprofile"
-									onClick={() => setMenuOpen(false)}
-								>
-									<Icon name="user circle" />
-									My Profile
-								</Menu.Item>
-								<Menu.Item
-									as={Link}
-									to="#"
-									name="my movies"
-									onClick={() => setMenuOpen(false)}
-								>
-									<Icon name="film" />
-									My movies
-								</Menu.Item>
-							</Menu>
+							{token && (
+								<Menu vertical>
+									<Menu.Item
+										as={Link}
+										to="/profile"
+										name="myprofile"
+										onClick={() => setMenuOpen(false)}
+									>
+										<Icon name="user circle" />
+										My Profile
+									</Menu.Item>
+									<Menu.Item
+										as={Link}
+										to="#"
+										name="my movies"
+										onClick={() => setMenuOpen(false)}
+									>
+										<Icon name="film" />
+										My movies
+									</Menu.Item>
+								</Menu>
+							)}
+							{!token && (
+								<Menu vertical>
+									<Menu.Item
+										as={Link}
+										to="/login"
+										name="Login"
+										onClick={() => setMenuOpen(false)}
+									>
+										Login
+									</Menu.Item>
+									<Menu.Item
+										as={Link}
+										to="/register"
+										name="Register"
+										onClick={() => setMenuOpen(false)}
+									>
+										Register
+									</Menu.Item>
+								</Menu>
+							)}
 						</Popup>
-
-						<Menu.Item as={Link} to="/" name="logout" onClick={logoutUser}>
-							<Icon name="times" />
-							Logout
-						</Menu.Item>
+						{token && (
+							<Menu.Item as={Link} to="/" name="logout" onClick={logoutUser}>
+								<Icon name="times" />
+								Logout
+							</Menu.Item>
+						)}
 					</Menu.Menu>
 				</Container>
 			</Menu>

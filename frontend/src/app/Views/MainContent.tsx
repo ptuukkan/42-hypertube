@@ -5,14 +5,10 @@ import { Segment } from 'semantic-ui-react';
 import agent from '../services/agent';
 import Browse from './Browse';
 
-export interface MainContentProps {
-	searchQuery: string;
-	setQuery: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const MainContent: React.FC<MainContentProps> = ({ searchQuery, setQuery }) => {
+const MainContent: React.FC = () => {
 	const [movies, setMovies] = useState<IMovie[]>([]);
 	const [lastQuery, setLastQuery] = useState('');
+	const [searchQuery, setQuery] = useState('')
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -30,7 +26,7 @@ const MainContent: React.FC<MainContentProps> = ({ searchQuery, setQuery }) => {
 
 	return (
 		<Segment style={{ minHeight: 500, padding: 60 }}>
-			<SearchMovies setQuery={setQuery} searchQuery={searchQuery} />
+			<SearchMovies setQuery={setQuery} searchQuery={searchQuery} loading={loading} />
 			<Browse loading={loading} movies={movies} />
 		</Segment>
 	);

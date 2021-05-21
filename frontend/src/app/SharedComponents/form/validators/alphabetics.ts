@@ -1,11 +1,11 @@
-interface FieldValidatorArgs {
+interface IFieldValidatorArgs {
 	value: any;
 	values?: any;
 	customArgs?: any;
 	message?: string | string[];
 }
 
-export const alphabetic = (fieldValidatorArgs: FieldValidatorArgs) => {
+export const alphabetic = (fieldValidatorArgs: IFieldValidatorArgs) => {
 	const { value } = fieldValidatorArgs;
 
 	const validationResult = {

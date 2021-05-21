@@ -11,11 +11,11 @@ import cors from 'cors';
 
 const debug = Debug('app');
 const app = express();
-app.use(cors());
 const PORT = process.env.PORT!;
 
 connectToDb();
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
