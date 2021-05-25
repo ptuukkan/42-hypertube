@@ -37,13 +37,12 @@ const formValidation = createFinalFormValidation(validationSchema);
 
 export interface RegisterProps {}
 
-const CloseRegister = () => {
-	history.push('/');
-};
-
 const Register: React.FC<RegisterProps> = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { registerUser, success } = rootStore.userStore;
+	const CloseRegister = () => {
+		history.push('/');
+	};
 
 	return (
 		<FinalForm

@@ -24,7 +24,6 @@ const User = {
 		requests.post('/preAuth/register', user),
 	login: (user: ILoginFormValues): Promise<IUser> =>
 		requests.post('/preAuth/login', user),
-	verify: (link: string): Promise<void> => requests.get(`/user/verify/${link}`),
 	forget: (data: IForgetPassword): Promise<void> =>
 		requests.post(`/preAuth/send-reset-password`, data),
 	reset: (link: string, data: IResetPassword): Promise<void> =>
