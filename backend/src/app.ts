@@ -7,6 +7,7 @@ import mountRoutes from 'routes';
 import mongoose from 'mongoose';
 import { connectToDb, getDbValidationErrors } from 'database';
 import Debug from 'debug';
+import cors from 'cors';
 
 const debug = Debug('app');
 const app = express();
@@ -14,6 +15,7 @@ const PORT = process.env.PORT!;
 
 connectToDb();
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
