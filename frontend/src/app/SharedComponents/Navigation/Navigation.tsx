@@ -1,7 +1,6 @@
-import { AppMedia } from 'app/sharedComponents/AppMedia';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Image } from 'semantic-ui-react';
+import { AppMedia } from '../AppMedia';
 import MobileMenu from './MobileMenu';
 import PrivateMenuItems from './PrivateMenuItems';
 import PublicMenuItems from './PublicMenuItems';

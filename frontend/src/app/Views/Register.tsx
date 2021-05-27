@@ -1,4 +1,3 @@
-import TextInput from 'app/sharedComponents/form/TextInput';
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Validators } from '@lemoncode/fonk';
@@ -40,9 +39,7 @@ export interface RegisterProps {}
 const Register: React.FC<RegisterProps> = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { registerUser, success } = rootStore.userStore;
-	const CloseRegister = () => {
-		history.push('/');
-	};
+	const CloseRegister = () => history.push('/');
 
 	return (
 		<FinalForm

@@ -1,7 +1,6 @@
-import TextInput from 'app/sharedComponents/form/TextInput';
 import { history } from '../..';
 import { RootStoreContext } from 'app/stores/rootStore';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
@@ -15,13 +14,15 @@ import {
 	Image,
 	Segment,
 } from 'semantic-ui-react';
-import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import { useParams } from 'react-router-dom';
 import { IResetPassword } from 'app/models/user';
 import agent from 'app/services/agent';
 import { FORM_ERROR } from 'final-form';
-import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
 import { observer } from 'mobx-react-lite';
+import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
+import TextInput from 'app/sharedComponents/form/TextInput';
+import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
+
 
 interface IParams {
 	id: string;
@@ -40,13 +41,10 @@ const validationSchema = {
 
 const formValidation = createFinalFormValidation(validationSchema);
 
-const CloseChangePassword = () => {
-	history.push('/');
-};
-
 const ChangePassword = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { success, setSuccess } = rootStore.userStore;
+	const CloseChangePassword = () => history.push('/');
 
 	const { id } = useParams<IParams>();
 

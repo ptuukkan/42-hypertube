@@ -26,13 +26,11 @@ const validationSchema = {
 
 const formValidation = createFinalFormValidation(validationSchema);
 
-const CloseForgot = () => {
-	history.push('/');
-};
 
 const Forgot = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { forgetPassword, success } = rootStore.userStore;
+	const CloseForgot = () => history.push('/');
 	return (
 		<FinalForm
 			onSubmit={forgetPassword}
