@@ -13,7 +13,7 @@ import {
 	Header,
 	Dimmer,
 	Loader,
-	Button,
+	Embed,
 } from 'semantic-ui-react';
 
 interface IParams {
@@ -43,26 +43,13 @@ const Movie = () => {
 			<Segment style={{ marginTop: '60px' }}>
 				<Grid>
 					<Grid.Row columns="1">
-						<GridColumn
-							style={{
-								backgroundImage: `url(${movie.coverImage})`,
-								backgroundSize: 'cover',
-								height: '450px',
-								textAlign: 'center',
-							}}
-						>
-							<div style={{ marginTop: '40px' }}>
-								<Header inverted as="h1">
-									{movie.title}
-								</Header>
-
-								<Button
-									style={{ marginTop: '150px' }}
-									content="Play"
-									color="green"
-									icon="play"
-								/>
-							</div>
+						<GridColumn>
+							<Header as="h1">{movie.title}</Header>
+							<Embed
+								id="LsGZ_2RuJ2A"
+								placeholder={movie.coverImage}
+								source="youtube"
+							/>
 						</GridColumn>
 						<Grid.Column style={{ marginTop: '10px' }}>
 							<Item.Content>
