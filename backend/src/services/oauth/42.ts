@@ -16,7 +16,7 @@ const makeParams = (code: string) => {
 	params.append('client_id', process.env.ID_42_API!);
 	params.append('client_secret', process.env.SECRET_42_API!);
 	params.append('code', code);
-	params.append('redirect_uri', 'http://localhost:8080/api/auth/42');
+	params.append('redirect_uri', process.env.REDIRECT_URL_42!);
 	params.append('state', process.env.STATE_SECRET_42!);
 	return params;
 };

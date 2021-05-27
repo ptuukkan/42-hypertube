@@ -33,7 +33,7 @@ const MainContentPublic: React.FC<IProps> = ({ token }) => {
 					}}
 				/>
 				<Button
-					primary
+					color="teal"
 					as={Link}
 					to={token ? '/movies' : '/register'}
 					size="huge"

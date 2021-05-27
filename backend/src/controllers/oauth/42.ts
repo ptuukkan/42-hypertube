@@ -1,59 +1,50 @@
+import asyncHandler from 'express-async-handler';
 import { saveUrlImgToProfileImages } from './../../utils/index';
-import { IUser42 } from '../../services/oauth/42';
-import UserModel, { IUser, IUserDocument } from './../../models/user';
+import UserModel, { IUser } from './../../models/user';
 import { Request, Response } from 'express';
 import service42 from 'services/oauth/42';
 import { getRandomString } from 'utils';
+import { sign } from 'jsonwebtoken';
 
-export const oAuth42Controller = async (
-	req: Request,
-	res: Response
-): Promise<void> => {
-	const APP_URL = process.env.REACT_APP_BASE_URL;
-	const code = req.oAuthPayload!.code;
+export const oAuth42Controller = asyncHandler(
+	async (req, res): Promise<void> => {
+		const code = req.oAuthPayload!.code;
 
-	let userData: IUser42;
-	try {
-		userData = await service42.getUser(code);
-	} catch (err) {
-		const errorStr = 'There+was+a+problem+with+authenticating';
-		return res.redirect(301, `${APP_URL}?oauth-error=${errorStr}`);
-	}
+		const userData = await service42.getUser(code);
+		let currentUser = await UserModel.findOne({ email: userData.email });
 
-	let currentUser: IUserDocument | null;
-	try {
-		currentUser = await UserModel.findOne({ email: userData.email });
-	} catch (err) {
-		return res.redirect(301, `${APP_URL}?oauth-error=DATABASE_ERROR`);
-	}
-
-	if (!currentUser) {
-		const username = getRandomString(10);
-		const ext = userData.image_url.split('users/')[1].split('.')[1];
-		let picName: string | undefined = `${username}-${getRandomString()}.${ext}`;
-		try {
-			await saveUrlImgToProfileImages(userData.image_url, picName);
-		} catch (err) {
-			picName = undefined;
+		if (!currentUser) {
+			const username = getRandomString(10);
+			const user: IUser = {
+				email: userData.email,
+				firstName: userData.first_name,
+				lastName: userData.last_name,
+				password: getRandomString(),
+				isConfirmed: true,
+				username,
+			};
+			currentUser = await UserModel.create(user);
+			// Add pic for user now, else if validation fails pic still gets created
+			const ext = userData.image_url.split('users/')[1].split('.')[1];
+			let picName: string | undefined = `${username}-profile.${ext}`;
+			try {
+				await saveUrlImgToProfileImages(userData.image_url, picName);
+			} catch (err) {
+				picName = undefined;
+			}
+		} else if (!currentUser.isConfirmed) {
+			await currentUser.updateOne({ isConfirmed: true });
 		}
 
-		const user: IUser = {
-			email: userData.email,
-			firstName: userData.first_name,
-			lastName: userData.last_name,
-			password: getRandomString(),
-			isConfirmed: true,
-			profilePicName: picName,
-			username,
+		const jwtUser = {
+			username: currentUser.username,
+			id: currentUser.id,
 		};
-		currentUser = await UserModel.create(user);
-		console.log(currentUser);
-	} else if (!currentUser.isConfirmed) {
-		await currentUser.updateOne({ isConfirmed: true });
-	}
 
-	res.redirect(301, `${APP_URL}movies`);
-};
+		const token = process.env.SECRET && sign(jwtUser, process.env.SECRET);
+		res.json({ accessToken: token });
+	}
+);
 
 export const oAuth42LinkController = (_req: Request, res: Response): void => {
 	const API_ID = process.env.ID_42_API;

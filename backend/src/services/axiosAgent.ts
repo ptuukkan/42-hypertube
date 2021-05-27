@@ -9,7 +9,7 @@ export class AxiosAgent {
 	constructor(baseUrl?: string) {
 		this.axiosInstance = axios.create({
 			baseURL: baseUrl,
-			timeout: 5000,
+			timeout: 10000,
 		});
 		this.axiosInstance.interceptors.request.use((config) => {
 			debug(

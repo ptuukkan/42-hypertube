@@ -14,7 +14,7 @@ const oAuthRouter = Router();
 oAuthRouter.get('/42-link', oAuth42LinkController);
 oAuthRouter.get('/github-link', oAuthGithubLinkController);
 
-oAuthRouter.get('/42', checkOAuthData, oAuth42Controller);
-oAuthRouter.get('/github', checkOAuthData, oAuthGithubController);
+oAuthRouter.post('/42', checkOAuthData, oAuth42Controller);
+oAuthRouter.post('/github', checkOAuthData, oAuthGithubController);
 
 export default oAuthRouter;

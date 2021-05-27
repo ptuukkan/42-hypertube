@@ -1,61 +1,56 @@
-import { IUserGithub } from './../../services/oauth/github';
+import { sign } from 'jsonwebtoken';
+import asyncHandler from 'express-async-handler';
 import { saveUrlImgToProfileImages } from './../../utils/index';
-import UserModel, { IUser, IUserDocument } from './../../models/user';
+import UserModel, { IUser } from './../../models/user';
 import { Request, Response } from 'express';
 import { getRandomString } from 'utils';
 import serviceGithub from 'services/oauth/github';
 
-export const oAuthGithubController = async (
-	req: Request,
-	res: Response
-): Promise<void> => {
-	const APP_URL = process.env.REACT_APP_BASE_URL;
-	const code = req.oAuthPayload!.code;
+export const oAuthGithubController = asyncHandler(
+	async (req, res): Promise<void> => {
+		const code = req.oAuthPayload!.code;
 
-	let userData: IUserGithub;
-	try {
-		userData = await serviceGithub.getUser(code);
-	} catch (e) {
-		const errorStr = 'There+was+a+problem+with+authenticating.';
-		return res.redirect(301, `${APP_URL}?oauth-error=${errorStr}`);
-	}
+		const userData = await serviceGithub.getUser(code);
+		let currentUser = await UserModel.findOne({ email: userData.email });
 
-	let currentUser: IUserDocument | null;
-	try {
-		currentUser = await UserModel.findOne({ email: userData.email });
-	} catch (err) {
-		return res.redirect(301, `${APP_URL}?oauth-error=DATABASE_ERROR`);
-	}
-
-	if (!currentUser) {
-		const username = getRandomString(10);
-		let picName: string | undefined = `${username}-${getRandomString()}.jpg`;
-		try {
-			await saveUrlImgToProfileImages(userData.avatar_url, picName);
-		} catch (err) {
-			picName = undefined;
+		if (!currentUser) {
+			const username = getRandomString(10);
+			let names: string[] = [];
+			if (userData.name) {
+				names = userData.name.split(' ');
+			}
+			const firstName = !names.length ? null : names[0];
+			const lastName = !names.length ? null : names[names.length - 1];
+			const user: IUser = {
+				email: userData.email,
+				firstName: firstName || 'FirstName',
+				lastName: lastName || 'LastName',
+				password: getRandomString(),
+				isConfirmed: true,
+				username,
+			};
+			currentUser = await UserModel.create(user);
+			// Add pic for user now, else if validation fails pic still gets created
+			let picName: string | undefined = `${username}-profile.jpg`;
+			try {
+				await saveUrlImgToProfileImages(userData.avatar_url, picName);
+			} catch (err) {
+				picName = undefined;
+			}
+			if (picName) currentUser.updateOne({ profilePicName: picName });
+		} else if (!currentUser.isConfirmed) {
+			await currentUser.updateOne({ isConfirmed: true });
 		}
-		const splitName = userData.name.split(' ');
-		const lastName = splitName[splitName.length - 1];
-		splitName.length -= 1;
-		const firstName = splitName.join(' ');
-		const user: IUser = {
-			email: userData.email,
-			firstName,
-			lastName,
-			password: getRandomString(),
-			isConfirmed: true,
-			profilePicName: picName,
-			username,
-		};
-		currentUser = await UserModel.create(user);
-		console.log(currentUser);
-	} else if (!currentUser.isConfirmed) {
-		await currentUser.updateOne({ isConfirmed: true });
-	}
 
-	res.redirect(301, `${APP_URL}movies`);
-};
+		const jwtUser = {
+			username: currentUser.username,
+			id: currentUser.id,
+		};
+
+		const token = process.env.SECRET && sign(jwtUser, process.env.SECRET);
+		res.json({ accessToken: token });
+	}
+);
 
 export const oAuthGithubLinkController = (
 	_req: Request,

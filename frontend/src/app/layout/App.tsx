@@ -1,3 +1,4 @@
+import React from 'react';
 import MainContent from 'app/views/MainContent';
 import Register from 'app/views/Register';
 import Navigation from '../sharedComponents/navigation/Navigation';
@@ -13,23 +14,31 @@ import ChangePassword from 'app/views/ChangePassword';
 import MainContentPublic from 'app/views/MainContentPublic';
 import { useLocation } from 'react-router-dom';
 import NotFound from 'app/views/NotFound';
+import OAuthRoute from 'app/sharedComponents/navigation/OAuthRoute';
 
 const App = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { token } = rootStore.userStore;
 	const [message, setMessage] = useState('');
 	const search = useLocation().search;
-	const emailStatus = new URLSearchParams(search).get('confirm-email');
+	const urlParams = new URLSearchParams(search);
+	const emailStatus = urlParams.get('confirm-email');
+	const oAuthError = urlParams.get('oauth-error');
 
 	useEffect(() => {
-		if (emailStatus !== '') {
+		if (emailStatus) {
 			emailStatus === 'success' && setMessage('Email confirm success!');
 			emailStatus === 'error' && setMessage('Email confirm failed!');
-			setTimeout(() => {
-				setMessage('');
-			}, 3000);
+			setTimeout(() => setMessage(''), 4000);
 		}
 	}, [emailStatus]);
+
+	useEffect(() => {
+		if (oAuthError) {
+			setMessage(oAuthError);
+			setTimeout(() => setMessage(''), 4000);
+		}
+	}, [oAuthError]);
 
 	return (
 		<Container>
@@ -38,7 +47,7 @@ const App = () => {
 				<Message
 					style={{ marginTop: 65 }}
 					success={emailStatus === 'success'}
-					warning={emailStatus === 'error'}
+					negative={emailStatus === 'error' || oAuthError !== null}
 				>
 					{message}
 				</Message>
@@ -48,16 +57,14 @@ const App = () => {
 				<Route path="/login" component={Login} />
 				<Route path="/forgot" component={Forgot} />
 				<Route path="/reset-password/:id" component={ChangePassword} />
+				<OAuthRoute exact path="/oauth" />
 				<Privateroute
 					path="/movies"
-					component={(props) => (
-						<MainContent
-							{...props}
-						/>
-					)}
+					component={(props) => <MainContent {...props} />}
 				/>
 				<Route
-					exact path="/"
+					exact
+					path="/"
 					render={(props) => <MainContentPublic {...props} token={token} />}
 				/>
 				<Route component={NotFound} />

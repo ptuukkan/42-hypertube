@@ -20,6 +20,7 @@ import { passwordComplexity } from 'app/sharedComponents/form/validators/passwor
 import { RootStoreContext } from '../stores/rootStore';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import { observer } from 'mobx-react-lite';
+import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
 
 const validationSchema = {
 	field: {
@@ -97,6 +98,7 @@ const Register: React.FC<RegisterProps> = () => {
 								<Button disabled={submitting} color="teal" fluid size="large">
 									Register
 								</Button>
+								<OAuthButtons disabled={submitting} />
 							</Segment>
 							<Message>
 								Have account? <Link to="/login">Login</Link>

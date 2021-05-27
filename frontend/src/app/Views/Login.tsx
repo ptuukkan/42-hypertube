@@ -17,6 +17,7 @@ import { passwordComplexity } from 'app/sharedComponents/form/validators/passwor
 import TextInput from 'app/sharedComponents/form/TextInput';
 import { RootStoreContext } from '../stores/rootStore';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
+import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
 
 const validationSchema = {
 	field: {
@@ -76,6 +77,7 @@ const Login: React.FC<LoginProps> = () => {
 								<Button disabled={submitting} color="teal" fluid size="large">
 									Login
 								</Button>
+								<OAuthButtons disabled={submitting} />
 							</Segment>
 							<Message>
 								Need an account? <Link to="/register">Register</Link>

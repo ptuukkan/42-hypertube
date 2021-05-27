@@ -1,8 +1,11 @@
-import React from 'react';
+import { RootStoreContext } from 'app/stores/rootStore';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Container, Header, Segment } from 'semantic-ui-react';
 
-const NotFound = () => {
+const NotFound: React.FC<void> = () => {
+	const rootStore = useContext(RootStoreContext);
+	const { token } = rootStore.userStore;
 	return (
 		<Segment
 			textAlign="center"
@@ -30,9 +33,9 @@ const NotFound = () => {
 					}}
 				/>
 				<Button
-					primary
+					color="teal"
 					as={Link}
-					to={'/'}
+					to={token ? '/movies' : '/'}
 					size="huge"
 					content={'Main page'}
 				></Button>
