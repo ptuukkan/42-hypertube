@@ -13,10 +13,10 @@ import {
 	Message,
 	Divider,
 } from 'semantic-ui-react';
-import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
-import TextInput from 'app/sharedComponents/form/TextInput';
+import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
+import TextInput from 'app/SharedComponents/form/TextInput';
 import { RootStoreContext } from '../stores/rootStore';
-import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
+import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
 
 const validationSchema = {
 	field: {

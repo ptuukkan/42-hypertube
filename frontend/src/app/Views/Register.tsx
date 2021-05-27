@@ -15,10 +15,11 @@ import {
 	Dimmer,
 	Icon,
 } from 'semantic-ui-react';
-import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
+import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
 import { RootStoreContext } from '../stores/rootStore';
-import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
+import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
 import { observer } from 'mobx-react-lite';
+import TextInput from 'app/SharedComponents/form/TextInput';
 
 const validationSchema = {
 	field: {

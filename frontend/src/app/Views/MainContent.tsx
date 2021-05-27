@@ -1,5 +1,5 @@
 import { IMovie } from 'app/models/movie';
-import SearchMovies from 'app/sharedComponents/SearchMovies';
+import SearchMovies from 'app/SharedComponents/SearchMovies';
 import React, { useEffect, useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import agent from '../services/agent';
