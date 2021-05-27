@@ -23,7 +23,6 @@ import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
 import TextInput from 'app/SharedComponents/form/TextInput';
 import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
 
-
 interface IParams {
 	id: string;
 }

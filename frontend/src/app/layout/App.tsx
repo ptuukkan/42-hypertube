@@ -13,6 +13,7 @@ import MainContent from 'app/Views/MainContent';
 import MainContentPublic from 'app/Views/MainContentPublic';
 import NotFound from 'app/Views/NotFound';
 import Register from 'app/Views/Register';
+import Movie from 'app/Views/Movie';
 
 const App = () => {
 	const rootStore = useContext(RootStoreContext);
@@ -48,6 +49,7 @@ const App = () => {
 				<Route path="/login" component={Login} />
 				<Route path="/forgot" component={Forgot} />
 				<Route path="/reset-password/:id" component={ChangePassword} />
+				<Privateroute path="/movies/:id" component={() => <Movie />} />
 				<Privateroute
 					path="/movies"
 					component={(props) => <MainContent {...props} />}

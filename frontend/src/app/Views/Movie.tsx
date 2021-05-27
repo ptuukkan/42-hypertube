@@ -1,6 +1,6 @@
 import { RootStoreContext } from 'app/stores/rootStore';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
 	Grid,
@@ -11,6 +11,8 @@ import {
 	Segment,
 	Image,
 	Header,
+	Dimmer,
+	Loader,
 	Button,
 } from 'semantic-ui-react';
 
@@ -20,13 +22,21 @@ interface IParams {
 const Movie = () => {
 	const { id } = useParams<IParams>();
 	const rootStore = useContext(RootStoreContext);
+	const [loading, setLoading] = useState(true);
 	const { movie, getMovie } = rootStore.movieStore;
 
 	useEffect(() => {
-		if (movie === null) {
-			getMovie(id);
+		if (movie === null || movie.imdb !== id) {
+			getMovie(id).then(() => setLoading(false));
 		}
 	}, [id, getMovie, movie]);
+
+	if (loading)
+		return (
+			<Dimmer active={loading} inverted>
+				<Loader size="large">Loading</Loader>
+			</Dimmer>
+		);
 
 	return (
 		movie && (
@@ -41,16 +51,18 @@ const Movie = () => {
 								textAlign: 'center',
 							}}
 						>
-							<Header inverted as="h1">
-								{movie.title}
-							</Header>
+							<div style={{ marginTop: '40px' }}>
+								<Header inverted as="h1">
+									{movie.title}
+								</Header>
 
-							<Button
-								style={{ marginTop: '150px' }}
-								content="Play"
-								color="green"
-								icon="play"
-							/>
+								<Button
+									style={{ marginTop: '150px' }}
+									content="Play"
+									color="green"
+									icon="play"
+								/>
+							</div>
 						</GridColumn>
 						<Grid.Column style={{ marginTop: '10px' }}>
 							<Item.Content>
@@ -68,12 +80,16 @@ const Movie = () => {
 									<Grid.Row columns={4}>
 										{movie.actors.map((actor, i) => (
 											<GridColumn key={i}>
-												<Image src={actor.url_small_image} fluid />
-												<a
+												<Image
+													src={actor.url_small_image || '/NoImage.png'}
+													fluid
+												/>
+												<Item.Content
+													as="a"
 													href={`https://www.imdb.com/name/nm${actor.imdb_code}`}
 												>
 													{actor.name} as {actor.character_name}
-												</a>
+												</Item.Content>
 											</GridColumn>
 										))}
 									</Grid.Row>
