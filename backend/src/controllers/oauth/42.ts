@@ -32,6 +32,7 @@ export const oAuth42Controller = asyncHandler(
 			} catch (err) {
 				picName = undefined;
 			}
+			if (picName) currentUser.updateOne({ profilePicName: picName });
 		} else if (!currentUser.isConfirmed) {
 			await currentUser.updateOne({ isConfirmed: true });
 		}
