@@ -22,13 +22,13 @@ const requests = {
 
 const User = {
 	register: (user: IRegisterFormValues): Promise<void> =>
-		requests.post('/preAuth/register', user),
+		requests.post('/pre-auth/register', user),
 	login: (user: ILoginFormValues): Promise<IUser> =>
-		requests.post('/preAuth/login', user),
+		requests.post('/pre-auth/login', user),
 	forget: (data: IForgetPassword): Promise<void> =>
-		requests.post(`/preAuth/send-reset-password`, data),
+		requests.post(`/pre-auth/send-reset-password`, data),
 	reset: (link: string, data: IResetPassword): Promise<void> =>
-		requests.put(`/preAuth/reset-password/${link}`, data),
+		requests.put(`/pre-auth/reset-password/${link}`, data),
 };
 
 const Movies = {

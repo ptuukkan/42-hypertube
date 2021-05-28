@@ -34,7 +34,7 @@ export const sendConfirmAccountEmail = (
 	code: string
 ): Promise<void> => {
 	const PORT = process.env.PORT;
-	const link = `http://localhost:${PORT}/api/preAuth/confirm-email/${userId}_${code}`;
+	const link = `http://localhost:${PORT}/api/pre-auth/confirm-email/${userId}_${code}`;
 	const html = `<html><body><p>Hello!<br><br>
   Glad you have joined our amazing movie site. We will need you to confirm your
   account to get access to the site. To do that you need to tap the link below
@@ -52,7 +52,7 @@ export const sendResetPasswordEmail = (
 	code: string
 ): Promise<void> => {
 	const PORT = process.env.PORT;
-	const link = `http://localhost:${PORT}/api/preAuth/reset-password/${userId}_${code}`;
+	const link = `http://localhost:${PORT}/api/pre-auth/reset-password/${userId}_${code}`;
 	const html = `<html><body><p>Hello!<br><br>
 	You have requested a link to reset your password, because presumably you
 	forgot it. Tap the link below to reset your passoword. If this wasn't you

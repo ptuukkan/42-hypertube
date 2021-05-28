@@ -9,8 +9,8 @@ import userRouter from 'routes/private/user';
 const mountRoutes = (app: Application): void => {
 	app.post('/api/accessToken', accessTokenController);
 
-	// Public routes // TODO change preAuth to pre-auth
-	app.use('/api/preAuth/', preAuthRouter);
+	// Public routes
+	app.use('/api/pre-auth/', preAuthRouter);
 	app.use('/api/auth/', oAuthRouter);
 
 	// Private routes
