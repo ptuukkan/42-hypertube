@@ -1,8 +1,11 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Container, Header, Segment } from 'semantic-ui-react';
+import { Header, Segment, Container, Button } from 'semantic-ui-react';
 
-const NotFound = () => {
+interface IProps {
+	token: string | null;
+}
+
+const MainContentPublic: React.FC<IProps> = ({ token }) => {
 	return (
 		<Segment
 			textAlign="center"
@@ -12,7 +15,7 @@ const NotFound = () => {
 			<Container text>
 				<Header
 					as="h1"
-					content="404 - Not Found"
+					content="HyperTube"
 					style={{
 						fontSize: '4em',
 						fontWeight: 'normal',
@@ -22,7 +25,7 @@ const NotFound = () => {
 				/>
 				<Header
 					as="h2"
-					content="Go to main page"
+					content="Watch all movies you like!"
 					style={{
 						fontSize: '1.7em',
 						fontWeight: 'normal',
@@ -30,15 +33,15 @@ const NotFound = () => {
 					}}
 				/>
 				<Button
-					primary
+					color="teal"
 					as={Link}
-					to={'/'}
+					to={token ? '/movies' : '/register'}
 					size="huge"
-					content={'Main page'}
+					content={token ? 'Browse movies' : 'Get started'}
 				></Button>
 			</Container>
 		</Segment>
 	);
 };
 
-export default NotFound;
+export default MainContentPublic;

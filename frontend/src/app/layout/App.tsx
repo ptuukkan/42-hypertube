@@ -1,36 +1,45 @@
+import React from 'react';
+import MainContent from 'app/views/MainContent';
+import Register from 'app/views/Register';
+import Navigation from '../sharedComponents/navigation/Navigation';
+import Privateroute from '../sharedComponents/navigation/Privateroute';
 import { Switch, Route } from 'react-router';
 import { Container, Message } from 'semantic-ui-react';
 import { useContext, useEffect, useState } from 'react';
 import { RootStoreContext } from 'app/stores/rootStore';
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
-import Navigation from 'app/SharedComponents/Navigation/Navigation';
-import Privateroute from 'app/SharedComponents/Navigation/Privateroute';
-import ChangePassword from 'app/Views/ChangePassword';
-import Forgot from 'app/Views/Forgot';
-import Login from 'app/Views/Login';
-import MainContent from 'app/Views/MainContent';
-import MainContentPublic from 'app/Views/MainContentPublic';
-import NotFound from 'app/Views/NotFound';
-import Register from 'app/Views/Register';
-import Movie from 'app/Views/Movie';
+import NotFound from 'app/views/NotFound';
+import OAuthRoute from 'app/sharedComponents/navigation/OAuthRoute';
+import ChangePassword from 'app/views/ChangePassword';
+import Forgot from 'app/views/Forgot';
+import Login from 'app/views/Login';
+import MainContentPublic from 'app/views/MainContentPublic';
+import Movie from 'app/views/Movie';
 
 const App = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { token } = rootStore.userStore;
 	const [message, setMessage] = useState('');
 	const search = useLocation().search;
-	const emailStatus = new URLSearchParams(search).get('confirm-email');
+	const urlParams = new URLSearchParams(search);
+	const emailStatus = urlParams.get('confirm-email');
+	const oAuthError = urlParams.get('oauth-error');
 
 	useEffect(() => {
-		if (emailStatus !== '') {
+		if (emailStatus) {
 			emailStatus === 'success' && setMessage('Email confirm success!');
 			emailStatus === 'error' && setMessage('Email confirm failed!');
-			setTimeout(() => {
-				setMessage('');
-			}, 3000);
+			setTimeout(() => setMessage(''), 4000);
 		}
 	}, [emailStatus]);
+
+	useEffect(() => {
+		if (oAuthError) {
+			setMessage(oAuthError);
+			setTimeout(() => setMessage(''), 4000);
+		}
+	}, [oAuthError]);
 
 	return (
 		<Container>
@@ -39,7 +48,7 @@ const App = () => {
 				<Message
 					style={{ marginTop: 65 }}
 					success={emailStatus === 'success'}
-					warning={emailStatus === 'error'}
+					negative={emailStatus === 'error' || oAuthError !== null}
 				>
 					{message}
 				</Message>
@@ -49,7 +58,8 @@ const App = () => {
 				<Route path="/login" component={Login} />
 				<Route path="/forgot" component={Forgot} />
 				<Route path="/reset-password/:id" component={ChangePassword} />
-				<Privateroute path="/movies/:id" component={() => <Movie />} />
+				<OAuthRoute exact path="/oauth" />
+				<Privateroute path="/movies/:id" component={Movie} />
 				<Privateroute
 					path="/movies"
 					component={(props) => <MainContent {...props} />}

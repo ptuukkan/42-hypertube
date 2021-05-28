@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
+import { history } from '../..';
 import { Link } from 'react-router-dom';
 import {
 	Grid,
@@ -11,16 +12,19 @@ import {
 	Segment,
 	Button,
 	Message,
-	Divider,
+	Dimmer,
+	Icon,
 } from 'semantic-ui-react';
-import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
-import TextInput from 'app/SharedComponents/form/TextInput';
+import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
 import { RootStoreContext } from '../stores/rootStore';
-import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
+import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
+import { observer } from 'mobx-react-lite';
+import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
+import TextInput from 'app/sharedComponents/form/TextInput';
 
 const validationSchema = {
 	field: {
-		username: [Validators.required.validator],
+		email: [Validators.required.validator, Validators.email.validator],
 		password: [
 			Validators.required.validator,
 			{
@@ -30,17 +34,18 @@ const validationSchema = {
 	},
 };
 
-export interface LoginProps {}
-
 const formValidation = createFinalFormValidation(validationSchema);
 
-const Login: React.FC<LoginProps> = () => {
+export interface RegisterProps {}
+
+const Register: React.FC<RegisterProps> = () => {
 	const rootStore = useContext(RootStoreContext);
-	const { loginUser } = rootStore.userStore;
+	const { registerUser, success } = rootStore.userStore;
+	const CloseRegister = () => history.push('/');
 
 	return (
 		<FinalForm
-			onSubmit={loginUser}
+			onSubmit={registerUser}
 			validate={formValidation.validateForm}
 			render={({
 				handleSubmit,
@@ -56,33 +61,54 @@ const Login: React.FC<LoginProps> = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> Login
+								<Image src="/logo_128.png" /> Register your account
 							</Header>
 							<Segment stacked>
 								<Field
 									component={TextInput}
-									name="username"
-									placeholder="username"
+									name="email"
+									placeholder="Email address"
 								/>
 								<Field
+									name="username"
+									placeholder="Username"
 									component={TextInput}
+								/>
+								<Field
+									name="firstName"
+									placeholder="First name"
+									component={TextInput}
+								/>
+								<Field
+									name="lastName"
+									placeholder="Last name"
+									component={TextInput}
+								/>
+								<Field
 									type="password"
 									name="password"
 									placeholder="Password"
+									component={TextInput}
 								/>
 								{submitError && !dirtySinceLastSubmit && (
 									<ErrorMessage message={submitError} />
 								)}
 								<Button disabled={submitting} color="teal" fluid size="large">
-									Login
+									Register
 								</Button>
+								<OAuthButtons disabled={submitting} />
 							</Segment>
 							<Message>
-								Need an account? <Link to="/register">Register</Link>
-								<Divider />
-								Forgot your password? <Link to="/forgot">Forgot</Link>
+								Have account? <Link to="/login">Login</Link>
 							</Message>
 						</Grid.Column>
+						<Dimmer active={success} onClickOutside={CloseRegister} page>
+							<Header as="h2" icon inverted>
+								<Icon name="heart" />
+								Registeration success!
+								<Header.Subheader>please check your email!</Header.Subheader>
+							</Header>
+						</Dimmer>
 					</Form>
 				</Grid>
 			)}
@@ -90,4 +116,4 @@ const Login: React.FC<LoginProps> = () => {
 	);
 };
 
-export default Login;
+export default observer(Register);

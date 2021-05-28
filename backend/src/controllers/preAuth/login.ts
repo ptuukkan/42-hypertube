@@ -1,6 +1,5 @@
 import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
-
 import { Unauthorized } from 'http-errors';
 import Usermodel, { IUserDocument } from 'models/user';
 

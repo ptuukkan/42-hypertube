@@ -19,9 +19,9 @@ import { IResetPassword } from 'app/models/user';
 import agent from 'app/services/agent';
 import { FORM_ERROR } from 'final-form';
 import { observer } from 'mobx-react-lite';
-import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
-import TextInput from 'app/SharedComponents/form/TextInput';
-import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
+import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
+import TextInput from 'app/sharedComponents/form/TextInput';
+import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
 
 interface IParams {
 	id: string;

@@ -1,3 +1,4 @@
+import { ILink } from 'app/models/oAuth';
 import axios, { AxiosResponse } from 'axios';
 import { IMovie, IMovieList } from '../models/movie';
 import {
@@ -37,9 +38,20 @@ const Movies = {
 		requests.get(`movies/${imdbCode}`),
 };
 
+const OAuth = {
+	getGithubLink: (): Promise<ILink> => requests.get('/auth/github-link'),
+	get42Link: (): Promise<ILink> => requests.get('/auth/42-link'),
+	verifyOAuthUser: (
+		path: string,
+		code: string,
+		state: string
+	): Promise<IUser> => requests.post(`/auth/${path}`, { code, state }),
+};
+
 const agent = {
 	Movies,
 	User,
+	OAuth,
 };
 
 export default agent;

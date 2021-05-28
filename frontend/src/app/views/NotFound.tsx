@@ -1,11 +1,11 @@
+import { RootStoreContext } from 'app/stores/rootStore';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Header, Segment, Container, Button } from 'semantic-ui-react';
+import { Button, Container, Header, Segment } from 'semantic-ui-react';
 
-interface IProps {
-	token: string | null;
-}
-
-const MainContentPublic: React.FC<IProps> = ({ token }) => {
+const NotFound: React.FC<void> = () => {
+	const rootStore = useContext(RootStoreContext);
+	const { token } = rootStore.userStore;
 	return (
 		<Segment
 			textAlign="center"
@@ -15,7 +15,7 @@ const MainContentPublic: React.FC<IProps> = ({ token }) => {
 			<Container text>
 				<Header
 					as="h1"
-					content="HyperTube"
+					content="404 - Not Found"
 					style={{
 						fontSize: '4em',
 						fontWeight: 'normal',
@@ -25,7 +25,7 @@ const MainContentPublic: React.FC<IProps> = ({ token }) => {
 				/>
 				<Header
 					as="h2"
-					content="Watch all movies you like!"
+					content="Go to main page"
 					style={{
 						fontSize: '1.7em',
 						fontWeight: 'normal',
@@ -33,15 +33,15 @@ const MainContentPublic: React.FC<IProps> = ({ token }) => {
 					}}
 				/>
 				<Button
-					primary
+					color="teal"
 					as={Link}
-					to={token ? '/movies' : '/register'}
+					to={token ? '/movies' : '/'}
 					size="huge"
-					content={token ? 'Browse movies' : 'Get started'}
+					content={'Main page'}
 				></Button>
 			</Container>
 		</Segment>
 	);
 };
 
-export default MainContentPublic;
+export default NotFound;
