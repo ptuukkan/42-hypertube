@@ -1,6 +1,6 @@
 import { ILink } from 'app/models/oAuth';
 import axios, { AxiosResponse } from 'axios';
-import { IMovieList } from '../models/movie';
+import { IMovie, IMovieList } from '../models/movie';
 import {
 	IForgetPassword,
 	ILoginFormValues,
@@ -34,6 +34,8 @@ const User = {
 const Movies = {
 	search: (title: string): Promise<IMovieList> =>
 		requests.get(`movies/search?query=${title}`),
+	get: (imdbCode: string): Promise<IMovie> =>
+		requests.get(`movies/${imdbCode}`),
 };
 
 const OAuth = {

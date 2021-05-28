@@ -5,16 +5,17 @@ import Navigation from '../sharedComponents/navigation/Navigation';
 import Privateroute from '../sharedComponents/navigation/Privateroute';
 import { Switch, Route } from 'react-router';
 import { Container, Message } from 'semantic-ui-react';
-import Login from '../views/Login';
-import Forgot from 'app/views/Forgot';
 import { useContext, useEffect, useState } from 'react';
 import { RootStoreContext } from 'app/stores/rootStore';
 import { observer } from 'mobx-react-lite';
-import ChangePassword from 'app/views/ChangePassword';
-import MainContentPublic from 'app/views/MainContentPublic';
 import { useLocation } from 'react-router-dom';
 import NotFound from 'app/views/NotFound';
 import OAuthRoute from 'app/sharedComponents/navigation/OAuthRoute';
+import ChangePassword from 'app/views/ChangePassword';
+import Forgot from 'app/views/Forgot';
+import Login from 'app/views/Login';
+import MainContentPublic from 'app/views/MainContentPublic';
+import Movie from 'app/views/Movie';
 
 const App = () => {
 	const rootStore = useContext(RootStoreContext);
@@ -58,6 +59,7 @@ const App = () => {
 				<Route path="/forgot" component={Forgot} />
 				<Route path="/reset-password/:id" component={ChangePassword} />
 				<OAuthRoute exact path="/oauth" />
+				<Privateroute path="/movies/:id" component={Movie} />
 				<Privateroute
 					path="/movies"
 					component={(props) => <MainContent {...props} />}
