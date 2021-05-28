@@ -9,7 +9,7 @@ export class AxiosAgent {
 	constructor(baseUrl?: string) {
 		this.axiosInstance = axios.create({
 			baseURL: baseUrl,
-			timeout: 10000,
+			timeout: 10000, // changed from 2000, because 42 oauth can take some time
 		});
 		this.axiosInstance.interceptors.request.use((config) => {
 			debug(
