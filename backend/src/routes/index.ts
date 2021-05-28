@@ -1,6 +1,7 @@
 import { Application } from 'express';
 import movieRouter from 'routes/private/movie';
 import preAuthRouter from 'routes/preAuth';
+import oAuthRouter from './oauth';
 import { checkAccessToken } from 'middleware/checkAccessToken';
 import { accessTokenController } from 'controllers/accessToken';
 import userRouter from 'routes/private/user';
@@ -10,6 +11,7 @@ const mountRoutes = (app: Application): void => {
 
 	// Public routes // TODO change preAuth to pre-auth
 	app.use('/api/preAuth/', preAuthRouter);
+	app.use('/api/auth/', oAuthRouter);
 
 	// Private routes
 	app.use('/api/movies', checkAccessToken, movieRouter);

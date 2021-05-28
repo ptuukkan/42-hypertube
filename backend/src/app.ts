@@ -9,6 +9,7 @@ import { connectToDb, getDbValidationErrors } from 'database';
 import Debug from 'debug';
 import cookieParser from 'cookie-parser';
 import { JsonWebTokenError } from 'jsonwebtoken';
+
 import cors from 'cors';
 
 const debug = Debug('app');

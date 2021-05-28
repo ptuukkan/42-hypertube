@@ -14,8 +14,8 @@ export const registerController = asyncHandler(async (req, res) => {
 
 	const code = getRandomString();
 	const title = 'Confirm account for Hypertube';
-	await sendConfirmAccountEmail(email, title, user._id, code);
-	const linkObj: ILink = { user: user._id, linkType: LinkType.CONFIRM, code };
+	await sendConfirmAccountEmail(email, title, user.id, code);
+	const linkObj: ILink = { user: user.id, linkType: LinkType.CONFIRM, code };
 	await LinkModel.create(linkObj);
 
 	res.status(200).json({ status: 'OK' });

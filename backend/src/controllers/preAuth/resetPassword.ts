@@ -19,14 +19,14 @@ export const sendResetPasswordController = asyncHandler(async (req, res) => {
 	const user = await Usermodel.findOne({ email });
 	if (!user) throw new BadRequest('Invalid email.');
 
-	const link = await LinkModel.findOne({ user: user._id, linkType: RESET });
+	const link = await LinkModel.findOne({ user: user.id, linkType: RESET });
 	if (link)
 		throw new BadRequest('Reset password link has already been requested.');
 
 	const code = getRandomString();
 	const title = 'Reset your password for Hypertube';
-	await sendResetPasswordEmail(email, title, user._id, code);
-	const linkObj: ILink = { user: user._id, linkType: RESET, code };
+	await sendResetPasswordEmail(email, title, user.id, code);
+	const linkObj: ILink = { user: user.id, linkType: RESET, code };
 	await LinkModel.create(linkObj);
 
 	res.status(200).json({ status: 'OK' });
@@ -55,7 +55,7 @@ export const resetPasswordController = asyncHandler(async (req, res) => {
 	await user.checkAndUpdatePassword(password);
 	user.tokenVersion! += 1;
 
-	await LinkModel.deleteOne({ code, user: user._id, linkType: LinkType.RESET });
+	await LinkModel.deleteOne({ code, user: user.id, linkType: LinkType.RESET });
 
 	// Set refreshToken cookie and return accessToken
 	addRefreshTokenToRes(res, createRefreshToken(user));
