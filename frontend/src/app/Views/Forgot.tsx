@@ -13,8 +13,8 @@ import {
 	Icon,
 } from 'semantic-ui-react';
 import { history } from '../..';
-import TextInput from 'app/sharedComponents/form/TextInput';
-import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
+import TextInput from 'app/SharedComponents/form/TextInput';
+import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
 import { RootStoreContext } from '../stores/rootStore';
 import { observer } from 'mobx-react-lite';
 
@@ -26,13 +26,11 @@ const validationSchema = {
 
 const formValidation = createFinalFormValidation(validationSchema);
 
-const CloseForgot = () => {
-	history.push('/');
-};
 
 const Forgot = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { forgetPassword, success } = rootStore.userStore;
+	const CloseForgot = () => history.push('/');
 	return (
 		<FinalForm
 			onSubmit={forgetPassword}

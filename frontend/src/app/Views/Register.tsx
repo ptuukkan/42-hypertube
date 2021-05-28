@@ -1,4 +1,3 @@
-import TextInput from 'app/sharedComponents/form/TextInput';
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import { Validators } from '@lemoncode/fonk';
@@ -16,10 +15,11 @@ import {
 	Dimmer,
 	Icon,
 } from 'semantic-ui-react';
-import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
+import { passwordComplexity } from 'app/SharedComponents/form/validators/passwordComplexity';
 import { RootStoreContext } from '../stores/rootStore';
-import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
+import ErrorMessage from 'app/SharedComponents/form/ErrorMessage';
 import { observer } from 'mobx-react-lite';
+import TextInput from 'app/SharedComponents/form/TextInput';
 
 const validationSchema = {
 	field: {
@@ -40,9 +40,7 @@ export interface RegisterProps {}
 const Register: React.FC<RegisterProps> = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { registerUser, success } = rootStore.userStore;
-	const CloseRegister = () => {
-		history.push('/');
-	};
+	const CloseRegister = () => history.push('/');
 
 	return (
 		<FinalForm
