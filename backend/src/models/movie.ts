@@ -1,3 +1,4 @@
+import { Schema, Document, model } from 'mongoose';
 import { IYtsCast } from 'services/yts';
 
 export interface IMovieThumbnailEnvelope {
@@ -32,3 +33,19 @@ export interface IMovie extends IMovieThumbnail {
 	writer?: string;
 	actors?: string | IYtsCast[];
 }
+
+export interface IMovieDocument extends Document {
+	imdbCode: string;
+	status: number;
+	path: string;
+	size: number;
+}
+
+const MovieSchema = new Schema<IMovieDocument>({
+	imdbCode: { type: String, required: true },
+	status: { type: Number, required: true }, // 0 = not downloaded, 1 = downloading, 2 = download completed
+	path: { type: String },
+	size: { type: Number },
+});
+
+export default model<IMovieDocument>('Movie', MovieSchema);

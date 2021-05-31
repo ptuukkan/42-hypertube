@@ -8,6 +8,11 @@ import {
 import lodash, { isString, toLower } from 'lodash';
 import { details } from 'application/movie';
 import { Request } from 'express';
+import { streamMovieFile } from 'application/stream';
+import MovieModel from 'models/movie';
+import { startMovieDownload } from 'application/torrent';
+import Path from 'path';
+import Fs from 'fs';
 
 export interface IQueryParams {
 	query: string;
@@ -102,4 +107,32 @@ export const getMovie = asyncHandler(async (req, res) => {
 	const imdbCode = req.params.imdbCode;
 	const movie = await details(imdbCode);
 	res.json(movie);
+});
+
+export const streamMovie = asyncHandler(async (req, res) => {
+	let movieDocument = await MovieModel.findOne({
+		imdbCode: req.params.imdbCode,
+	});
+	if (!movieDocument) {
+		movieDocument = new MovieModel({
+			imdbCode: req.params.imdbCode,
+			status: 0,
+		});
+		movieDocument.save();
+	}
+
+	if (movieDocument.status === 2) {
+		const videoPath = Path.resolve(
+			__dirname,
+			`../../public/movies/${movieDocument.imdbCode}/${movieDocument.path}`
+		);
+		if (!Fs.existsSync(videoPath)) {
+			movieDocument.status = 0;
+		}
+	}
+	if (movieDocument.status === 0) {
+		movieDocument.status = 1;
+		await startMovieDownload(movieDocument);
+	}
+	await streamMovieFile(req, res);
 });

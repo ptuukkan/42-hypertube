@@ -32,6 +32,7 @@ app.use(express.static(`${__dirname}/../public`));
 
 mountRoutes(app);
 
+
 app.use((_req: Request, _res: Response, next: NextFunction) => {
 	next(createError(404));
 });
