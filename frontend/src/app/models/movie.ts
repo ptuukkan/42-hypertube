@@ -9,16 +9,14 @@ export interface IMovie {
 	runtime: number;
 	writer: string;
 	director: string;
-	actors:
-		| [
-				{
-					name: string;
-					character_name: string;
-					url_small_image: string;
-					imdb_code: string;
-				}
-		  ]
-		| [];
+	actors: IActorObj[] | string | [];
+}
+
+export interface IActorObj {
+	name: string;
+	character_name: string;
+	url_small_image: string;
+	imdb_code: string;
 }
 
 export interface IMovieList {

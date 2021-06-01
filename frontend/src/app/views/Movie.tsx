@@ -18,6 +18,7 @@ import {
 interface IParams {
 	id: string;
 }
+
 const Movie = () => {
 	const { id } = useParams<IParams>();
 	const rootStore = useContext(RootStoreContext);
@@ -58,9 +59,12 @@ const Movie = () => {
 								<Item.Content>Year: {movie.year}</Item.Content>
 								<Item.Meta>{movie.summary}</Item.Meta>
 								<ItemExtra>Written by: {movie.writer}</ItemExtra>
-								{movie.actors !== undefined && <Header as="h5">Actors:</Header>}
-								{movie.actors !== undefined &&
-									movie.actors.map((actor, imdb_code) => (
+								{typeof movie.actors !== undefined && (
+									<Header as="h5">Actors:</Header>
+								)}
+								{typeof movie.actors === 'string' && <div>{movie.actors}</div>}
+								{typeof movie.actors === 'object' &&
+									movie.actors.map((actor: any, imdb_code: any) => (
 										<Label
 											image
 											key={imdb_code}
