@@ -79,8 +79,8 @@ const Movie = () => {
 											</GridColumn>
 										))}
 									</Grid.Row>
+									<ItemExtra>Written by: {movie.writer}</ItemExtra>
 								</Grid>
-								<ItemExtra>Written by: {movie.writer}</ItemExtra>
 							</Item.Content>
 						</Grid.Column>
 					</Grid.Row>

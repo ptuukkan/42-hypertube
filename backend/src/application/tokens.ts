@@ -10,14 +10,14 @@ export interface IRefreshToken {
 
 export const createRefreshToken = (user: IUserDocument): string => {
 	const data: IRefreshToken = {
-		userId: user._id,
+		userId: user.id,
 		tokenVersion: user.tokenVersion!,
 	};
 	return sign(data, process.env.REFRESH_TOKEN_SECRET!, { expiresIn: '7d' });
 };
 
 export const createAccessToken = (user: IUserDocument): string => {
-	const data: IAuthPayload = { userId: user._id };
+	const data: IAuthPayload = { userId: user.id };
 	return sign(data, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: '2m' });
 };
 
