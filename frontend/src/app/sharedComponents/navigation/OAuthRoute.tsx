@@ -12,12 +12,14 @@ const OAuthRoute: React.FC<IProps> = ({ ...rest }) => {
 	const { setToken } = rootStore.userStore;
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(true);
+	const [isMounted, setIsMounted] = useState(true);
 	const queryParams = new URLSearchParams(useLocation().search);
 	const code = queryParams.get('code');
 	const state = queryParams.get('state');
 	const linkType = rootStore.oAuthStore.consumeLinkClicked();
 
 	useEffect(() => {
+		if (!isMounted) return;
 		if (code && state && linkType) {
 			if (linkType === LinkType.GITHUB || linkType === LinkType.CODE_42) {
 				agent.OAuth.verifyOAuthUser(linkType, code, state)
@@ -28,8 +30,10 @@ const OAuthRoute: React.FC<IProps> = ({ ...rest }) => {
 					.catch((err) => console.log(err))
 					.finally(() => setLoading(false));
 			}
+			return;
 		} else setLoading(false);
-	}, [code, state]);
+		return () => setIsMounted(false);
+	}, [code, linkType, setToken, state, isMounted]);
 
 	return (
 		<Route

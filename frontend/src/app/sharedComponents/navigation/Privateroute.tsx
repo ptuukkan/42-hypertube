@@ -21,16 +21,13 @@ const PrivateRoute: React.FC<IProps> = ({ component: Component, ...rest }) => {
 
 	useEffect(() => {
 		if (!isMounted) return;
-		if (!token && !logOutBtnClicked) {
+		if (!token && !logOutBtnClicked && loading) {
 			getNewToken()
 				.then(() => setLoading(false))
-				.catch((err) => {
-					console.log(err);
-					setLoading(false);
-				});
+				.catch(() => setLoading(false));
 		} else setLoading(false);
 		return () => setIsMounted(false);
-	}, [token, loading]);
+	}, [token, loading, isMounted, logOutBtnClicked, getNewToken]);
 
 	const errorStr = !logOutBtnClicked
 		? '?error-token=Not+authorized.+Please+login+in.'

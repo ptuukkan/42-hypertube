@@ -16,7 +16,7 @@ const SearchMovies: React.FC<SearchMoviesProps> = ({
 
 	useEffect(() => {
 		if (!loading) inputRef.current?.focus();
-	}, [loading]);
+	}, [inputRef, loading]);
 
 	return (
 		<Input
