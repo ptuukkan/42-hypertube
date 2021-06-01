@@ -1,28 +1,34 @@
-import { IMovie } from 'app/models/movie';
-import SearchMovies from 'app/sharedComponents/SearchMovies';
-import React, { useEffect, useState } from 'react';
+import SearchMovies from 'app/views/movieList/SearchMovies';
+import { RootStoreContext } from 'app/stores/rootStore';
+import { observer } from 'mobx-react-lite';
+import React, { useContext, useEffect, useState } from 'react';
 import { Segment } from 'semantic-ui-react';
-import agent from '../services/agent';
-import Browse from './Browse';
+import Browse from './movieList/Browse';
 
 const MainContent: React.FC = () => {
-	const [movies, setMovies] = useState<IMovie[]>([]);
-	const [lastQuery, setLastQuery] = useState('');
-	const [searchQuery, setQuery] = useState('');
+	const rootStore = useContext(RootStoreContext);
+	const { getMovies, movies, savedSearch } = rootStore.movieStore;
+	const [searchTimer, setSearchTimer] = useState<NodeJS.Timeout | null>(null);
+	const [searchQuery, setQuery] = useState(savedSearch);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		if (movies.length === 0 || searchQuery !== lastQuery) {
-			setLoading(true);
-			agent.Movies.search(searchQuery)
-				.then((movies) => setMovies(movies.movies))
-				.catch((e) => console.log(e))
-				.finally(() => {
-					setLoading(false);
-					setLastQuery(searchQuery);
-				});
-		}
-	}, [movies.length, searchQuery, lastQuery]);
+		if (movies.count !== 0 || savedSearch !== '') return;
+		setLoading(true);
+		getMovies(searchQuery).then(() => setLoading(false));
+	}, []);
+
+	useEffect(() => {
+		if (savedSearch === '' && searchQuery === '') return;
+		if (savedSearch && searchQuery === savedSearch) return;
+		if (searchTimer) clearTimeout(searchTimer!);
+		setSearchTimer(
+			setTimeout(() => {
+				setLoading(true);
+				getMovies(searchQuery).then(() => setLoading(false));
+			}, 700)
+		);
+	}, [searchQuery]);
 
 	return (
 		<Segment style={{ minHeight: 500, padding: 60 }}>
@@ -31,9 +37,9 @@ const MainContent: React.FC = () => {
 				searchQuery={searchQuery}
 				loading={loading}
 			/>
-			<Browse loading={loading} movies={movies} />
+			<Browse loading={loading} movies={movies.movies} />
 		</Segment>
 	);
 };
 
-export default MainContent;
+export default observer(MainContent);

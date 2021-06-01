@@ -50,7 +50,7 @@ app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
 	} else if (err instanceof mongoose.Error) {
 		res.status(500).json({ status: 'ERROR', message: 'DATABASE ERROR' });
 	} else if (err instanceof JsonWebTokenError) {
-		res.status(401).json({ status: 'ERROR', message: err.message });
+		res.status(401).json({ status: 'ERROR', message: err.message, src: 'jwt' });
 	} else {
 		res.status(500).json({ status: 'ERROR', message: 'Internal server error' });
 	}

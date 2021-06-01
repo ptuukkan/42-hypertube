@@ -5,13 +5,12 @@ import {
 	createAccessToken,
 } from 'application/tokens';
 import UserModel from 'models/user';
-import { Unauthorized } from 'http-errors';
 import asyncHandler from 'express-async-handler';
-import { verify } from 'jsonwebtoken';
+import { verify, JsonWebTokenError } from 'jsonwebtoken';
 
 export const accessTokenController = asyncHandler(async (req, res) => {
 	const token = req.cookies.jid;
-	if (!token) throw new Unauthorized('No token.');
+	if (!token) throw new JsonWebTokenError('No token.');
 
 	// Throws error if there is a problem
 	const payload = verify(
@@ -20,9 +19,9 @@ export const accessTokenController = asyncHandler(async (req, res) => {
 	) as IRefreshToken;
 
 	const user = await UserModel.findOne({ _id: payload.userId });
-	if (!user) throw new Unauthorized('User not found.');
+	if (!user) throw new JsonWebTokenError('User not found.');
 	if (user.tokenVersion !== payload.tokenVersion)
-		throw new Unauthorized('Token version not valid.');
+		throw new JsonWebTokenError('Token version not valid.');
 
 	// Set refreshToken cookie and return accessToken
 	addRefreshTokenToRes(res, createRefreshToken(user));

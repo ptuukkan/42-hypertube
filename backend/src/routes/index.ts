@@ -7,12 +7,10 @@ import { accessTokenController } from 'controllers/accessToken';
 import userRouter from 'routes/private/user';
 
 const mountRoutes = (app: Application): void => {
-	app.post('/api/accessToken', accessTokenController);
-
 	// Public routes
 	app.use('/api/pre-auth/', preAuthRouter);
 	app.use('/api/auth/', oAuthRouter);
-
+	app.post('/api/accessToken', accessTokenController);
 	// Private routes
 	app.use('/api/movies', checkAccessToken, movieRouter);
 	app.use('/api/user', checkAccessToken, userRouter);
