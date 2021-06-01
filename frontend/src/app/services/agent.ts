@@ -6,7 +6,7 @@ import {
 	ILoginFormValues,
 	IRegisterFormValues,
 	IResetPassword,
-	IUser,
+	IAccessToken,
 } from '../models/user';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -44,13 +44,13 @@ const requests = {
 const User = {
 	register: (user: IRegisterFormValues): Promise<void> =>
 		requests.post('/pre-auth/register', user),
-	login: (user: ILoginFormValues): Promise<IUser> =>
+	login: (user: ILoginFormValues): Promise<IAccessToken> =>
 		requests.post('/pre-auth/login', user),
 	forget: (data: IForgetPassword): Promise<void> =>
 		requests.post(`/pre-auth/send-reset-password`, data),
 	reset: (code: string, data: IResetPassword): Promise<void> =>
 		requests.put(`/pre-auth/reset-password/${code}`, data),
-	accessToken: (): Promise<IUser> => requests.post('/accessToken', {}),
+	accessToken: (): Promise<IAccessToken> => requests.post('/accessToken', {}),
 	logout: (token: string): Promise<void> =>
 		requests.postAuth('/user/logout', token, {}),
 };
@@ -69,7 +69,7 @@ const OAuth = {
 		path: string,
 		code: string,
 		state: string
-	): Promise<IUser> => requests.post(`/auth/${path}`, { code, state }),
+	): Promise<IAccessToken> => requests.post(`/auth/${path}`, { code, state }),
 };
 
 const agent = {
