@@ -12,12 +12,13 @@ module.exports = {
 			jsx: true,
 		},
 		project: './tsconfig.json',
+		tsconfigRootDir: __dirname,
 	},
-	plugins: ['@typescript-eslint', 'react-hooks', 'react', 'prettier'],
+	plugins: ['@typescript-eslint', 'react-hooks', 'react'],
 	extends: [
 		'plugin:react/recommended',
 		'plugin:@typescript-eslint/recommended',
-		'plugin:prettier/recommended',
+		'prettier',
 	],
 	rules: {
 		'react-hooks/rules-of-hooks': 'error',

@@ -44,8 +44,8 @@ const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
 								</Item.Meta>
 								<Item.Description>
 									{movie.genres &&
-										movie.genres.map((genre, i) => (
-											<Label key={i}>{genre}</Label>
+										movie.genres.map((genre) => (
+											<Label key={genre}>{genre}</Label>
 										))}
 								</Item.Description>
 							</Item.Content>

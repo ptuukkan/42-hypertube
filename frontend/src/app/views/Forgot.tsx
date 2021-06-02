@@ -63,7 +63,7 @@ const Forgot = () => {
 						<Dimmer active={success} onClickOutside={CloseForgot} page>
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
-								Restore link is on it's way...!
+								Restore link is on it&apos;s way...!
 								<Header.Subheader>just wait...!</Header.Subheader>
 							</Header>
 						</Dimmer>

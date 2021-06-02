@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Validators } from '@lemoncode/fonk';
+import { ValidationSchema, Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import { history } from '../..';
 import { Link } from 'react-router-dom';
@@ -22,7 +22,7 @@ import { observer } from 'mobx-react-lite';
 import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
 import TextInput from 'app/sharedComponents/form/TextInput';
 
-const validationSchema = {
+const validationSchema: ValidationSchema = {
 	field: {
 		email: [Validators.required.validator, Validators.email.validator],
 		password: [
@@ -99,13 +99,12 @@ const Register: React.FC = () => {
 							</Segment>
 							<Message>
 								Have account?
-								<Link to="/login">Login</Link>
+								<Link to="/login"> Login</Link>
 							</Message>
 						</Grid.Column>
 						<Dimmer active={success} onClickOutside={CloseRegister} page>
 							<Header as="h2" icon inverted>
-								<Icon name="heart" />
-								Registeration success!
+								<Icon name="heart" /> Registeration success!
 								<Header.Subheader>please check your email!</Header.Subheader>
 							</Header>
 						</Dimmer>

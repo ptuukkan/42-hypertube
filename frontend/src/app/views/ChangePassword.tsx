@@ -2,7 +2,7 @@ import { history } from '../..';
 import { RootStoreContext } from 'app/stores/rootStore';
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Validators } from '@lemoncode/fonk';
+import { ValidationSchema, Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import {
 	Button,
@@ -27,7 +27,7 @@ interface IParams {
 	id: string;
 }
 
-const validationSchema = {
+const validationSchema: ValidationSchema = {
 	field: {
 		password: [
 			Validators.required.validator,

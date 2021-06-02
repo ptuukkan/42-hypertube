@@ -66,8 +66,8 @@ const Movie = () => {
 								<Item.Meta>{movie.summary}</Item.Meta>
 								<Grid>
 									<Grid.Row columns={4}>
-										{movie.actors.map((actor, i) => (
-											<GridColumn key={i}>
+										{movie.actors.map((actor) => (
+											<GridColumn key={actor.name}>
 												<Image
 													src={actor.url_small_image || '/NoImage.png'}
 													fluid

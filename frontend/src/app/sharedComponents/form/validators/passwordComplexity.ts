@@ -1,3 +1,5 @@
+import { ValidationResult } from '@lemoncode/fonk/typings/model';
+
 interface IFieldValidatorArgs {
 	value: any;
 	values?: any;
@@ -5,7 +7,9 @@ interface IFieldValidatorArgs {
 	message?: string | string[];
 }
 
-export const passwordComplexity = (fieldValidatorArgs: IFieldValidatorArgs) => {
+export const passwordComplexity = (
+	fieldValidatorArgs: IFieldValidatorArgs
+): ValidationResult => {
 	const { value } = fieldValidatorArgs;
 
 	const validationResult = {

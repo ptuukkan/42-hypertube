@@ -80,10 +80,9 @@ const Login: React.FC = () => {
 							</Segment>
 							<Message>
 								Need an account?
-								<Link to="/register">Register</Link>
-								<Divider />
-								Forgot your password?
-								<Link to="/forgot">Forgot</Link>
+								<Link to="/register"> Register</Link>
+								<Divider /> Forgot your password?
+								<Link to="/forgot"> Forgot</Link>
 							</Message>
 						</Grid.Column>
 					</Form>
