@@ -1,4 +1,5 @@
 import asyncHandler from 'express-async-handler';
+import jwt from 'jsonwebtoken';
 import { Unauthorized } from 'http-errors';
 import Usermodel, { IUserDocument } from 'models/user';
 
@@ -16,6 +17,11 @@ export const loginController = asyncHandler(async (req, res) => {
 	if (!(await user.isPasswordValid(password)))
 		throw new Unauthorized('Wrong password.');
 
-	// TODO return accessToken
-	res.json({ status: 'OK', accessToken: '' });
+	const jwtUser = {
+		username: user.username,
+		id: user.id,
+	};
+
+	const token = process.env.SECRET && jwt.sign(jwtUser, process.env.SECRET);
+	res.json({ accessToken: token });
 });
