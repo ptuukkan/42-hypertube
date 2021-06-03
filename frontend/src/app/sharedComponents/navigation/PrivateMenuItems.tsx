@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { RootStoreContext } from 'app/stores/rootStore';
 import { Menu } from 'semantic-ui-react';
+import LanguageSelector from './LanguageSelector';
 
 const PrivateMenuItems = () => {
 	const rootStore = useContext(RootStoreContext);
@@ -13,6 +14,7 @@ const PrivateMenuItems = () => {
 				My Profile
 			</Menu.Item>
 			<Menu.Item onClick={logoutUser}>Logout</Menu.Item>
+			<LanguageSelector />
 		</Menu.Menu>
 	);
 };

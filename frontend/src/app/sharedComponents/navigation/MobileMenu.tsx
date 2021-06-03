@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Container, Menu, Image, Popup, Icon } from 'semantic-ui-react';
 import { RootStoreContext } from 'app/stores/rootStore';
+import LanguageSelector from './LanguageSelector';
 
 interface IProps {
 	token: string | null;
@@ -61,6 +62,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 										<Icon name="film" />
 										My movies
 									</Menu.Item>
+									<LanguageSelector isMobile />
 								</Menu>
 							)}
 							{!token && (
@@ -81,6 +83,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 									>
 										Register
 									</Menu.Item>
+									<LanguageSelector isMobile />
 								</Menu>
 							)}
 						</Popup>
