@@ -7,8 +7,7 @@ export interface IRegisterFormValues {
 	confirmPassword: string;
 }
 
-export interface IUser {
-	username: string;
+export interface IAccessToken {
 	accessToken: string;
 }
 

@@ -1,10 +1,14 @@
-import { sign } from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
 import { saveUrlImgToProfileImages } from './../../utils/index';
 import UserModel, { IUser } from './../../models/user';
 import { Request, Response } from 'express';
 import { getRandomString } from 'utils';
 import serviceGithub from 'services/oauth/github';
+import {
+	addRefreshTokenToRes,
+	createAccessToken,
+	createRefreshToken,
+} from 'application/tokens';
 
 export const oAuthGithubController = asyncHandler(
 	async (req, res): Promise<void> => {
@@ -42,13 +46,9 @@ export const oAuthGithubController = asyncHandler(
 			await currentUser.updateOne({ isConfirmed: true });
 		}
 
-		const jwtUser = {
-			username: currentUser.username,
-			id: currentUser.id,
-		};
-
-		const token = process.env.SECRET && sign(jwtUser, process.env.SECRET);
-		res.json({ accessToken: token });
+		// Set refreshToken cookie and return accessToken
+		addRefreshTokenToRes(res, createRefreshToken(currentUser));
+		res.json({ status: 'OK', accessToken: createAccessToken(currentUser) });
 	}
 );
 

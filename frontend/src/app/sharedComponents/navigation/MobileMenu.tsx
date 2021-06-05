@@ -85,7 +85,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 							)}
 						</Popup>
 						{token && (
-							<Menu.Item as={Link} to="/" name="logout" onClick={logoutUser}>
+							<Menu.Item onClick={logoutUser}>
 								<Icon name="times" />
 								Logout
 							</Menu.Item>

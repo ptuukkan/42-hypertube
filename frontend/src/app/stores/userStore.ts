@@ -5,11 +5,11 @@ import {
 	ILoginFormValues,
 	IRegisterFormValues,
 	IResetPassword,
-	IUser,
 } from '../models/user';
 import { RootStore } from './rootStore';
 import { history } from '../..';
 import { FORM_ERROR } from 'final-form';
+import { MouseEvent } from 'react';
 const RegErrorTypes = [
 	'username',
 	'email',
@@ -22,8 +22,9 @@ export default class UserStore {
 	rootStore: RootStore;
 	loading = false;
 	success = false;
-	token: string | null = window.localStorage.getItem('jwt');
-	user: IUser | null = null;
+	token: string | null = null;
+	tokenExpiresDate: Date | null = null;
+	logOutBtnClicked: boolean = false;
 
 	constructor(rootStore: RootStore) {
 		this.rootStore = rootStore;
@@ -34,15 +35,52 @@ export default class UserStore {
 		this.loading = false;
 	};
 
-	logoutUser = () => {
-		this.token = null;
-		this.user = null;
-		window.localStorage.removeItem('jwt');
+	logoutUser = async (callLogout: MouseEvent | null = null) => {
+		if (callLogout) {
+			try {
+				const token = await this.getToken();
+				await agent.User.logout(token);
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		runInAction(() => {
+			if (callLogout) this.logOutBtnClicked = true;
+			this.token = null;
+			this.tokenExpiresDate = null;
+		});
 	};
 
 	setToken = (token: string) => {
 		this.token = token;
-		window.localStorage.setItem('jwt', this.token);
+		this.tokenExpiresDate = new Date(new Date().getTime() + 110000);
+		this.logOutBtnClicked = false;
+	};
+
+	getToken = (): Promise<string> => {
+		return new Promise(async (resolve, _reject) => {
+			if (this.tokenExpiresDate && this.tokenExpiresDate > new Date())
+				return resolve(this.token!);
+			this.getNewToken()
+				.then((newToken) => resolve(newToken))
+				.catch(() => {
+					/* empty on purpose, due to logout happens in getNewToken */
+				});
+		});
+	};
+
+	getNewToken = (): Promise<string> => {
+		return new Promise(async (resolve, reject) => {
+			try {
+				const data = await agent.User.accessToken();
+				this.setToken(data.accessToken);
+				resolve(data.accessToken);
+			} catch (error) {
+				if (error.logUserOut) this.logoutUser();
+				console.log(error);
+				reject();
+			}
+		});
 	};
 
 	setSuccess = () => {
@@ -74,12 +112,12 @@ export default class UserStore {
 		}
 	};
 
-	sendResetPassword = async (data: IResetPassword, link: string) => {
+	sendResetPassword = async (data: IResetPassword, code: string) => {
 		try {
-			await agent.User.reset(link, data);
+			await agent.User.reset(code, data);
 			this.setSuccess();
 		} catch (error) {
-			return { [FORM_ERROR]: error.message };
+			return { [FORM_ERROR]: error.response.data.message };
 		}
 	};
 
@@ -87,9 +125,6 @@ export default class UserStore {
 		try {
 			const user = await agent.User.login(data);
 			this.setToken(user.accessToken);
-			runInAction(() => {
-				this.user = user;
-			});
 			history.push('/movies');
 		} catch (error) {
 			return { [FORM_ERROR]: error.response.data.message };

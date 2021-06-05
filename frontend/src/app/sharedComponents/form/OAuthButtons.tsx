@@ -22,7 +22,7 @@ const OAuthButtons: React.FC<IProps> = ({ disabled }) => {
 
 	useEffect(() => {
 		if (!link42 && !linkGithub) getLinks();
-	}, [link42, linkGithub]);
+	}, [getLinks, link42, linkGithub]);
 
 	const clickedGithub = (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
