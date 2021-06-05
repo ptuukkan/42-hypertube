@@ -1,15 +1,8 @@
 import { IMovie } from 'app/models/movie';
+import BrowseLoader from 'app/sharedComponents/loader/BrowseLoader';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-	Dimmer,
-	Header,
-	Item,
-	Label,
-	Rating,
-	Segment,
-	Loader,
-} from 'semantic-ui-react';
+import { Header, Item, Label, Rating, Segment } from 'semantic-ui-react';
 
 export interface BrowseProps {
 	movies: IMovie[];
@@ -19,9 +12,7 @@ export interface BrowseProps {
 const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
 	return (
 		<Segment>
-			<Dimmer active={loading} inverted>
-				<Loader size="large">Searching</Loader>
-			</Dimmer>
+			{loading && <BrowseLoader />}
 
 			{movies.length === 0 ? (
 				<Header>No results</Header>
