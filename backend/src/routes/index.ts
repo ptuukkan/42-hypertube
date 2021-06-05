@@ -1,16 +1,19 @@
 import { Application } from 'express';
-import movieRouter from 'routes/movie';
+import movieRouter from 'routes/private/movie';
+import preAuthRouter from 'routes/preAuth';
 import oAuthRouter from './oauth';
-import preAuthRouter from './preAuth';
+import { checkAccessToken } from 'middleware/checkAccessToken';
+import { accessTokenController } from 'controllers/accessToken';
+import userRouter from 'routes/private/user';
 
 const mountRoutes = (app: Application): void => {
 	// Public routes
-	app.use('/api/preAuth/', preAuthRouter);
+	app.use('/api/pre-auth/', preAuthRouter);
 	app.use('/api/auth/', oAuthRouter);
-
+	app.post('/api/accessToken', accessTokenController);
 	// Private routes
-	// TODO add isAuth middleware
-	app.use('/api/movies', movieRouter);
+	app.use('/api/movies', checkAccessToken, movieRouter);
+	app.use('/api/user', checkAccessToken, userRouter);
 };
 
 export default mountRoutes;

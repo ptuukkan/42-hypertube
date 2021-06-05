@@ -26,9 +26,8 @@ const Movie = () => {
 	const { movie, getMovie } = rootStore.movieStore;
 
 	useEffect(() => {
-		if (movie === null || movie.imdb !== id) {
-			getMovie(id).then(() => setLoading(false));
-		}
+		if (movie === null || movie.imdb !== id) getMovie(id);
+		if (movie && movie.imdb === id) setLoading(false);
 	}, [id, getMovie, movie]);
 
 	if (loading)

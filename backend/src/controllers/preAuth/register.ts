@@ -1,5 +1,5 @@
-import { IUser } from './../../models/user';
-import { LinkType, ILink } from './../../models/link';
+import { IUser } from 'models/user';
+import { LinkType, ILink } from 'models/link';
 import asyncHandler from 'express-async-handler';
 import Usermodel, { IUserDocument } from 'models/user';
 import { sendConfirmAccountEmail } from 'utils/email';

@@ -1,3 +1,8 @@
+import {
+	addRefreshTokenToRes,
+	createRefreshToken,
+	createAccessToken,
+} from 'application/tokens';
 import LinkModel, { ILink, LinkType } from 'models/link';
 import UserModel from 'models/user';
 import { BadRequest } from 'http-errors';
@@ -31,7 +36,7 @@ export const validResetCodeController = (req: Request, res: Response): void => {
 	const code = req.params.code;
 	const APP_URL = process.env.REACT_APP_BASE_URL!;
 
-	res.redirect(302, `${APP_URL}reset-password/${code}`);
+	res.redirect(302, `${APP_URL}/reset-password/${code}`);
 };
 
 export const resetPasswordController = asyncHandler(async (req, res) => {
@@ -48,9 +53,11 @@ export const resetPasswordController = asyncHandler(async (req, res) => {
 
 	// Throws error if password does not meet requirements
 	await user.checkAndUpdatePassword(password);
+	user.tokenVersion! += 1;
 
 	await LinkModel.deleteOne({ code, user: user.id, linkType: LinkType.RESET });
 
-	// TODO return accessToken
-	res.json({ status: 'OK', accessToken: '' });
+	// Set refreshToken cookie and return accessToken
+	addRefreshTokenToRes(res, createRefreshToken(user));
+	res.json({ status: 'OK', accessToken: createAccessToken(user) });
 });

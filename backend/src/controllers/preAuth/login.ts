@@ -1,7 +1,13 @@
+import {
+	addRefreshTokenToRes,
+	createRefreshToken,
+	createAccessToken,
+	revokeRefreshToken,
+} from 'application/tokens';
 import asyncHandler from 'express-async-handler';
-import jwt from 'jsonwebtoken';
 import { Unauthorized } from 'http-errors';
 import Usermodel, { IUserDocument } from 'models/user';
+import { Request, Response } from 'express';
 
 export const loginController = asyncHandler(async (req, res) => {
 	const { username, password } = req.body;
@@ -17,11 +23,12 @@ export const loginController = asyncHandler(async (req, res) => {
 	if (!(await user.isPasswordValid(password)))
 		throw new Unauthorized('Wrong password.');
 
-	const jwtUser = {
-		username: user.username,
-		id: user.id,
-	};
-
-	const token = process.env.SECRET && jwt.sign(jwtUser, process.env.SECRET);
-	res.json({ accessToken: token });
+	// Set refreshToken cookie and return accessToken
+	addRefreshTokenToRes(res, createRefreshToken(user));
+	res.json({ status: 'OK', accessToken: createAccessToken(user) });
 });
+
+export const logoutController = (_req: Request, res: Response): void => {
+	revokeRefreshToken(res);
+	res.status(200).json({ status: 'OK' });
+};

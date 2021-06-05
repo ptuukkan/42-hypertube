@@ -25,6 +25,7 @@ const App = () => {
 	const urlParams = new URLSearchParams(search);
 	const emailStatus = urlParams.get('confirm-email');
 	const oAuthError = urlParams.get('oauth-error');
+	const tokenError = urlParams.get('error-token');
 
 	useEffect(() => {
 		if (emailStatus) {
@@ -41,6 +42,16 @@ const App = () => {
 		}
 	}, [oAuthError]);
 
+	useEffect(() => {
+		if (tokenError) {
+			setMessage(tokenError);
+			setTimeout(() => setMessage(''), 4000);
+		}
+	}, [tokenError]);
+
+	const isMessageNegative =
+		emailStatus === 'error' || oAuthError !== null || tokenError !== null;
+
 	return (
 		<Container>
 			<Navigation token={token} />
@@ -48,7 +59,7 @@ const App = () => {
 				<Message
 					style={{ marginTop: 65 }}
 					success={emailStatus === 'success'}
-					negative={emailStatus === 'error' || oAuthError !== null}
+					negative={isMessageNegative}
 				>
 					{message}
 				</Message>
