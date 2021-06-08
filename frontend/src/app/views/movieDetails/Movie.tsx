@@ -65,7 +65,7 @@ const Movie = () => {
 								)}
 								{typeof movie.actors === 'string' && <div>{movie.actors}</div>}
 								{typeof movie.actors === 'object' &&
-									(movie.actors as IActorObj[]).map((actor) => (
+									movie.actors.map((actor: IActorObj) => (
 										<Label
 											image
 											key={actor.imdb_code}
