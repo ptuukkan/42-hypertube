@@ -1,4 +1,4 @@
-name: Lint
+name: Frontend-Lint
 on: push
 jobs:
   run-lint:
