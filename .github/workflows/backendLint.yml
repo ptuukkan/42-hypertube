@@ -1,4 +1,4 @@
-name: Lint
+name: Backend-Lint
 on: push
 jobs:
   run-lint:
@@ -18,9 +18,3 @@ jobs:
       - name: Run backend linters
         run: npm run lint
         working-directory: ./backend
-      - name: Dependencies for frontend
-        run: npm ci
-        working-directory: ./frontend
-      - name: Run frontend linters
-        run: npm run lint
-        working-directory: ./frontend
