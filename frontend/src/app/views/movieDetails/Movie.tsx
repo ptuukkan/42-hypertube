@@ -1,4 +1,5 @@
 import React from 'react';
+import MovieLoader from 'app/views/movieDetails/MovieLoader';
 import { RootStoreContext } from 'app/stores/rootStore';
 import { observer } from 'mobx-react-lite';
 import { useContext, useEffect, useState } from 'react';
@@ -10,16 +11,16 @@ import {
 	ItemExtra,
 	Rating,
 	Segment,
-	Image,
 	Header,
-	Dimmer,
-	Loader,
 	Embed,
+	Label,
 } from 'semantic-ui-react';
+import { IActorObj } from 'app/models/movie';
 
 interface IParams {
 	id: string;
 }
+
 const Movie = () => {
 	const { id } = useParams<IParams>();
 	const rootStore = useContext(RootStoreContext);
@@ -27,17 +28,11 @@ const Movie = () => {
 	const { movie, getMovie } = rootStore.movieStore;
 
 	useEffect(() => {
-		if (movie === null || movie.imdb !== id) {
-			getMovie(id).then(() => setLoading(false));
-		}
+		if (movie === null || movie.imdb !== id) getMovie(id);
+		if (movie && movie.imdb === id) setLoading(false);
 	}, [id, getMovie, movie]);
 
-	if (loading)
-		return (
-			<Dimmer active={loading} inverted>
-				<Loader size="large">Loading</Loader>
-			</Dimmer>
-		);
+	if (loading) return <MovieLoader />;
 
 	return (
 		movie && (
@@ -62,27 +57,28 @@ const Movie = () => {
 								/>
 								<ItemExtra>Directed by: {movie.director}</ItemExtra>
 								<ItemExtra>Runtime: {movie.runtime} min</ItemExtra>
-								<Item.Content>{movie.year}</Item.Content>
+								<Item.Content>Year: {movie.year}</Item.Content>
 								<Item.Meta>{movie.summary}</Item.Meta>
-								<Grid>
-									<Grid.Row columns={4}>
-										{movie.actors.map((actor) => (
-											<GridColumn key={actor.name}>
-												<Image
-													src={actor.url_small_image || '/NoImage.png'}
-													fluid
-												/>
-												<Item.Content
-													as="a"
-													href={`https://www.imdb.com/name/nm${actor.imdb_code}`}
-												>
-													{actor.name} as {actor.character_name}
-												</Item.Content>
-											</GridColumn>
-										))}
-									</Grid.Row>
-									<ItemExtra>Written by: {movie.writer}</ItemExtra>
-								</Grid>
+								<ItemExtra>Written by: {movie.writer}</ItemExtra>
+								{typeof movie.actors !== 'undefined' && (
+									<Header as="h5">Actors:</Header>
+								)}
+								{typeof movie.actors === 'string' && <div>{movie.actors}</div>}
+								{typeof movie.actors === 'object' &&
+									(movie.actors as IActorObj[]).map((actor) => (
+										<Label
+											image
+											key={actor.imdb_code}
+											as="a"
+											href={`https://www.imdb.com/name/nm${actor.imdb_code}`}
+										>
+											<img
+												src={actor.url_small_image || '/NoImage.png'}
+												alt={actor.name}
+											/>
+											{` ${actor.name} `}
+										</Label>
+									))}
 							</Item.Content>
 						</Grid.Column>
 					</Grid.Row>

@@ -16,12 +16,10 @@ export const passwordComplexity = (
 		succeeded: false,
 		type: 'PASSWORD_COMPLEXITY',
 		message:
-			'Must have at least 1 lowercase, 1 uppercase, 1 number, and 1 special character',
+			'Min length is 4 charcters. Must have letters and at least 1 number.',
 	};
 
-	const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#$*?_])/;
-
-	if (regex.exec(value)) {
+	if (/[A-Za-z]+/.test(value) && /\d+/.test(value)) {
 		validationResult.succeeded = true;
 		validationResult.message = '';
 	}

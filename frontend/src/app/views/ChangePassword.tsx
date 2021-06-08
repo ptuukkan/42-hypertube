@@ -16,8 +16,6 @@ import {
 } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
 import { IResetPassword } from 'app/models/user';
-import agent from 'app/services/agent';
-import { FORM_ERROR } from 'final-form';
 import { observer } from 'mobx-react-lite';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import TextInput from 'app/sharedComponents/form/TextInput';
@@ -42,19 +40,13 @@ const formValidation = createFinalFormValidation(validationSchema);
 
 const ChangePassword = () => {
 	const rootStore = useContext(RootStoreContext);
-	const { success, setSuccess } = rootStore.userStore;
+	const { success, sendResetPassword } = rootStore.userStore;
 	const CloseChangePassword = () => history.push('/');
 
 	const { id } = useParams<IParams>();
 
-	const onSubmit = async (data: IResetPassword) => {
-		try {
-			await agent.User.reset(id, data);
-			setSuccess();
-		} catch (error) {
-			console.log(error);
-			return { [FORM_ERROR]: error.response.data.message };
-		}
+	const onSubmit = (data: IResetPassword) => {
+		sendResetPassword(data, id);
 	};
 
 	return (

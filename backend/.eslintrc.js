@@ -55,7 +55,7 @@ module.exports = {
 			},
 		],
 		semi: 'off',
-		'@typescript-eslint/semi': ['error'],
+		'@typescript-eslint/semi': ['warn'],
 		'@typescript-eslint/restrict-template-expressions': 'off',
 		'@typescript-eslint/no-unsafe-return': 'off',
 		'@typescript-eslint/no-unsafe-member-access': 'off',

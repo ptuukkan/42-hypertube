@@ -24,6 +24,7 @@ export interface IUser {
 	language?: string;
 	profilePicName?: string;
 	isConfirmed?: boolean;
+	tokenVersion?: number;
 }
 
 export interface IUserDocument extends IUser, Document {
@@ -87,6 +88,7 @@ const UserSchema = new Schema<IUserDocument>({
 	},
 	profilePicName: { type: String, default: 'blank-profile.png' },
 	isConfirmed: { type: Boolean, default: false },
+	tokenVersion: { type: Number, default: 0 },
 });
 
 /**
@@ -130,7 +132,10 @@ UserSchema.methods.checkAndUpdatePassword = async function (
 	await this.validate();
 	const salt = await genSalt(HASH_ROUNDS);
 	const hashPass = await hash(password, salt);
-	return this.updateOne({ password: hashPass });
+	return this.updateOne({
+		password: hashPass,
+		tokenVersion: this.tokenVersion! + 1,
+	});
 };
 
 UserSchema.plugin(uniqueValidator);

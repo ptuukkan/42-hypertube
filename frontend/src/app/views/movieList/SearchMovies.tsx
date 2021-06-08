@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef, useEffect } from 'react';
 import { Input } from 'semantic-ui-react';
 
 export interface SearchMoviesProps {
@@ -12,13 +12,21 @@ const SearchMovies: React.FC<SearchMoviesProps> = ({
 	setQuery,
 	loading,
 }) => {
+	const inputRef: React.LegacyRef<Input> = createRef();
+
+	useEffect(() => {
+		if (!loading) inputRef.current?.focus();
+	}, [inputRef, loading]);
+
 	return (
 		<Input
 			loading={loading}
+			disabled={loading}
 			icon="search"
 			placeholder="Search..."
 			onChange={(e) => setQuery(e.target.value)}
 			value={searchQuery}
+			ref={inputRef}
 		/>
 	);
 };

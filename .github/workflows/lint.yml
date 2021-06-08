@@ -18,9 +18,9 @@ jobs:
       - name: Run backend linters
         run: npm run lint
         working-directory: ./backend
-      #- name: Dependencies for frontend
-      #  run: npm install
-      #  working-directory: ./frontend
-      #- name: Run frontend linters
-      #  run: npm run lint
-      #  working-directory: ./frontend
+      - name: Dependencies for frontend
+        run: npm install
+        working-directory: ./frontend
+      - name: Run frontend linters
+        run: npm run lint
+        working-directory: ./frontend
