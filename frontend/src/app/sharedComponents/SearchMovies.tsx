@@ -1,10 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from 'semantic-ui-react';
 
 export interface SearchMoviesProps {
 	setQuery: React.Dispatch<React.SetStateAction<string>>;
 	searchQuery: string;
-	loading: boolean
+	loading: boolean;
 }
 
 const SearchMovies: React.FC<SearchMoviesProps> = ({
@@ -12,15 +13,16 @@ const SearchMovies: React.FC<SearchMoviesProps> = ({
 	setQuery,
 	loading,
 }) => {
-	
+	const { t } = useTranslation();
+
 	return (
-			<Input
-				loading={loading}
-				icon="search"
-				placeholder="Search..."
-				onChange={(e) => setQuery(e.target.value)}
-				value={searchQuery}
-			/>
+		<Input
+			loading={loading}
+			icon="search"
+			placeholder={t('search')}
+			onChange={(e) => setQuery(e.target.value)}
+			value={searchQuery}
+		/>
 	);
 };
 

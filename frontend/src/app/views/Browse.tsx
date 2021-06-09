@@ -1,5 +1,6 @@
 import { IMovie } from 'app/models/movie';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
 	Dimmer,
@@ -17,14 +18,16 @@ export interface BrowseProps {
 }
 
 const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
+	const { t } = useTranslation();
+
 	return (
 		<Segment>
 			<Dimmer active={loading} inverted>
-				<Loader size="large">Searching</Loader>
+				<Loader size="large">{t('searching')}</Loader>
 			</Dimmer>
 
 			{movies.length === 0 ? (
-				<Header>No results</Header>
+				<Header>{t('no_results')}</Header>
 			) : (
 				<Item.Group divided>
 					{movies.map((movie) => (
@@ -45,7 +48,7 @@ const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
 								<Item.Description>
 									{movie.genres &&
 										movie.genres.map((genre, i) => (
-											<Label key={i}>{genre}</Label>
+											<Label key={i}>{t(genre.toLowerCase())}</Label>
 										))}
 								</Item.Description>
 							</Item.Content>

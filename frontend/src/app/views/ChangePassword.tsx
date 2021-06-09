@@ -22,6 +22,7 @@ import { observer } from 'mobx-react-lite';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import TextInput from 'app/sharedComponents/form/TextInput';
 import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
+import { useTranslation } from 'react-i18next';
 
 interface IParams {
 	id: string;
@@ -41,12 +42,14 @@ const validationSchema = {
 const formValidation = createFinalFormValidation(validationSchema);
 
 const ChangePassword = () => {
+	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { success, setSuccess } = rootStore.userStore;
 	const CloseChangePassword = () => history.push('/');
 
 	const { id } = useParams<IParams>();
 
+	// TODO user UserStore method!
 	const onSubmit = async (data: IResetPassword) => {
 		try {
 			await agent.User.reset(id, data);
@@ -70,28 +73,28 @@ const ChangePassword = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> Create a new password
+								<Image src="/logo_128.png" /> {t('enter_password')}
 							</Header>
 							<Segment stacked>
 								<Field
 									component={TextInput}
 									name="password"
 									type="password"
-									placeholder="New Password"
+									placeholder={t('new_password')}
 								/>
 								{submitError && !dirtySinceLastSubmit && (
 									<ErrorMessage message={submitError} />
 								)}
 								<Button color="teal" fluid size="large">
-									Restore
+									{t('change')}
 								</Button>
 							</Segment>
 						</Grid.Column>
 						<Dimmer active={success} onClickOutside={CloseChangePassword} page>
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
-								Password changed
-								<Header.Subheader>You can login now</Header.Subheader>
+								{t('password_changed')}
+								<Header.Subheader>{t('you_can_login')}</Header.Subheader>
 							</Header>
 						</Dimmer>
 					</Form>

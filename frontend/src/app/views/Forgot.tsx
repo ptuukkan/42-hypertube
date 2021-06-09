@@ -17,6 +17,7 @@ import TextInput from 'app/sharedComponents/form/TextInput';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import { RootStoreContext } from '../stores/rootStore';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 const validationSchema = {
 	field: {
@@ -27,6 +28,7 @@ const validationSchema = {
 const formValidation = createFinalFormValidation(validationSchema);
 
 const Forgot = () => {
+	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { forgetPassword, success } = rootStore.userStore;
 	const CloseForgot = () => history.push('/');
@@ -43,27 +45,29 @@ const Forgot = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> Restore your password
+								<Image src="/logo_128.png" /> {t('request_password')}
 							</Header>
 							<Segment stacked>
 								<Field
 									component={TextInput}
 									name="email"
-									placeholder="Email address"
+									placeholder={t('email')}
 								/>
 								{submitError && !dirtySinceLastSubmit && (
 									<ErrorMessage message={submitError} />
 								)}
 								<Button color="teal" fluid size="large">
-									Restore
+									{t('request')}
 								</Button>
 							</Segment>
 						</Grid.Column>
 						<Dimmer active={success} onClickOutside={CloseForgot} page>
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
-								Restore link is on it's way...!
-								<Header.Subheader>just wait...!</Header.Subheader>
+								{t('request_success_title')}
+								<Header.Subheader>
+									{t('request_success_description')}
+								</Header.Subheader>
 							</Header>
 						</Dimmer>
 					</Form>

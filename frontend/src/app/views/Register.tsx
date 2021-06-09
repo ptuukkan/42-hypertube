@@ -21,7 +21,9 @@ import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import { observer } from 'mobx-react-lite';
 import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
 import TextInput from 'app/sharedComponents/form/TextInput';
+import { useTranslation } from 'react-i18next';
 
+// TODO add others required too! + move to component so can translate!
 const validationSchema = {
 	field: {
 		email: [Validators.required.validator, Validators.email.validator],
@@ -39,6 +41,7 @@ const formValidation = createFinalFormValidation(validationSchema);
 export interface RegisterProps {}
 
 const Register: React.FC<RegisterProps> = () => {
+	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { registerUser, success } = rootStore.userStore;
 	const CloseRegister = () => history.push('/');
@@ -61,52 +64,54 @@ const Register: React.FC<RegisterProps> = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> Register your account
+								<Image src="/logo_128.png" /> {t('register_title')}
 							</Header>
 							<Segment stacked>
 								<Field
 									component={TextInput}
 									name="email"
-									placeholder="Email address"
+									placeholder={t('email')}
 								/>
 								<Field
 									name="username"
-									placeholder="Username"
+									placeholder={t('username')}
 									component={TextInput}
 								/>
 								<Field
 									name="firstName"
-									placeholder="First name"
+									placeholder={t('first_name')}
 									component={TextInput}
 								/>
 								<Field
 									name="lastName"
-									placeholder="Last name"
+									placeholder={t('last_name')}
 									component={TextInput}
 								/>
 								<Field
 									type="password"
 									name="password"
-									placeholder="Password"
+									placeholder={t('password')}
 									component={TextInput}
 								/>
 								{submitError && !dirtySinceLastSubmit && (
 									<ErrorMessage message={submitError} />
 								)}
 								<Button disabled={submitting} color="teal" fluid size="large">
-									Register
+									{t('register')}
 								</Button>
 								<OAuthButtons disabled={submitting} />
 							</Segment>
 							<Message>
-								Have account? <Link to="/login">Login</Link>
+								{t('have_account')} <Link to="/login">{t('login')}</Link>
 							</Message>
 						</Grid.Column>
 						<Dimmer active={success} onClickOutside={CloseRegister} page>
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
-								Registeration success!
-								<Header.Subheader>please check your email!</Header.Subheader>
+								{t('register_success_title')}
+								<Header.Subheader>
+									{t('register_success_description')}
+								</Header.Subheader>
 							</Header>
 						</Dimmer>
 					</Form>

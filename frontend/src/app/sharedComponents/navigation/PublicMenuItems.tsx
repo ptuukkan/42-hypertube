@@ -11,10 +11,10 @@ const PublicMenuItems: React.FC<PublicMenuItemsProps> = () => {
 	return (
 		<Menu.Menu position="right">
 			<Menu.Item as={Link} to="/register">
-				{t('nav_register')}
+				{t('register')}
 			</Menu.Item>
 			<Menu.Item as={Link} to="/login">
-				{t('nav_login')}
+				{t('login')}
 			</Menu.Item>
 			<LanguageSelector />
 		</Menu.Menu>
