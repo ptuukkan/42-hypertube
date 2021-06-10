@@ -37,8 +37,8 @@ const NotFound: React.FC<void> = () => {
 					as={Link}
 					to={token ? '/movies' : '/'}
 					size="huge"
-					content={'Main page'}
-				></Button>
+					content="Main page"
+				/>
 			</Container>
 		</Segment>
 	);

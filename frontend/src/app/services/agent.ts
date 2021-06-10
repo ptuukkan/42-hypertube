@@ -29,15 +29,17 @@ const authConf = (token: string) => ({
 
 const requests = {
 	get: (url: string) => axios.get(url).then(responseBody),
-	post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
-	put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
+	post: (url: string, body: Record<string, any>) =>
+		axios.post(url, body).then(responseBody),
+	put: (url: string, body: Record<string, any>) =>
+		axios.put(url, body).then(responseBody),
 	getAuth: (url: string, token: string) =>
 		axios.get(url, authConf(token)).then(responseBody),
 	deleteAuth: (url: string, token: string) =>
 		axios.delete(url, authConf(token)).then(responseBody),
-	postAuth: (url: string, token: string, body: {}) =>
+	postAuth: (url: string, token: string, body: Record<string, any>) =>
 		axios.post(url, body, authConf(token)).then(responseBody),
-	putAuth: (url: string, token: string, body: {}) =>
+	putAuth: (url: string, token: string, body: Record<string, any>) =>
 		axios.put(url, body, authConf(token)).then(responseBody),
 };
 

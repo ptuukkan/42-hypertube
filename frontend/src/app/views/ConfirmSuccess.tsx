@@ -1,11 +1,7 @@
-import React from "react";
-import { Message, Segment } from "semantic-ui-react";
+import React from 'react';
+import { Message, Segment } from 'semantic-ui-react';
 
-export interface ConfirmSuccessProps {
-
-}
-
-const ConfirmSuccess: React.FC<ConfirmSuccessProps> = () => {
+const ConfirmSuccess: React.FC = () => {
 	return (
 		<Segment style={{ minHeight: 500, padding: 60 }}>
 			<Message success content="Account verified!" />

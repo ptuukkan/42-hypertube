@@ -1,3 +1,5 @@
+import { ValidationResult } from '@lemoncode/fonk';
+
 interface IFieldValidatorArgs {
 	value: any;
 	values?: any;
@@ -5,7 +7,9 @@ interface IFieldValidatorArgs {
 	message?: string | string[];
 }
 
-export const alphabetic = (fieldValidatorArgs: IFieldValidatorArgs) => {
+export const alphabetic = (
+	fieldValidatorArgs: IFieldValidatorArgs
+): ValidationResult => {
 	const { value } = fieldValidatorArgs;
 
 	const validationResult = {

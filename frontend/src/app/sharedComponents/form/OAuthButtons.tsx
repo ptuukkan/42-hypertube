@@ -51,7 +51,8 @@ const OAuthButtons: React.FC<IProps> = ({ disabled }) => {
 				size="large"
 				onClick={clickedGithub}
 			>
-				<Icon name="github" color="black" /> Continue with Github
+				<Icon name="github" color="black" />
+				Continue with Github
 			</Button>
 			<Divider hidden fitted />
 			<Button

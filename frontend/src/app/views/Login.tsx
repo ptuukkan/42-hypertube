@@ -31,11 +31,9 @@ const validationSchema = {
 	},
 };
 
-export interface LoginProps {}
-
 const formValidation = createFinalFormValidation(validationSchema);
 
-const Login: React.FC<LoginProps> = () => {
+const Login: React.FC = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { loginUser } = rootStore.userStore;
 
@@ -57,7 +55,8 @@ const Login: React.FC<LoginProps> = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> Login
+								<Image src="/logo_128.png" />
+								Login
 							</Header>
 							<Segment stacked>
 								<Field
@@ -80,9 +79,10 @@ const Login: React.FC<LoginProps> = () => {
 								<OAuthButtons disabled={submitting} />
 							</Segment>
 							<Message>
-								Need an account? <Link to="/register">Register</Link>
-								<Divider />
-								Forgot your password? <Link to="/forgot">Forgot</Link>
+								Need an account?
+								<Link to="/register"> Register</Link>
+								<Divider /> Forgot your password?
+								<Link to="/forgot"> Forgot</Link>
 							</Message>
 						</Grid.Column>
 					</Form>

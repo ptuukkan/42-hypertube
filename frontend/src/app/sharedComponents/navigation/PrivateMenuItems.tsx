@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { RootStoreContext } from 'app/stores/rootStore';
 import { Menu } from 'semantic-ui-react';
 
-const PrivateMenuItems = () => {
+const PrivateMenuItems: React.FC = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { logoutUser } = rootStore.userStore;
 

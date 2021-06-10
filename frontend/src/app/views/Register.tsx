@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Validators } from '@lemoncode/fonk';
+import { ValidationSchema, Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import { history } from '../..';
 import { Link } from 'react-router-dom';
@@ -22,7 +22,7 @@ import { observer } from 'mobx-react-lite';
 import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
 import TextInput from 'app/sharedComponents/form/TextInput';
 
-const validationSchema = {
+const validationSchema: ValidationSchema = {
 	field: {
 		email: [Validators.required.validator, Validators.email.validator],
 		password: [
@@ -36,9 +36,7 @@ const validationSchema = {
 
 const formValidation = createFinalFormValidation(validationSchema);
 
-export interface RegisterProps {}
-
-const Register: React.FC<RegisterProps> = () => {
+const Register: React.FC = () => {
 	const rootStore = useContext(RootStoreContext);
 	const { registerUser, success } = rootStore.userStore;
 	const CloseRegister = () => history.push('/');
@@ -61,7 +59,8 @@ const Register: React.FC<RegisterProps> = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> Register your account
+								<Image src="/logo_128.png" />
+								Register your account
 							</Header>
 							<Segment stacked>
 								<Field
@@ -99,13 +98,13 @@ const Register: React.FC<RegisterProps> = () => {
 								<OAuthButtons disabled={submitting} />
 							</Segment>
 							<Message>
-								Have account? <Link to="/login">Login</Link>
+								Have account?
+								<Link to="/login"> Login</Link>
 							</Message>
 						</Grid.Column>
 						<Dimmer active={success} onClickOutside={CloseRegister} page>
 							<Header as="h2" icon inverted>
-								<Icon name="heart" />
-								Registeration success!
+								<Icon name="heart" /> Registeration success!
 								<Header.Subheader>please check your email!</Header.Subheader>
 							</Header>
 						</Dimmer>

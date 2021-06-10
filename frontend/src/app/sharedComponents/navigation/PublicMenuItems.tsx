@@ -2,9 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Menu } from 'semantic-ui-react';
 
-export interface PublicMenuItemsProps {}
-
-const PublicMenuItems: React.FC<PublicMenuItemsProps> = () => {
+const PublicMenuItems: React.FC = () => {
 	return (
 		<Menu.Menu position="right">
 			<Menu.Item as={Link} to="/register">

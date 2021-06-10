@@ -1,5 +1,5 @@
 import { IMovie } from 'app/models/movie';
-import BrowseLoader from 'app/sharedComponents/loader/BrowseLoader';
+import BrowseLoader from 'app/views/movieList/BrowseLoader';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Item, Label, Rating, Segment } from 'semantic-ui-react';
@@ -35,8 +35,8 @@ const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
 								</Item.Meta>
 								<Item.Description>
 									{movie.genres &&
-										movie.genres.map((genre, i) => (
-											<Label key={i}>{genre}</Label>
+										movie.genres.map((genre) => (
+											<Label key={genre}>{genre}</Label>
 										))}
 								</Item.Description>
 							</Item.Content>

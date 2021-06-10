@@ -5,9 +5,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Route, Redirect, RouteProps, useLocation } from 'react-router-dom';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
-interface IProps extends RouteProps {}
-
-const OAuthRoute: React.FC<IProps> = ({ ...rest }) => {
+const OAuthRoute: React.FC<RouteProps> = ({ ...rest }) => {
 	const rootStore = useContext(RootStoreContext);
 	const { setToken } = rootStore.userStore;
 	const [loading, setLoading] = useState(true);

@@ -1,4 +1,5 @@
-import MovieLoader from 'app/sharedComponents/loader/MovieLoader';
+import React from 'react';
+import MovieLoader from 'app/views/movieDetails/MovieLoader';
 import { RootStoreContext } from 'app/stores/rootStore';
 import { observer } from 'mobx-react-lite';
 import { useContext, useEffect, useState } from 'react';
@@ -17,6 +18,7 @@ import {
 	Dimmer,
 	Image,
 } from 'semantic-ui-react';
+import { IActorObj } from 'app/models/movie';
 
 interface IParams {
 	id: string;
@@ -91,15 +93,15 @@ const Movie = () => {
 								<Item.Content>Year: {movie.year}</Item.Content>
 								<Item.Meta>{movie.summary}</Item.Meta>
 								<ItemExtra>Written by: {movie.writer}</ItemExtra>
-								{typeof movie.actors !== undefined && (
+								{typeof movie.actors !== 'undefined' && (
 									<Header as="h5">Actors:</Header>
 								)}
 								{typeof movie.actors === 'string' && <div>{movie.actors}</div>}
 								{typeof movie.actors === 'object' &&
-									movie.actors.map((actor: any, imdb_code: any) => (
+									movie.actors.map((actor: IActorObj) => (
 										<Label
 											image
-											key={imdb_code}
+											key={actor.imdb_code}
 											as="a"
 											href={`https://www.imdb.com/name/nm${actor.imdb_code}`}
 										>

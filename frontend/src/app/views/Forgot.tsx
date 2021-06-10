@@ -43,7 +43,8 @@ const Forgot = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> Restore your password
+								<Image src="/logo_128.png" />
+								Restore your password
 							</Header>
 							<Segment stacked>
 								<Field
@@ -62,7 +63,7 @@ const Forgot = () => {
 						<Dimmer active={success} onClickOutside={CloseForgot} page>
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
-								Restore link is on it's way...!
+								Restore link is on it&apos;s way...!
 								<Header.Subheader>just wait...!</Header.Subheader>
 							</Header>
 						</Dimmer>
