@@ -18,7 +18,7 @@ export default class OAuthStore {
 		makeAutoObservable(this);
 	}
 
-	getLinks = async () => {
+	getLinks = async (): Promise<void> => {
 		try {
 			const dataGithub = await agent.OAuth.getGithubLink();
 			const data42 = await agent.OAuth.get42Link();
@@ -31,7 +31,7 @@ export default class OAuthStore {
 		}
 	};
 
-	setLinkClicked = (type: LinkType) => {
+	setLinkClicked = (type: LinkType): void => {
 		localStorage.setItem(OAuthStore.ITEM_NAME, type);
 	};
 

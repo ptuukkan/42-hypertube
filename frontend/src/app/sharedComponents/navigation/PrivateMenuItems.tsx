@@ -5,7 +5,7 @@ import { Menu } from 'semantic-ui-react';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from 'react-i18next';
 
-const PrivateMenuItems = () => {
+const PrivateMenuItems: React.FC = () => {
 	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { logoutUser } = rootStore.userStore;

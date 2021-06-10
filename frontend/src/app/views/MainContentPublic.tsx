@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Header, Segment, Container, Button } from 'semantic-ui-react';
@@ -40,7 +41,7 @@ const MainContentPublic: React.FC<IProps> = ({ token }) => {
 					to={token ? '/movies' : '/register'}
 					size="huge"
 					content={token ? t('landing_btn_browse') : t('landing_btn_start')}
-				></Button>
+				/>
 			</Container>
 		</Segment>
 	);

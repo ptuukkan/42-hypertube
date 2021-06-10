@@ -1,8 +1,8 @@
-name: Lint
+name: Frontend-Lint
 on: push
 jobs:
   run-lint:
-    name: Run lint
+    name: Run frontend linters
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -12,15 +12,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
-      - name: Dependencies for backend
-        run: npm ci
-        working-directory: ./backend
-      - name: Run backend linters
-        run: npm run lint
-        working-directory: ./backend
       - name: Dependencies for frontend
         run: npm ci
         working-directory: ./frontend
-      - name: Run frontend linters
+      - name: Run linters
         run: npm run lint
         working-directory: ./frontend

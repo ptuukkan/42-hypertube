@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Validators } from '@lemoncode/fonk';
+import { ValidationSchema, Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import { history } from '../..';
 import { Link } from 'react-router-dom';
@@ -24,7 +24,7 @@ import TextInput from 'app/sharedComponents/form/TextInput';
 import { useTranslation } from 'react-i18next';
 
 // TODO add others required too! + move to component so can translate!
-const validationSchema = {
+const validationSchema: ValidationSchema = {
 	field: {
 		email: [Validators.required.validator, Validators.email.validator],
 		password: [
@@ -38,9 +38,7 @@ const validationSchema = {
 
 const formValidation = createFinalFormValidation(validationSchema);
 
-export interface RegisterProps {}
-
-const Register: React.FC<RegisterProps> = () => {
+const Register: React.FC = () => {
 	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { registerUser, success } = rootStore.userStore;
@@ -64,7 +62,8 @@ const Register: React.FC<RegisterProps> = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> {t('register_title')}
+								<Image src="/logo_128.png" />
+								{t('register_title')}
 							</Header>
 							<Segment stacked>
 								<Field

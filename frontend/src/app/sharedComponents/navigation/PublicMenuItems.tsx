@@ -4,10 +4,9 @@ import { Link } from 'react-router-dom';
 import { Menu } from 'semantic-ui-react';
 import LanguageSelector from './LanguageSelector';
 
-export interface PublicMenuItemsProps {}
-
-const PublicMenuItems: React.FC<PublicMenuItemsProps> = () => {
+const PublicMenuItems: React.FC = () => {
 	const { t } = useTranslation();
+
 	return (
 		<Menu.Menu position="right">
 			<Menu.Item as={Link} to="/register">

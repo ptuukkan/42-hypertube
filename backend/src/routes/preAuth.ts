@@ -1,4 +1,4 @@
-import { checkCode } from './../middleware/checkCode';
+import { checkCode } from 'middleware/checkCode';
 import { confirmUserController } from 'controllers/preAuth/confirmUser';
 import { loginController } from 'controllers/preAuth/login';
 import { registerController } from 'controllers/preAuth/register';

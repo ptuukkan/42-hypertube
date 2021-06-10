@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Container, Menu, Image, Popup, Icon } from 'semantic-ui-react';
@@ -17,13 +17,13 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	return (
-		<Fragment>
+		<>
 			<Menu fixed="top">
 				<Container>
 					<Menu.Item as={Link} to={token ? '/movies' : '/'} header>
 						<Image
 							size="small"
-							src={'./logo_128.png'}
+							src="./logo_128.png"
 							floated="left"
 							style={{ marginRight: '1em', maxWidth: 60 }}
 						/>
@@ -90,7 +90,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 							)}
 						</Popup>
 						{token && (
-							<Menu.Item as={Link} to="/" name="logout" onClick={logoutUser}>
+							<Menu.Item onClick={logoutUser}>
 								<Icon name="times" />
 								{t('logout')}
 							</Menu.Item>
@@ -98,7 +98,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 					</Menu.Menu>
 				</Container>
 			</Menu>
-		</Fragment>
+		</>
 	);
 };
 

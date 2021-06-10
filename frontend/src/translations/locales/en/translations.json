@@ -63,5 +63,11 @@
 	"sport": "Sport",
 	"film-noir": "Film-Noir",
 	"short": "Short",
-	"adult": "Adult"
+	"adult": "Adult",
+	"movie_loading": "Loading {{movieName}}",
+	"directed": "Directed by: {{director}}",
+	"runtime": "Runtime: {{time}} min",
+	"year": "Year: {{year}}",
+	"written": "Written by: {{writer}}",
+	"actors": "Actors:"
 }

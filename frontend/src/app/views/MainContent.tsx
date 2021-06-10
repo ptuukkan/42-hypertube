@@ -1,28 +1,35 @@
-import { IMovie } from 'app/models/movie';
-import SearchMovies from 'app/sharedComponents/SearchMovies';
-import React, { useEffect, useState } from 'react';
+import SearchMovies from 'app/views/movieList/SearchMovies';
+import { RootStoreContext } from 'app/stores/rootStore';
+import { observer } from 'mobx-react-lite';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Segment } from 'semantic-ui-react';
-import agent from '../services/agent';
-import Browse from './Browse';
+import Browse from './movieList/Browse';
 
 const MainContent: React.FC = () => {
-	const [movies, setMovies] = useState<IMovie[]>([]);
-	const [lastQuery, setLastQuery] = useState('');
-	const [searchQuery, setQuery] = useState('');
+	const rootStore = useContext(RootStoreContext);
+	const { getMovies, movies, savedSearch } = rootStore.movieStore;
+	const searchTimer = useRef<NodeJS.Timeout>();
+	const [searchQuery, setQuery] = useState(savedSearch);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		if (movies.length === 0 || searchQuery !== lastQuery) {
+		if (movies.count !== 0 || savedSearch !== '') return;
+		setLoading(true);
+		getMovies(searchQuery).then(() => setLoading(false));
+	}, [getMovies, movies.count, savedSearch, searchQuery]);
+
+	useEffect(() => {
+		if (savedSearch === '' && searchQuery === '') return;
+		if (savedSearch && searchQuery === savedSearch) return;
+		if (searchTimer.current) clearTimeout(searchTimer.current!);
+		searchTimer.current = setTimeout(() => {
 			setLoading(true);
-			agent.Movies.search(searchQuery)
-				.then((movies) => setMovies(movies.movies))
-				.catch((e) => console.log(e))
-				.finally(() => {
-					setLoading(false);
-					setLastQuery(searchQuery);
-				});
-		}
-	}, [movies.length, searchQuery, lastQuery]);
+			getMovies(searchQuery).then(() => setLoading(false));
+		}, 700);
+		return () => {
+			if (searchTimer.current) clearTimeout(searchTimer.current!);
+		};
+	}, [searchQuery, getMovies, savedSearch]);
 
 	return (
 		<Segment style={{ minHeight: 500, padding: 60 }}>
@@ -31,9 +38,9 @@ const MainContent: React.FC = () => {
 				searchQuery={searchQuery}
 				loading={loading}
 			/>
-			<Browse loading={loading} movies={movies} />
+			<Browse loading={loading} movies={movies.movies} />
 		</Segment>
 	);
 };
 
-export default MainContent;
+export default observer(MainContent);

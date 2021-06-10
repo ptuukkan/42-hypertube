@@ -45,7 +45,8 @@ const Forgot = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> {t('request_password')}
+								<Image src="/logo_128.png" />
+								{t('request_password')}
 							</Header>
 							<Segment stacked>
 								<Field

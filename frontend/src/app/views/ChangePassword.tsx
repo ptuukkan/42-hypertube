@@ -2,7 +2,7 @@ import { history } from '../..';
 import { RootStoreContext } from 'app/stores/rootStore';
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Validators } from '@lemoncode/fonk';
+import { ValidationSchema, Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import {
 	Button,
@@ -16,8 +16,6 @@ import {
 } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
 import { IResetPassword } from 'app/models/user';
-import agent from 'app/services/agent';
-import { FORM_ERROR } from 'final-form';
 import { observer } from 'mobx-react-lite';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import TextInput from 'app/sharedComponents/form/TextInput';
@@ -28,7 +26,7 @@ interface IParams {
 	id: string;
 }
 
-const validationSchema = {
+const validationSchema: ValidationSchema = {
 	field: {
 		password: [
 			Validators.required.validator,
@@ -44,20 +42,13 @@ const formValidation = createFinalFormValidation(validationSchema);
 const ChangePassword = () => {
 	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
-	const { success, setSuccess } = rootStore.userStore;
+	const { success, sendResetPassword } = rootStore.userStore;
 	const CloseChangePassword = () => history.push('/');
 
 	const { id } = useParams<IParams>();
 
-	// TODO user UserStore method!
-	const onSubmit = async (data: IResetPassword) => {
-		try {
-			await agent.User.reset(id, data);
-			setSuccess();
-		} catch (error) {
-			console.log(error);
-			return { [FORM_ERROR]: error.response.data.message };
-		}
+	const onSubmit = (data: IResetPassword) => {
+		sendResetPassword(data, id);
 	};
 
 	return (
@@ -73,7 +64,8 @@ const ChangePassword = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" /> {t('enter_password')}
+								<Image src="/logo_128.png" />
+								{t('enter_password')}
 							</Header>
 							<Segment stacked>
 								<Field

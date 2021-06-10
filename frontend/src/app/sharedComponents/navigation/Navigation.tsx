@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Image } from 'semantic-ui-react';
 import { AppMedia } from '../AppMedia';
@@ -11,23 +12,21 @@ export interface NavigationProps {
 	token: string | null;
 }
 
-const Navigation: React.FC<NavigationProps> = ({
-	token,
-}) => {
+const Navigation: React.FC<NavigationProps> = ({ token }) => {
 	return (
 		<MediaContextProvider>
 			<Menu fixed="top" icon="labeled" borderless>
-				<Menu.Item as={Link} to={token ? "/movies" : "/"} header>
+				<Menu.Item as={Link} to={token ? '/movies' : '/'} header>
 					<Image
 						size="small"
-						src={'/logo_128.png'}
+						src="/logo_128.png"
 						floated="left"
 						style={{ marginRight: '1em', maxWidth: 50 }}
 					/>
 				</Menu.Item>
 				<Menu.Menu position="right">
 					<Media at="xs">
-						<MobileMenu token={token}/>
+						<MobileMenu token={token} />
 					</Media>
 					<Media greaterThanOrEqual="sm">
 						{token && <PrivateMenuItems />}

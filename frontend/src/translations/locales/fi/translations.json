@@ -63,5 +63,11 @@
 	"sport": "Urheilu",
 	"film-noir": "Film-Noir",
 	"short": "Lyhyt",
-	"adult": "Aikuis"
+	"adult": "Aikuis",
+	"movie_loading": "Lataan {{movieName}}",
+	"directed": "Ohjaaja: {{director}}",
+	"runtime": "Aika: {{time}} min",
+	"year": "Vuosi: {{year}}",
+	"written": "Kirjottaja: {{writer}}",
+	"actors": "Näyttelijät:"
 }

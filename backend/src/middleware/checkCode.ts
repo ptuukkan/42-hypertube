@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler';
-import LinkModel, { ILinkDocument, LinkType } from './../models/link';
+import LinkModel, { ILinkDocument, LinkType } from 'models/link';
 
 export const checkCode = asyncHandler(async (req, res, next) => {
 	const path: string = req.route.path.split('/')[1];

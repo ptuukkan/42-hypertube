@@ -40,7 +40,7 @@ const NotFound: React.FC<void> = () => {
 					to={token ? '/movies' : '/'}
 					size="huge"
 					content={t('main_page')}
-				></Button>
+				/>
 			</Container>
 		</Segment>
 	);

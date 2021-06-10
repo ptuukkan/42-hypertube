@@ -63,5 +63,11 @@
 	"sport": "Sport",
 	"film-noir": "Film-Noir",
 	"short": "Lühi",
-	"adult": "Täiskasvanu"
+	"adult": "Täiskasvanu",
+	"movie_loading": "Laen {{movieName}}",
+	"directed": "Režissöör: {{director}}",
+	"runtime": "Pikkus: {{time}} min",
+	"year": "Aasta: {{year}}",
+	"written": "Kirjutatud: {{writer}}",
+	"actors": "Näitlejad:"
 }
