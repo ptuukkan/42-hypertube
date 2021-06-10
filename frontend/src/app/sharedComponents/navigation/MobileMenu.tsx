@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Container, Menu, Image, Popup, Icon } from 'semantic-ui-react';
 import { RootStoreContext } from 'app/stores/rootStore';
+import LanguageSelector from './LanguageSelector';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
 	token: string | null;
 }
 
 const MobileMenu: React.FC<IProps> = ({ token }) => {
+	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { logoutUser } = rootStore.userStore;
 	const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +33,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 							trigger={
 								<Menu.Item>
 									<Icon name="bars" size="massive" />
-									Menu
+									{t('menu')}
 								</Menu.Item>
 							}
 							position="bottom center"
@@ -50,7 +53,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 										onClick={() => setMenuOpen(false)}
 									>
 										<Icon name="user circle" />
-										My Profile
+										{t('profile')}
 									</Menu.Item>
 									<Menu.Item
 										as={Link}
@@ -59,8 +62,9 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 										onClick={() => setMenuOpen(false)}
 									>
 										<Icon name="film" />
-										My movies
+										{t('movies')}
 									</Menu.Item>
+									<LanguageSelector isMobile />
 								</Menu>
 							)}
 							{!token && (
@@ -71,7 +75,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 										name="Login"
 										onClick={() => setMenuOpen(false)}
 									>
-										Login
+										{t('login')}
 									</Menu.Item>
 									<Menu.Item
 										as={Link}
@@ -79,15 +83,16 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 										name="Register"
 										onClick={() => setMenuOpen(false)}
 									>
-										Register
+										{t('register')}
 									</Menu.Item>
+									<LanguageSelector isMobile />
 								</Menu>
 							)}
 						</Popup>
 						{token && (
 							<Menu.Item onClick={logoutUser}>
 								<Icon name="times" />
-								Logout
+								{t('logout')}
 							</Menu.Item>
 						)}
 					</Menu.Menu>

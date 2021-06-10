@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import App from './app/layout/App';
 import { createBrowserHistory } from 'history';
 import { Router } from 'react-router';
+import './translations/i18n';
 
 export const history = createBrowserHistory();
 

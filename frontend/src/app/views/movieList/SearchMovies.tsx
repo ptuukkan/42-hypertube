@@ -1,4 +1,5 @@
 import React, { createRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from 'semantic-ui-react';
 
 export interface SearchMoviesProps {
@@ -12,6 +13,7 @@ const SearchMovies: React.FC<SearchMoviesProps> = ({
 	setQuery,
 	loading,
 }) => {
+	const { t } = useTranslation();
 	const inputRef: React.LegacyRef<Input> = createRef();
 
 	useEffect(() => {
@@ -23,7 +25,7 @@ const SearchMovies: React.FC<SearchMoviesProps> = ({
 			loading={loading}
 			disabled={loading}
 			icon="search"
-			placeholder="Search..."
+			placeholder={t('search')}
 			onChange={(e) => setQuery(e.target.value)}
 			value={searchQuery}
 			ref={inputRef}

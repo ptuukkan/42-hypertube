@@ -19,12 +19,14 @@ import {
 	Image,
 } from 'semantic-ui-react';
 import { IActorObj } from 'app/models/movie';
+import { useTranslation } from 'react-i18next';
 
 interface IParams {
 	id: string;
 }
 
 const Movie = () => {
+	const { t } = useTranslation();
 	const { id } = useParams<IParams>();
 	const rootStore = useContext(RootStoreContext);
 	const [loading, setLoading] = useState(true);
@@ -65,7 +67,9 @@ const Movie = () => {
 									}}
 								>
 									<Dimmer active={playerLoader} inverted>
-										<Loader>Loading {movie.title}</Loader>
+										<Loader>
+											{t('movie_loading', { movieName: movie.title })}
+										</Loader>
 									</Dimmer>
 									<Image src="/background.png" onClick={() => startPlay()} />
 								</Dimmer.Dimmable>
@@ -88,13 +92,15 @@ const Movie = () => {
 									maxRating={10}
 									rating={movie.rating}
 								/>
-								<ItemExtra>Directed by: {movie.director}</ItemExtra>
-								<ItemExtra>Runtime: {movie.runtime} min</ItemExtra>
-								<Item.Content>Year: {movie.year}</Item.Content>
+								<ItemExtra>
+									{t('directed', { director: movie.director })}
+								</ItemExtra>
+								<ItemExtra>{t('runtime', { time: movie.runtime })}</ItemExtra>
+								<Item.Content>{t('year', { year: movie.year })}</Item.Content>
 								<Item.Meta>{movie.summary}</Item.Meta>
-								<ItemExtra>Written by: {movie.writer}</ItemExtra>
+								<ItemExtra>{t('written', { writer: movie.writer })}</ItemExtra>
 								{typeof movie.actors !== 'undefined' && (
-									<Header as="h5">Actors:</Header>
+									<Header as="h5">{t('actors')}</Header>
 								)}
 								{typeof movie.actors === 'string' && <div>{movie.actors}</div>}
 								{typeof movie.actors === 'object' &&

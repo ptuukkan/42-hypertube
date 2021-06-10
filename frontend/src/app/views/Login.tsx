@@ -13,29 +13,28 @@ import {
 	Message,
 	Divider,
 } from 'semantic-ui-react';
-import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
+import { getTranslatedPasswordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
 import TextInput from 'app/sharedComponents/form/TextInput';
 import { RootStoreContext } from '../stores/rootStore';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
-
-const validationSchema = {
-	field: {
-		username: [Validators.required.validator],
-		password: [
-			Validators.required.validator,
-			{
-				validator: passwordComplexity,
-			},
-		],
-	},
-};
-
-const formValidation = createFinalFormValidation(validationSchema);
+import { useTranslation } from 'react-i18next';
 
 const Login: React.FC = () => {
+	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { loginUser } = rootStore.userStore;
+
+	const validationSchema = {
+		field: {
+			username: [Validators.required.validator],
+			password: [
+				Validators.required.validator,
+				{ validator: getTranslatedPasswordComplexity(t('password_error')) },
+			],
+		},
+	};
+	const formValidation = createFinalFormValidation(validationSchema);
 
 	return (
 		<FinalForm
@@ -56,33 +55,32 @@ const Login: React.FC = () => {
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
 								<Image src="/logo_128.png" />
-								Login
+								{t('login')}
 							</Header>
 							<Segment stacked>
 								<Field
 									component={TextInput}
 									name="username"
-									placeholder="username"
+									placeholder={t('username')}
 								/>
 								<Field
 									component={TextInput}
 									type="password"
 									name="password"
-									placeholder="Password"
+									placeholder={t('password')}
 								/>
 								{submitError && !dirtySinceLastSubmit && (
 									<ErrorMessage message={submitError} />
 								)}
 								<Button disabled={submitting} color="teal" fluid size="large">
-									Login
+									{t('login')}
 								</Button>
 								<OAuthButtons disabled={submitting} />
 							</Segment>
 							<Message>
-								Need an account?
-								<Link to="/register"> Register</Link>
-								<Divider /> Forgot your password?
-								<Link to="/forgot"> Forgot</Link>
+								{t('need_account')} <Link to="/register">{t('register')}</Link>
+								<Divider />
+								{t('forgot_password')} <Link to="/forgot">{t('reset')}</Link>
 							</Message>
 						</Grid.Column>
 					</Form>

@@ -2,10 +2,12 @@ import agent from 'app/services/agent';
 import { LinkType } from 'app/stores/oAuthStore';
 import { RootStoreContext } from 'app/stores/rootStore';
 import React, { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Route, Redirect, RouteProps, useLocation } from 'react-router-dom';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 const OAuthRoute: React.FC<RouteProps> = ({ ...rest }) => {
+	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { setToken } = rootStore.userStore;
 	const [loading, setLoading] = useState(true);
@@ -39,7 +41,7 @@ const OAuthRoute: React.FC<RouteProps> = ({ ...rest }) => {
 			render={() =>
 				loading ? (
 					<Dimmer active page>
-						<Loader content="Getting data..." size="massive" />
+						<Loader content={t('getting_data')} size="massive" />
 					</Dimmer>
 				) : error ? (
 					<Redirect to="/?oauth-error=Authentication+failed,+try+again+later." />

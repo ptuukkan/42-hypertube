@@ -10,12 +10,14 @@ import {
 import { RootStoreContext } from 'app/stores/rootStore';
 import { observer } from 'mobx-react-lite';
 import { LinkType } from 'app/stores/oAuthStore';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
 	disabled: boolean;
 }
 
 const OAuthButtons: React.FC<IProps> = ({ disabled }) => {
+	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { link42, linkGithub, getLinks, setLinkClicked } = rootStore.oAuthStore;
 	const [showDimmer, setShowDimmer] = useState(false);
@@ -42,7 +44,7 @@ const OAuthButtons: React.FC<IProps> = ({ disabled }) => {
 
 	return (
 		<>
-			<Divider horizontal>Or</Divider>
+			<Divider horizontal>{t('or')}</Divider>
 			<Button
 				disabled={disabled || !linkGithub}
 				fluid
@@ -51,8 +53,8 @@ const OAuthButtons: React.FC<IProps> = ({ disabled }) => {
 				size="large"
 				onClick={clickedGithub}
 			>
-				<Icon name="github" color="black" />
-				Continue with Github
+				<Icon name="github" color="black" />{' '}
+				{t('continue_with', { type: 'Github' })}
 			</Button>
 			<Divider hidden fitted />
 			<Button
@@ -64,10 +66,10 @@ const OAuthButtons: React.FC<IProps> = ({ disabled }) => {
 				onClick={clicked42}
 			>
 				<Image src="/42_logo.png" style={{ width: '16px' }} circular spaced />{' '}
-				Continue with 42
+				{t('continue_with', { type: '42' })}
 			</Button>
 			<Dimmer active={showDimmer} page>
-				<Loader content="Getting data..." size="massive" />
+				<Loader content={t('getting_data')} size="massive" />
 			</Dimmer>
 		</>
 	);
