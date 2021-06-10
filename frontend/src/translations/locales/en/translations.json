@@ -69,5 +69,6 @@
 	"runtime": "Runtime: {{time}} min",
 	"year": "Year: {{year}}",
 	"written": "Written by: {{writer}}",
-	"actors": "Actors:"
+	"actors": "Actors:",
+	"password_error": "Min length is 4 charcters. Must have letters and at least 1 number."
 }

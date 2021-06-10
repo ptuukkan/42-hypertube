@@ -69,5 +69,6 @@
 	"runtime": "Pikkus: {{time}} min",
 	"year": "Aasta: {{year}}",
 	"written": "Kirjutatud: {{writer}}",
-	"actors": "Näitlejad:"
+	"actors": "Näitlejad:",
+	"password_error": "Vähemalt 4 märki. Peab olema vähemalt tähti ja 1 number."
 }

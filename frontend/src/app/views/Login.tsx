@@ -13,32 +13,28 @@ import {
 	Message,
 	Divider,
 } from 'semantic-ui-react';
-import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
+import { getTranslatedPasswordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
 import TextInput from 'app/sharedComponents/form/TextInput';
 import { RootStoreContext } from '../stores/rootStore';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
 import { useTranslation } from 'react-i18next';
 
-// TODO move to component so can translate!
-const validationSchema = {
-	field: {
-		username: [Validators.required.validator],
-		password: [
-			Validators.required.validator,
-			{
-				validator: passwordComplexity,
-			},
-		],
-	},
-};
-
-const formValidation = createFinalFormValidation(validationSchema);
-
 const Login: React.FC = () => {
 	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { loginUser } = rootStore.userStore;
+
+	const validationSchema = {
+		field: {
+			username: [Validators.required.validator],
+			password: [
+				Validators.required.validator,
+				{ validator: getTranslatedPasswordComplexity(t('password_error')) },
+			],
+		},
+	};
+	const formValidation = createFinalFormValidation(validationSchema);
 
 	return (
 		<FinalForm

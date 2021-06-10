@@ -2,7 +2,7 @@ import { history } from '../..';
 import { RootStoreContext } from 'app/stores/rootStore';
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { ValidationSchema, Validators } from '@lemoncode/fonk';
+import { Validators } from '@lemoncode/fonk';
 import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import {
 	Button,
@@ -19,33 +19,30 @@ import { IResetPassword } from 'app/models/user';
 import { observer } from 'mobx-react-lite';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import TextInput from 'app/sharedComponents/form/TextInput';
-import { passwordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
+import { getTranslatedPasswordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
 import { useTranslation } from 'react-i18next';
 
 interface IParams {
 	id: string;
 }
 
-const validationSchema: ValidationSchema = {
-	field: {
-		password: [
-			Validators.required.validator,
-			{
-				validator: passwordComplexity,
-			},
-		],
-	},
-};
-
-const formValidation = createFinalFormValidation(validationSchema);
-
 const ChangePassword = () => {
 	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { success, sendResetPassword } = rootStore.userStore;
 	const CloseChangePassword = () => history.push('/');
-
 	const { id } = useParams<IParams>();
+
+	const validationSchema = {
+		field: {
+			username: [Validators.required.validator],
+			password: [
+				Validators.required.validator,
+				{ validator: getTranslatedPasswordComplexity(t('password_error')) },
+			],
+		},
+	};
+	const formValidation = createFinalFormValidation(validationSchema);
 
 	const onSubmit = (data: IResetPassword) => {
 		sendResetPassword(data, id);

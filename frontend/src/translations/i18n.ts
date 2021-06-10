@@ -28,7 +28,7 @@ export const languagesSelect = [
 	{ key: 'ee', value: 'ee', text: 'Eesti' },
 ];
 
-export const changeLanguage = (value: string) => {
+export const changeLanguage = (value: string): void => {
 	localStorage.setItem(LNG_ITEM_NAME, value);
 	i18n.changeLanguage(value);
 };

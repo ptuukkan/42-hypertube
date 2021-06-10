@@ -69,5 +69,6 @@
 	"runtime": "Aika: {{time}} min",
 	"year": "Vuosi: {{year}}",
 	"written": "Kirjottaja: {{writer}}",
-	"actors": "Näyttelijät:"
+	"actors": "Näyttelijät:",
+	"password_error": "Vähitään 4 merkkiä. Pitää olla kirjaimia ja vähintään yksi numero."
 }
