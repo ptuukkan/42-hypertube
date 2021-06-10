@@ -9,8 +9,8 @@ const PrivateMenuItems = () => {
 
 	return (
 		<Menu.Menu position="right">
-			<Menu.Item as={Link} to="/my_profile">
-				My Profile
+			<Menu.Item as={Link} to="/profile">
+				Profile
 			</Menu.Item>
 			<Menu.Item onClick={logoutUser}>Logout</Menu.Item>
 		</Menu.Menu>

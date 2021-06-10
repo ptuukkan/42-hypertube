@@ -50,7 +50,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 										onClick={() => setMenuOpen(false)}
 									>
 										<Icon name="user circle" />
-										My Profile
+										Profile
 									</Menu.Item>
 									<Menu.Item
 										as={Link}

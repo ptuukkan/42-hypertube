@@ -1,3 +1,4 @@
+import { IGetUser } from './../models/user';
 import { ILink } from 'app/models/oAuth';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { IMovie, IMovieList } from '../models/movie';
@@ -50,6 +51,10 @@ const User = {
 		requests.post(`/pre-auth/send-reset-password`, data),
 	reset: (code: string, data: IResetPassword): Promise<void> =>
 		requests.put(`/pre-auth/reset-password/${code}`, data),
+	getProfile: (token: string): Promise<IGetUser> =>
+		requests.getAuth('/user', token),
+	update: (token: string, user: IRegisterFormValues): Promise<IGetUser> =>
+		requests.postAuth('/user', token, user),
 	accessToken: (): Promise<IAccessToken> => requests.post('/accessToken', {}),
 	logout: (token: string): Promise<void> =>
 		requests.postAuth('/user/logout', token, {}),

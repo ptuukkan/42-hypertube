@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import agent from '../services/agent';
 import {
 	IForgetPassword,
+	IGetUser,
 	ILoginFormValues,
 	IRegisterFormValues,
 	IResetPassword,
@@ -137,6 +138,37 @@ export default class UserStore {
 			this.setSuccess();
 		} catch (error) {
 			return { [FORM_ERROR]: error.response.data.message };
+		}
+	};
+
+	getUser = async (): Promise<IGetUser | null> => {
+		try {
+			const token = await this.getToken();
+			return await agent.User.getProfile(token);
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+	};
+
+	updateUser = async (
+		data: IRegisterFormValues
+	): Promise<IGetUser | Record<string, any>> => {
+		try {
+			const token = await this.getToken();
+			return await agent.User.update(token, data);
+		} catch (error) {
+			if (error.response.data.message === 'Invalid data') {
+				return error.response.data.errors.reduce((obj: any, item: string) => {
+					RegErrorTypes.forEach((error) => {
+						if (item.includes(error)) {
+							obj[error] = item;
+						}
+					});
+					return obj;
+				}, {});
+			}
+			return { [FORM_ERROR]: error.response.data.errors };
 		}
 	};
 }
