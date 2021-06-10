@@ -6,7 +6,7 @@ import { IMovie, IMovieList } from '../models/movie';
 export default class MovieStore {
 	rootStore: RootStore;
 	movies: IMovieList = { count: 0, movies: [] };
-	savedSearch: string = '';
+	savedSearch = '';
 	movie: IMovie | null = null;
 
 	constructor(rootStore: RootStore) {
@@ -15,7 +15,7 @@ export default class MovieStore {
 	}
 
 	getMovies = (search: string): Promise<void> => {
-		return new Promise(async (resolve, _reject) => {
+		return new Promise(async (resolve) => {
 			const token = await this.rootStore.userStore.getToken();
 			try {
 				const tempMovies = await agent.Movies.search(search, token);
@@ -31,7 +31,7 @@ export default class MovieStore {
 		});
 	};
 
-	getMovie = async (id: string) => {
+	getMovie = async (id: string): Promise<void> => {
 		const token = await this.rootStore.userStore.getToken();
 		try {
 			const movie = await agent.Movies.get(id, token);

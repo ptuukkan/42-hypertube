@@ -15,7 +15,7 @@ import ChangePassword from 'app/views/ChangePassword';
 import Forgot from 'app/views/Forgot';
 import Login from 'app/views/Login';
 import MainContentPublic from 'app/views/MainContentPublic';
-import Movie from 'app/views/Movie';
+import Movie from 'app/views/movieDetails/Movie';
 import Profile from 'app/views/profile/Profile';
 
 const App = () => {

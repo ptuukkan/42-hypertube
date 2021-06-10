@@ -25,18 +25,18 @@ export default class UserStore {
 	success = false;
 	token: string | null = null;
 	tokenExpiresDate: Date | null = null;
-	logOutBtnClicked: boolean = false;
+	logOutBtnClicked = false;
 
 	constructor(rootStore: RootStore) {
 		this.rootStore = rootStore;
 		makeAutoObservable(this);
 	}
 
-	stopLoading = () => {
+	stopLoading = (): void => {
 		this.loading = false;
 	};
 
-	logoutUser = async (callLogout: MouseEvent | null = null) => {
+	logoutUser = async (callLogout: MouseEvent | null = null): Promise<void> => {
 		if (callLogout) {
 			try {
 				const token = await this.getToken();
@@ -52,14 +52,14 @@ export default class UserStore {
 		});
 	};
 
-	setToken = (token: string) => {
+	setToken = (token: string): void => {
 		this.token = token;
 		this.tokenExpiresDate = new Date(new Date().getTime() + 110000);
 		this.logOutBtnClicked = false;
 	};
 
 	getToken = (): Promise<string> => {
-		return new Promise(async (resolve, _reject) => {
+		return new Promise(async (resolve) => {
 			if (this.tokenExpiresDate && this.tokenExpiresDate > new Date())
 				return resolve(this.token!);
 			this.getNewToken()
@@ -84,7 +84,7 @@ export default class UserStore {
 		});
 	};
 
-	setSuccess = () => {
+	setSuccess = (): void => {
 		this.success = true;
 		setTimeout(() => {
 			runInAction(() => {
@@ -94,7 +94,9 @@ export default class UserStore {
 		}, 3000);
 	};
 
-	registerUser = async (data: IRegisterFormValues) => {
+	registerUser = async (
+		data: IRegisterFormValues
+	): Promise<void | Record<string, any>> => {
 		try {
 			await agent.User.register(data);
 			this.setSuccess();
@@ -113,7 +115,10 @@ export default class UserStore {
 		}
 	};
 
-	sendResetPassword = async (data: IResetPassword, code: string) => {
+	sendResetPassword = async (
+		data: IResetPassword,
+		code: string
+	): Promise<void | Record<string, any>> => {
 		try {
 			await agent.User.reset(code, data);
 			this.setSuccess();
@@ -122,7 +127,9 @@ export default class UserStore {
 		}
 	};
 
-	loginUser = async (data: ILoginFormValues) => {
+	loginUser = async (
+		data: ILoginFormValues
+	): Promise<void | Record<string, any>> => {
 		try {
 			const user = await agent.User.login(data);
 			this.setToken(user.accessToken);
@@ -132,7 +139,9 @@ export default class UserStore {
 		}
 	};
 
-	forgetPassword = async (data: IForgetPassword) => {
+	forgetPassword = async (
+		data: IForgetPassword
+	): Promise<void | Record<string, any>> => {
 		try {
 			await agent.User.forget(data);
 			this.setSuccess();

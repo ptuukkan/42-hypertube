@@ -1,9 +1,11 @@
 import { RootStoreContext } from 'app/stores/rootStore';
 import React, { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, Container, Header, Segment } from 'semantic-ui-react';
 
 const NotFound: React.FC<void> = () => {
+	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { token } = rootStore.userStore;
 	return (
@@ -15,7 +17,7 @@ const NotFound: React.FC<void> = () => {
 			<Container text>
 				<Header
 					as="h1"
-					content="404 - Not Found"
+					content={t('page_not_found')}
 					style={{
 						fontSize: '4em',
 						fontWeight: 'normal',
@@ -25,7 +27,7 @@ const NotFound: React.FC<void> = () => {
 				/>
 				<Header
 					as="h2"
-					content="Go to main page"
+					content={t('go_to_main_page')}
 					style={{
 						fontSize: '1.7em',
 						fontWeight: 'normal',
@@ -37,8 +39,8 @@ const NotFound: React.FC<void> = () => {
 					as={Link}
 					to={token ? '/movies' : '/'}
 					size="huge"
-					content={'Main page'}
-				></Button>
+					content={t('main_page')}
+				/>
 			</Container>
 		</Segment>
 	);

@@ -1,10 +1,10 @@
-name: Lint
+name: Backend-Lint
 on: push
 jobs:
   run-lint:
-    name: Run lint
+    name: Run backend linters
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
@@ -13,14 +13,8 @@ jobs:
         with:
           node-version: 14
       - name: Dependencies for backend
-        run: npm install
+        run: npm ci
         working-directory: ./backend
-      - name: Run backend linters
+      - name: Run linters
         run: npm run lint
         working-directory: ./backend
-      #- name: Dependencies for frontend
-      #  run: npm install
-      #  working-directory: ./frontend
-      #- name: Run frontend linters
-      #  run: npm run lint
-      #  working-directory: ./frontend

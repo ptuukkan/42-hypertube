@@ -1,3 +1,5 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Header, Segment, Container, Button } from 'semantic-ui-react';
 
@@ -6,6 +8,7 @@ interface IProps {
 }
 
 const MainContentPublic: React.FC<IProps> = ({ token }) => {
+	const { t } = useTranslation();
 	return (
 		<Segment
 			textAlign="center"
@@ -15,7 +18,7 @@ const MainContentPublic: React.FC<IProps> = ({ token }) => {
 			<Container text>
 				<Header
 					as="h1"
-					content="HyperTube"
+					content={t('landing_title')}
 					style={{
 						fontSize: '4em',
 						fontWeight: 'normal',
@@ -25,7 +28,7 @@ const MainContentPublic: React.FC<IProps> = ({ token }) => {
 				/>
 				<Header
 					as="h2"
-					content="Watch all movies you like!"
+					content={t('landing_subtitle')}
 					style={{
 						fontSize: '1.7em',
 						fontWeight: 'normal',
@@ -37,8 +40,8 @@ const MainContentPublic: React.FC<IProps> = ({ token }) => {
 					as={Link}
 					to={token ? '/movies' : '/register'}
 					size="huge"
-					content={token ? 'Browse movies' : 'Get started'}
-				></Button>
+					content={token ? t('landing_btn_browse') : t('landing_btn_start')}
+				/>
 			</Container>
 		</Segment>
 	);

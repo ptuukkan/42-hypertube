@@ -1,6 +1,7 @@
 import { IMovie } from 'app/models/movie';
-import BrowseLoader from 'app/sharedComponents/loader/BrowseLoader';
+import BrowseLoader from 'app/views/movieList/BrowseLoader';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Header, Item, Label, Rating, Segment } from 'semantic-ui-react';
 
@@ -10,12 +11,13 @@ export interface BrowseProps {
 }
 
 const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
+	const { t } = useTranslation();
+
 	return (
 		<Segment>
 			{loading && <BrowseLoader />}
-
 			{movies.length === 0 ? (
-				<Header>No results</Header>
+				<Header>{t('no_results')}</Header>
 			) : (
 				<Item.Group divided>
 					{movies.map((movie) => (
@@ -35,8 +37,8 @@ const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
 								</Item.Meta>
 								<Item.Description>
 									{movie.genres &&
-										movie.genres.map((genre, i) => (
-											<Label key={i}>{genre}</Label>
+										movie.genres.map((genre) => (
+											<Label key={genre}>{t(genre.toLowerCase())}</Label>
 										))}
 								</Item.Description>
 							</Item.Content>

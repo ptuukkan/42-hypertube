@@ -1,6 +1,7 @@
+import React from 'react';
 import ContentLoader from 'react-content-loader';
 
-const MovieLoader = () => (
+const MovieLoader: React.FC = () => (
 	<ContentLoader
 		style={{ width: '100%' }}
 		speed={2}

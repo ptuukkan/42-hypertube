@@ -3,17 +3,17 @@ module.exports = {
 		node: true,
 		es6: true,
 	},
-	extends: [
-		'plugin:@typescript-eslint/recommended',
-		'plugin:@typescript-eslint/recommended-requiring-type-checking',
-		'prettier',
-	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		project: 'tsconfig.json',
 		tsconfigRootDir: __dirname,
 		sourceType: 'module',
 	},
+	extends: [
+		'plugin:@typescript-eslint/recommended',
+		'plugin:@typescript-eslint/recommended-requiring-type-checking',
+		'prettier',
+	],
 	plugins: [
 		'eslint-plugin-jsdoc',
 		'eslint-plugin-prefer-arrow',
