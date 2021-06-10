@@ -13,6 +13,9 @@ import {
 	Header,
 	Embed,
 	Label,
+	Loader,
+	Dimmer,
+	Image,
 } from 'semantic-ui-react';
 
 interface IParams {
@@ -23,12 +26,22 @@ const Movie = () => {
 	const { id } = useParams<IParams>();
 	const rootStore = useContext(RootStoreContext);
 	const [loading, setLoading] = useState(true);
+	const [playerLoader, setPlayerLoader] = useState(false);
+	const [playMovie, setPlayMovie] = useState(false);
 	const { movie, getMovie } = rootStore.movieStore;
 
 	useEffect(() => {
 		if (movie === null || movie.imdb !== id) getMovie(id);
 		if (movie && movie.imdb === id) setLoading(false);
 	}, [id, getMovie, movie]);
+
+	const startPlay = () => {
+		setPlayerLoader(true);
+		setInterval(() => {
+			setPlayMovie(true);
+			setPlayerLoader(false);
+		}, 5000);
+	};
 
 	if (loading) return <MovieLoader />;
 
@@ -39,11 +52,31 @@ const Movie = () => {
 					<Grid.Row columns="1">
 						<GridColumn>
 							<Header as="h1">{movie.title}</Header>
-							<Embed
-								id="LsGZ_2RuJ2A"
-								placeholder={movie.coverImage}
-								source="youtube"
-							/>
+							{!playMovie && (
+								<Dimmer.Dimmable
+									dimmed={playerLoader}
+									style={{
+										backgroundImage: `url(${movie.coverImage})`,
+										backgroundSize: 'cover',
+										backgroundPosition: 'right 0px bottom 0px',
+										cursor: 'pointer',
+									}}
+								>
+									<Dimmer active={playerLoader} inverted>
+										<Loader>Loading {movie.title}</Loader>
+									</Dimmer>
+									<Image src="/background.png" onClick={() => startPlay()} />
+								</Dimmer.Dimmable>
+							)}
+
+							{!playerLoader && playMovie && (
+								<Embed
+									id="LsGZ_2RuJ2A"
+									placeholder="/background.png"
+									source="youtube"
+									autoplay
+								/>
+							)}
 						</GridColumn>
 						<Grid.Column style={{ marginTop: '10px' }}>
 							<Item.Content>
