@@ -53,9 +53,9 @@ const User = {
 		requests.post(`/pre-auth/send-reset-password`, data),
 	reset: (code: string, data: IResetPassword): Promise<void> =>
 		requests.put(`/pre-auth/reset-password/${code}`, data),
-	getProfile: (token: string): Promise<IGetUser> =>
+	getCurrentProfile: (token: string): Promise<IGetUser> =>
 		requests.getAuth('/user', token),
-	update: (token: string, user: IRegisterFormValues): Promise<IGetUser> =>
+	update: (token: string, user: FormData): Promise<IGetUser> =>
 		requests.postAuth('/user', token, user),
 	accessToken: (): Promise<IAccessToken> => requests.post('/accessToken', {}),
 	logout: (token: string): Promise<void> =>

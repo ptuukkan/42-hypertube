@@ -2,8 +2,6 @@ import { history } from '../..';
 import { RootStoreContext } from 'app/stores/rootStore';
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Validators } from '@lemoncode/fonk';
-import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import {
 	Button,
 	Dimmer,
@@ -19,8 +17,8 @@ import { IResetPassword } from 'app/models/user';
 import { observer } from 'mobx-react-lite';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import TextInput from 'app/sharedComponents/form/TextInput';
-import { getTranslatedPasswordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
 import { useTranslation } from 'react-i18next';
+import { getChangePasswordFormValidator } from 'app/sharedComponents/form/validators';
 
 interface IParams {
 	id: string;
@@ -33,16 +31,7 @@ const ChangePassword = () => {
 	const CloseChangePassword = () => history.push('/');
 	const { id } = useParams<IParams>();
 
-	const validationSchema = {
-		field: {
-			username: [Validators.required.validator],
-			password: [
-				Validators.required.validator,
-				{ validator: getTranslatedPasswordComplexity(t('password_error')) },
-			],
-		},
-	};
-	const formValidation = createFinalFormValidation(validationSchema);
+	const formValidation = getChangePasswordFormValidator(t);
 
 	const onSubmit = (data: IResetPassword) => {
 		sendResetPassword(data, id);

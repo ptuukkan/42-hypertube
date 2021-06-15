@@ -1,25 +1,25 @@
 import { ValidationResult } from '@lemoncode/fonk/typings/model';
 import { IFieldValidatorArgs, ValidatorFunction } from './types';
 
-export const getTranslatedPasswordComplexity = (
-	errorText: string,
-	isEmptyOk = false
+export const getTranslatedNameValidator = (
+	errorText: string
 ): ValidatorFunction => {
+	const ALPHA_REGEX = /^[A-Za-zñÑáéíóúÁÉÍÓÚäÄöÖåÅ]+$/;
+
 	return (fieldValidatorArgs: IFieldValidatorArgs): ValidationResult => {
 		const { value } = fieldValidatorArgs;
 
 		const validationResult = {
 			succeeded: false,
-			type: 'PASSWORD_COMPLEXITY',
+			type: 'NAME',
 			message: errorText,
 		};
 
 		if (
-			(/[A-Za-z]+/.test(value) &&
-				/\d+/.test(value) &&
-				value.length > 3 &&
-				value.length < 256) ||
-			(isEmptyOk && value === undefined)
+			value &&
+			ALPHA_REGEX.test(value) &&
+			value.length > 1 &&
+			value.length < 256
 		) {
 			validationResult.succeeded = true;
 			validationResult.message = '';

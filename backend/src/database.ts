@@ -17,10 +17,18 @@ export const connectToDb = async (): Promise<void> => {
 export const getDbValidationErrors = (
 	error: mongoose.Error.ValidationError
 ): string[] => {
-	const errors = Object.keys(error.errors).map<string>((key: string) => {
+	const errors = Object.keys(error.errors).reduce((obj: any, key: string) => {
+		const errorData = error.errors[key] as mongoose.Error.ValidatorError;
+		const str = errorData.properties.message.split(' Value: `')[0];
+		obj[key] = str.replace('Error, e', 'E').replace('Path', 'Value for');
+		return obj;
+	}, {});
+	return errors;
+
+	/* const errors = Object.keys(error.errors).map<string>((key: string) => {
 		const errorData = error.errors[key] as mongoose.Error.ValidatorError;
 		const str = errorData.properties.message.split(' Value: `')[0];
 		return str.replace('Error, e', 'E').replace('Path', 'Value for');
 	});
-	return errors;
+	return errors;*/
 };

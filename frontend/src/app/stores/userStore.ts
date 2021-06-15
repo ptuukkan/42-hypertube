@@ -11,13 +11,6 @@ import { RootStore } from './rootStore';
 import { history } from '../..';
 import { FORM_ERROR } from 'final-form';
 import { MouseEvent } from 'react';
-const RegErrorTypes = [
-	'username',
-	'email',
-	'firstname',
-	'lastname',
-	'password',
-];
 
 export default class UserStore {
 	rootStore: RootStore;
@@ -101,16 +94,7 @@ export default class UserStore {
 			await agent.User.register(data);
 			this.setSuccess();
 		} catch (error) {
-			if (error.response.data.message === 'Invalid data') {
-				return error.response.data.errors.reduce((obj: any, item: string) => {
-					RegErrorTypes.forEach((error) => {
-						if (item.includes(error)) {
-							obj[error] = item;
-						}
-					});
-					return obj;
-				}, {});
-			}
+			if (error.response.data.errors) return error.response.data.errors;
 			return { [FORM_ERROR]: error.response.data.errors };
 		}
 	};
@@ -150,34 +134,26 @@ export default class UserStore {
 		}
 	};
 
-	getUser = async (): Promise<IGetUser | null> => {
+	getCurrentUser = async (): Promise<IGetUser | null> => {
 		try {
 			const token = await this.getToken();
-			return await agent.User.getProfile(token);
+			return await agent.User.getCurrentProfile(token);
 		} catch (error) {
 			console.log(error);
 			return null;
 		}
 	};
 
-	updateUser = async (
-		data: IRegisterFormValues
-	): Promise<IGetUser | Record<string, any>> => {
-		try {
-			const token = await this.getToken();
-			return await agent.User.update(token, data);
-		} catch (error) {
-			if (error.response.data.message === 'Invalid data') {
-				return error.response.data.errors.reduce((obj: any, item: string) => {
-					RegErrorTypes.forEach((error) => {
-						if (item.includes(error)) {
-							obj[error] = item;
-						}
-					});
-					return obj;
-				}, {});
+	updateUser = (data: FormData): Promise<IGetUser | Record<string, string>> => {
+		return new Promise(async (resolve) => {
+			try {
+				const token = await this.getToken();
+				resolve(await agent.User.update(token, data));
+			} catch (error) {
+				if (error.response.data.errors)
+					return resolve(error.response.data.errors);
+				resolve({ [FORM_ERROR]: error.response.data.message });
 			}
-			return { [FORM_ERROR]: error.response.data.errors };
-		}
+		});
 	};
 }

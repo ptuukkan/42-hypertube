@@ -1,24 +1,35 @@
 import React, { createRef, useState } from 'react';
-import { Button, Form, Image } from 'semantic-ui-react';
+import { useTranslation } from 'react-i18next';
+import { Button, Form } from 'semantic-ui-react';
+import ImgPreview from './ImgPreview';
 
 interface IProps {
-	// TODO must not be with ? !!
 	fileName: string;
-	setImgFile: React.Dispatch<React.SetStateAction<File | null>>;
+	setImgFile: (file: File | null) => void;
 }
 
-const UploadBtn: React.FC<IProps> = ({ fileName, setImgFile }) => {
+const UploadField: React.FC<IProps> = ({ fileName, setImgFile }) => {
+	const { t } = useTranslation();
 	const [img, setImg] = useState<string | null>(null);
 	const inputRef: React.LegacyRef<HTMLInputElement> = createRef();
 
-	const uploadImage = (e: React.FormEvent<HTMLButtonElement>) => {
+	const uploadImage = (e: React.FormEvent<HTMLButtonElement>): void => {
 		e.preventDefault();
 		inputRef.current!.click();
 	};
 
-	const fileChange = (e: React.FormEvent<HTMLInputElement>) => {
+	const removeImage = (e: React.FormEvent<HTMLButtonElement>): void => {
+		e.stopPropagation();
+		if (img) setImg(null);
+		setImgFile(null);
+	};
+
+	const fileChange = (e: React.FormEvent<HTMLInputElement>): void => {
 		if (e.currentTarget.files && e.currentTarget.files[0]) {
-			// TODO VALIDATE UPLOAD!
+			// TODO validate on frontend too! When have some toast showing logic, then easier to show error
+			// 5MB max pic
+			// file type image
+			// ext only .jpg .png .jpeg
 			setImgFile(e.currentTarget.files[0]);
 			const reader = new FileReader();
 			reader.onload = () => setImg(reader.result as string);
@@ -26,15 +37,10 @@ const UploadBtn: React.FC<IProps> = ({ fileName, setImgFile }) => {
 		}
 	};
 
-	const imgUrl = () => {
-		if (img) return img;
-		return `http://localhost:8080/profileImages/${fileName}`;
-	};
-
 	const btnText =
-		img || fileName?.includes('blank')
-			? 'Upload Profile Pic'
-			: 'Change Profile Pic';
+		fileName === 'blank-profile.png' && !img
+			? t('upload_pic')
+			: t('change_pic');
 
 	return (
 		<>
@@ -51,19 +57,11 @@ const UploadBtn: React.FC<IProps> = ({ fileName, setImgFile }) => {
 						style={{ marginLeft: '7px' }}
 					/>
 					<input ref={inputRef} type="file" hidden onChange={fileChange} />
-					<Image
-						rounded
-						size="tiny"
-						src={imgUrl()}
-						bordered
-						centered
-						onClick={uploadImage}
-						style={{ cursor: 'pointer' }}
-					/>
+					<ImgPreview removeImg={removeImage} img={img} fileName={fileName} />
 				</Form.Group>
 			</Form.Field>
 		</>
 	);
 };
 
-export default UploadBtn;
+export default UploadField;

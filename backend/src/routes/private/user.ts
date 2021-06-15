@@ -1,15 +1,17 @@
 import {
+	getCurrentProfileController,
 	getProfileController,
 	updateProfileController,
 } from './../../controllers/profile';
 import { logoutController } from 'controllers/preAuth/login';
 import { Router } from 'express';
+import updateProfileMulter from 'application/multer';
 
 const userRouter = Router();
 
-userRouter.get('/', getProfileController);
-userRouter.post('/', updateProfileController);
+userRouter.get('/:id', getProfileController);
+userRouter.get('/', getCurrentProfileController);
+userRouter.post('/', updateProfileMulter, updateProfileController);
 userRouter.post('/logout', logoutController);
-// TODO add other user routes like update user
 
 export default userRouter;

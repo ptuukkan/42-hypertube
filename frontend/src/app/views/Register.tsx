@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Validators } from '@lemoncode/fonk';
-import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import { history } from '../..';
 import { Link } from 'react-router-dom';
 import {
@@ -15,13 +13,13 @@ import {
 	Dimmer,
 	Icon,
 } from 'semantic-ui-react';
-import { getTranslatedPasswordComplexity } from 'app/sharedComponents/form/validators/passwordComplexity';
 import { RootStoreContext } from '../stores/rootStore';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import { observer } from 'mobx-react-lite';
 import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
 import TextInput from 'app/sharedComponents/form/TextInput';
 import { useTranslation } from 'react-i18next';
+import { getRegisterFormValidator } from 'app/sharedComponents/form/validators';
 
 const Register: React.FC = () => {
 	const { t } = useTranslation();
@@ -29,17 +27,7 @@ const Register: React.FC = () => {
 	const { registerUser, success } = rootStore.userStore;
 	const CloseRegister = () => history.push('/');
 
-	// TODO add others required too!
-	const validationSchema = {
-		field: {
-			email: [Validators.required.validator, Validators.email.validator],
-			password: [
-				Validators.required.validator,
-				{ validator: getTranslatedPasswordComplexity(t('password_error')) },
-			],
-		},
-	};
-	const formValidation = createFinalFormValidation(validationSchema);
+	const formValidation = getRegisterFormValidator(t);
 
 	return (
 		<FinalForm

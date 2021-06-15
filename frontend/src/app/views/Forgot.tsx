@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { Validators } from '@lemoncode/fonk';
-import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import {
 	Grid,
 	Form,
@@ -18,20 +16,16 @@ import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import { RootStoreContext } from '../stores/rootStore';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
-
-const validationSchema = {
-	field: {
-		email: [Validators.required.validator, Validators.email.validator],
-	},
-};
-
-const formValidation = createFinalFormValidation(validationSchema);
+import { getForgotPasswordFormValidator } from 'app/sharedComponents/form/validators';
 
 const Forgot = () => {
 	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { forgetPassword, success } = rootStore.userStore;
 	const CloseForgot = () => history.push('/');
+
+	const formValidation = getForgotPasswordFormValidator(t);
+
 	return (
 		<FinalForm
 			onSubmit={forgetPassword}

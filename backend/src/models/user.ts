@@ -15,6 +15,10 @@ export enum Language {
 	ESTONIAN = 'ee',
 }
 
+export enum PicAction {
+	REMOVE = 'REMOVE',
+}
+
 export interface IUser {
 	email: string;
 	username: string;
@@ -27,10 +31,21 @@ export interface IUser {
 	tokenVersion?: number;
 }
 
+export interface IUpdateUser {
+	email?: string;
+	username?: string;
+	firstName?: string;
+	lastName?: string;
+	password?: string;
+	profilePicName?: string;
+	removeProfilePic?: PicAction;
+}
+
 export interface IUserDocument extends IUser, Document {
 	fullName: string;
 	isPasswordValid(password: string): Promise<boolean>;
 	checkAndUpdatePassword(password: string): Promise<void>;
+	checkAndUpdateUser(newData: IUpdateUser): Promise<IUserDocument>;
 }
 
 const UserSchema = new Schema<IUserDocument>({
@@ -56,7 +71,7 @@ const UserSchema = new Schema<IUserDocument>({
 		minLength: [2, 'First name must be at least 2 characters.'],
 		maxLength: [255, 'First name must not be over 255 characters.'],
 		validate: {
-			validator: (name: string) => /^[A-Za-z]+$/.test(name),
+			validator: (name: string) => /^[A-Za-zñÑáéíóúÁÉÍÓÚäÄöÖåÅ]+$/.test(name),
 			message: () => 'First name must be only letters.',
 		},
 	},
@@ -66,7 +81,7 @@ const UserSchema = new Schema<IUserDocument>({
 		minLength: [2, 'Last name must be at least 2 characters.'],
 		maxLength: [255, 'Last name must not be over 255 characters.'],
 		validate: {
-			validator: (name: string) => /^[A-Za-z]+$/.test(name),
+			validator: (name: string) => /^[A-Za-zñÑáéíóúÁÉÍÓÚäÄöÖåÅ]+$/.test(name),
 			message: () => 'Last name must be only letters.',
 		},
 	},
@@ -136,6 +151,28 @@ UserSchema.methods.checkAndUpdatePassword = async function (
 		password: hashPass,
 		tokenVersion: this.tokenVersion! + 1,
 	});
+};
+
+UserSchema.methods.checkAndUpdateUser = async function (
+	newData: IUpdateUser
+): Promise<IUserDocument> {
+	if (typeof newData.firstName === 'string') this.firstName = newData.firstName;
+	if (typeof newData.lastName === 'string') this.lastName = newData.lastName;
+	if (typeof newData.email === 'string') this.email = newData.email;
+	if (typeof newData.username === 'string') this.username = newData.username;
+	if (typeof newData.password === 'string') this.password = newData.password;
+	if (typeof newData.profilePicName === 'string')
+		this.profilePicName = newData.profilePicName;
+	// Throws error if invalid format
+	await this.validate();
+
+	if (typeof newData.password === 'string') {
+		const salt = await genSalt(HASH_ROUNDS);
+		const hashPass = await hash(this.password, salt);
+		newData.password = hashPass;
+	}
+	await this.updateOne({ ...newData });
+	return this;
 };
 
 UserSchema.plugin(uniqueValidator);
