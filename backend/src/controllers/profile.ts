@@ -1,6 +1,6 @@
 import { unlink } from 'fs';
 import path from 'path';
-import { IUpdateUser } from './../models/user';
+import { IUpdateUser } from 'models/user';
 import UserModel from 'models/user';
 import asyncHandler from 'express-async-handler';
 import { BadRequest } from 'http-errors';
@@ -28,8 +28,9 @@ export const getCurrentProfileController = asyncHandler(async (req, res) => {
 });
 
 const removeFile = (fileName: string) => {
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	unlink(path.resolve('public/profileImages', fileName), () => {});
+	unlink(path.resolve('public/profileImages', fileName), (error) =>
+		console.log(error)
+	);
 };
 
 export const updateProfileController = asyncHandler(async (req, res) => {

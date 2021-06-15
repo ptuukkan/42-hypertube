@@ -2,7 +2,7 @@ import {
 	getCurrentProfileController,
 	getProfileController,
 	updateProfileController,
-} from './../../controllers/profile';
+} from 'controllers/profile';
 import { logoutController } from 'controllers/preAuth/login';
 import { Router } from 'express';
 import updateProfileMulter from 'application/multer';

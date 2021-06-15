@@ -70,6 +70,7 @@
 	"year": "Year: {{year}}",
 	"written": "Written by: {{writer}}",
 	"actors": "Actors:",
+	"password_error": "Characters 4-255. Must have letters and at least 1 number.",
 	"update": "Update",
 	"update_success": "Update was a success!",
 	"update_title": "Update your profile",
@@ -77,7 +78,6 @@
 	"change_pic": "Change Profile Pic",
 	"profile_no_change": "Profile hasn't been changed!",
 	"profile_change_success": "Profile change was a success!",
-	"password_error": "Characters 4-255. Must have letters and at least 1 number.",
 	"email_field_error": "Email must be valid!",
 	"name_error": "Characters 2-255. Must have only letters.",
 	"username_error": "Characters 3-255."

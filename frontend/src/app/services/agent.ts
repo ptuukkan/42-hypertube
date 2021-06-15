@@ -1,7 +1,7 @@
-import { IGetUser } from './../models/user';
+import { IGetUser } from 'app/models/user';
 import { ILink } from 'app/models/oAuth';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { IMovie, IMovieList } from '../models/movie';
+import { IMovie, IMovieList } from 'app/models/movie';
 import {
 	IForgetPassword,
 	ILoginFormValues,

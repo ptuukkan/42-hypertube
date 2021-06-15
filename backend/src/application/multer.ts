@@ -5,7 +5,7 @@ import multer, { MulterError } from 'multer';
 export const NOT_VALID_FILE = 'not_valid_file';
 
 const getProfileImageName = (originalName: string) =>
-	`${getRandomString(10)}-profile${path.extname(originalName)}`;
+	`${getRandomString(10)}-${Date.now()}-profile${path.extname(originalName)}`;
 
 const storage = multer.diskStorage({
 	destination: `${__dirname}/../../public/profileImages/`,

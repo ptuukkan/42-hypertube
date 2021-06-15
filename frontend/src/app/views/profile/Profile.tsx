@@ -25,6 +25,7 @@ import { getRegisterFormValidator } from 'app/sharedComponents/form/validators';
 
 const Profile: React.FC = () => {
 	const { t } = useTranslation();
+	const [isLoading, setIsLoading] = useState(true);
 	const [picFile, setPicFile] = useState<File | null>(null);
 	const [user, setUser] = useState<IUser | null>(null);
 	const [message, setMessage] = useState<null | string>(null);
@@ -34,6 +35,8 @@ const Profile: React.FC = () => {
 	useEffect(() => {
 		getCurrentUser().then((res) => {
 			if (res?.user) setUser(res.user);
+			// TODO show toast that getting user failed!
+			setIsLoading(false);
 		});
 	}, [getCurrentUser]);
 
@@ -42,7 +45,7 @@ const Profile: React.FC = () => {
 	const setFile = (file: File | null) => {
 		setPicFile(file);
 		if (file) setUser({ ...user, removePic: undefined } as IUser);
-		if (!file) {
+		if (!file && user?.profilePicName !== 'blank-profile.png') {
 			setUser({
 				...user,
 				profilePicName: 'blank-profile.png',
@@ -71,15 +74,12 @@ const Profile: React.FC = () => {
 			Object.keys(values).forEach((key) => formData.append(key, values[key]));
 
 			const res = await updateUser(formData);
-			console.log(res);
-
-			if (!res.user) return res;
+			if (!res.user) return res; // Error
 			setUser(res.user as IUser);
 			setPicFile(null);
 			form.change('password', undefined);
 			setMessage(t('profile_change_success'));
 			setTimeout(() => setMessage(null), 4000);
-			return;
 		} else {
 			return { [FORM_ERROR]: t('profile_no_change') };
 		}
@@ -92,12 +92,12 @@ const Profile: React.FC = () => {
 					<Message.Header>{message}</Message.Header>
 				</Message>
 			)}
-			{!user && (
+			{isLoading && (
 				<Dimmer active page>
 					<Loader content="Getting user..." size="massive" />
 				</Dimmer>
 			)}
-			{user && (
+			{!isLoading && (
 				<FinalForm
 					onSubmit={onSubmit}
 					validate={formValidation.validateForm}
@@ -122,7 +122,7 @@ const Profile: React.FC = () => {
 											<Field
 												name="firstName"
 												placeholder={t('first_name')}
-												initialValue={user.firstName}
+												initialValue={user?.firstName}
 											>
 												{(props: ITextInputProps) => (
 													<TextInput {...props} label={t('first_name')} />
@@ -131,7 +131,7 @@ const Profile: React.FC = () => {
 											<Field
 												name="lastName"
 												placeholder={t('last_name')}
-												initialValue={user.lastName}
+												initialValue={user?.lastName}
 											>
 												{(props: ITextInputProps) => (
 													<TextInput {...props} label={t('last_name')} />
@@ -141,7 +141,7 @@ const Profile: React.FC = () => {
 										<Field
 											name="username"
 											placeholder={t('username')}
-											defaultValue={user.username}
+											defaultValue={user?.username}
 										>
 											{(props: ITextInputProps) => (
 												<TextInput {...props} label={t('username')} />
@@ -150,7 +150,7 @@ const Profile: React.FC = () => {
 										<Field
 											name="email"
 											placeholder={t('email')}
-											defaultValue={user.email}
+											defaultValue={user?.email}
 										>
 											{(props: ITextInputProps) => (
 												<TextInput {...props} label={t('email')} />
@@ -166,7 +166,7 @@ const Profile: React.FC = () => {
 											)}
 										</Field>
 										<UploadField
-											fileName={user.profilePicName}
+											fileName={user?.profilePicName || 'blank-profile.png'}
 											setImgFile={setFile}
 										/>
 										{submitError && !dirtySinceLastSubmit && (
