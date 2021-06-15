@@ -28,14 +28,14 @@ const ChangePassword = () => {
 	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { success, sendResetPassword } = rootStore.userStore;
-	const CloseChangePassword = () => history.push('/');
+	const CloseChangePassword = () => history.push('/movies');
 	const { id } = useParams<IParams>();
 
 	const formValidation = getChangePasswordFormValidator(t);
 
-	const onSubmit = (data: IResetPassword) => {
-		sendResetPassword(data, id);
-	};
+	const onSubmit = async (
+		data: IResetPassword
+	): Promise<Record<string, any> | void> => await sendResetPassword(data, id);
 
 	return (
 		<FinalForm
@@ -72,7 +72,9 @@ const ChangePassword = () => {
 							<Header as="h2" icon inverted>
 								<Icon name="heart" />
 								{t('password_changed')}
-								<Header.Subheader>{t('you_can_login')}</Header.Subheader>
+								<Header.Subheader>
+									{t('you_will_be_logged_in')}
+								</Header.Subheader>
 							</Header>
 						</Dimmer>
 					</Form>

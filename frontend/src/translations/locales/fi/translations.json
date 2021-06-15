@@ -28,7 +28,7 @@
 	"new_password": "Uusi salasana",
 	"change": "Vaihda",
 	"password_changed": "Salasana vaihdettu!",
-	"you_can_login": "Voit nyt kirjautua sisään.",
+	"you_will_be_logged_in": "Sinut ohjataan katsomaan elokuvia!",
 	"page_not_found": "Sivua ei löydetty",
 	"go_to_main_page": "Palaa pääsivulle",
 	"main_page": "Pääsivulle",

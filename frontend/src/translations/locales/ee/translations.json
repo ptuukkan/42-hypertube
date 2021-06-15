@@ -28,7 +28,7 @@
 	"new_password": "Uus Parool",
 	"change": "Vaheta",
 	"password_changed": "Parool vahetatud!",
-	"you_can_login": "Võid nüüd logida sisse.",
+	"you_will_be_logged_in": "Sind suunatakse vaatama filme!",
 	"page_not_found": "Lehte ei leitud",
 	"go_to_main_page": "Mine tagasi pealehele",
 	"main_page": "Pealehele",

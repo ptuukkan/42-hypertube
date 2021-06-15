@@ -82,6 +82,7 @@ export default class UserStore {
 		setTimeout(() => {
 			runInAction(() => {
 				this.success = !this.success;
+				if (this.token) return history.push('/movies');
 				history.push('/');
 			});
 		}, 3000);
@@ -104,7 +105,8 @@ export default class UserStore {
 		code: string
 	): Promise<void | Record<string, any>> => {
 		try {
-			await agent.User.reset(code, data);
+			const user = await agent.User.reset(code, data);
+			this.setToken(user.accessToken);
 			this.setSuccess();
 		} catch (error) {
 			return { [FORM_ERROR]: error.response.data.message };
