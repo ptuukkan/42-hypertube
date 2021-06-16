@@ -17,7 +17,7 @@ interface IProps {
 	setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const UsersProfile: React.FC<IProps> = ({ show, usersId, setShow }) => {
+const UsersProfileModal: React.FC<IProps> = ({ show, usersId, setShow }) => {
 	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { getUsersProfile } = rootStore.userStore;
@@ -73,4 +73,4 @@ const UsersProfile: React.FC<IProps> = ({ show, usersId, setShow }) => {
 	);
 };
 
-export default UsersProfile;
+export default UsersProfileModal;
