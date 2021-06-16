@@ -158,4 +158,14 @@ export default class UserStore {
 			}
 		});
 	};
+
+	getUsersProfile = async (usersId: string): Promise<IGetUser | null> => {
+		try {
+			const token = await this.getToken();
+			return await agent.User.getUsersProfile(token, usersId);
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+	};
 }

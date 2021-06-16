@@ -32,7 +32,9 @@ const MainContent: React.FC = () => {
 	}, [searchQuery, getMovies, savedSearch]);
 
 	return (
-		<Segment style={{ minHeight: 500, padding: 60 }}>
+		<Segment
+			style={{ minHeight: 500, padding: 60, paddingTop: 30, marginTop: 80 }}
+		>
 			<SearchMovies
 				setQuery={setQuery}
 				searchQuery={searchQuery}
