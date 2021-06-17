@@ -2,9 +2,15 @@ import React from 'react';
 import { FieldRenderProps } from 'react-final-form';
 import { Form, FormFieldProps, Label } from 'semantic-ui-react';
 
-interface IProps extends FieldRenderProps<string>, FormFieldProps {}
+export interface ITextInputProps
+	extends FieldRenderProps<string>,
+		FormFieldProps {
+	label?: string;
+	value?: string;
+}
 
-const TextInput: React.FC<IProps> = ({
+const TextInput: React.FC<ITextInputProps> = ({
+	label,
 	input,
 	width,
 	type,
@@ -13,6 +19,7 @@ const TextInput: React.FC<IProps> = ({
 }) => {
 	return (
 		<Form.Field error={touched && !!error} type={type} width={width}>
+			{label && <label>{label}</label>}
 			<input {...input} placeholder={placeholder} />
 			{touched && (error || (submitError && !dirtySinceLastSubmit)) && (
 				<Label basic color="red">

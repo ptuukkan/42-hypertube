@@ -4,7 +4,25 @@ export interface IRegisterFormValues {
 	firstName: string;
 	lastName: string;
 	password: string;
-	confirmPassword: string;
+}
+
+export interface IUpdateForm {
+	[key: string]: string | File;
+}
+
+export interface IGetUser {
+	status: string;
+	user: IUser;
+}
+
+export interface IUser {
+	email: string;
+	username: string;
+	firstName: string;
+	lastName: string;
+	profilePicName: string;
+	removePic?: boolean;
+	_id: string;
 }
 
 export interface IAccessToken {

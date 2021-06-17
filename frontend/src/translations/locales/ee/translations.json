@@ -28,7 +28,7 @@
 	"new_password": "Uus Parool",
 	"change": "Vaheta",
 	"password_changed": "Parool vahetatud!",
-	"you_can_login": "Võid nüüd logida sisse.",
+	"you_will_be_logged_in": "Sind suunatakse vaatama filme!",
 	"page_not_found": "Lehte ei leitud",
 	"go_to_main_page": "Mine tagasi pealehele",
 	"main_page": "Pealehele",
@@ -70,5 +70,17 @@
 	"year": "Aasta: {{year}}",
 	"written": "Kirjutatud: {{writer}}",
 	"actors": "Näitlejad:",
-	"password_error": "Vähemalt 4 märki. Peab olema vähemalt tähti ja 1 number."
+	"password_error": "Märke 4-255. Peab olema vähemalt tähti ja 1 number.",
+	"update": "Uuenda",
+	"update_success": "Uuendamine õnnestus!",
+	"update_title": "Uuenda oma profiili",
+	"upload_pic": "Lae üles profiili pilt",
+	"change_pic": "Muuda profiili pilti",
+	"profile_no_change": "Profiili ei ole muudetud!",
+	"profile_change_success": "Profiili muutmine õnnestus!",
+	"email_field_error": "Email peab olema korrektne!",
+	"name_error": "Märke 2-255. Ainult tähed.",
+	"username_error": "Märke 3-255.",
+	"getting_user": "Laen kasutajat...",
+	"close": "Sulge"
 }

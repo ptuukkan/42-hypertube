@@ -9,8 +9,10 @@ import { connectToDb, getDbValidationErrors } from 'database';
 import Debug from 'debug';
 import cookieParser from 'cookie-parser';
 import { JsonWebTokenError } from 'jsonwebtoken';
+import { NOT_VALID_FILE } from './application/multer';
 
 import cors from 'cors';
+import { MulterError } from 'multer';
 
 const debug = Debug('app');
 const app = express();
@@ -23,6 +25,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.static(`${__dirname}/../public`));
 
 mountRoutes(app);
 
@@ -51,6 +54,10 @@ app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
 		res.status(500).json({ status: 'ERROR', message: 'DATABASE ERROR' });
 	} else if (err instanceof JsonWebTokenError) {
 		res.status(401).json({ status: 'ERROR', message: err.message, src: 'jwt' });
+	} else if (err instanceof MulterError) {
+		let message = err.message;
+		if (err.field === NOT_VALID_FILE) message = 'File is not an image';
+		res.status(400).json({ status: 'ERROR', message });
 	} else {
 		res.status(500).json({ status: 'ERROR', message: 'Internal server error' });
 	}

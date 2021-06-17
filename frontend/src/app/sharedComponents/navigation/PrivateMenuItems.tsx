@@ -12,7 +12,7 @@ const PrivateMenuItems: React.FC = () => {
 
 	return (
 		<Menu.Menu position="right">
-			<Menu.Item as={Link} to="/my_profile">
+			<Menu.Item as={Link} to="/profile">
 				{t('profile')}
 			</Menu.Item>
 			<Menu.Item onClick={logoutUser}>{t('logout')}</Menu.Item>

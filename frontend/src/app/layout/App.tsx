@@ -16,6 +16,7 @@ import Forgot from 'app/views/Forgot';
 import Login from 'app/views/Login';
 import MainContentPublic from 'app/views/MainContentPublic';
 import Movie from 'app/views/movieDetails/Movie';
+import Profile from 'app/views/profile/Profile';
 
 const App = () => {
 	const rootStore = useContext(RootStoreContext);
@@ -70,6 +71,7 @@ const App = () => {
 				<Route path="/forgot" component={Forgot} />
 				<Route path="/reset-password/:id" component={ChangePassword} />
 				<OAuthRoute exact path="/oauth" />
+				<Privateroute path="/profile" component={Profile} />
 				<Privateroute path="/movies/:id" component={Movie} />
 				<Privateroute
 					path="/movies"

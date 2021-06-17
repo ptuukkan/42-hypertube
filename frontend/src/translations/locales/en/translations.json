@@ -28,7 +28,7 @@
 	"new_password": "New Password",
 	"change": "Change",
 	"password_changed": "Password changed!",
-	"you_can_login": "You can login now",
+	"you_will_be_logged_in": "You will be directed to see movies!",
 	"page_not_found": "Page not found",
 	"go_to_main_page": "Go to main page",
 	"main_page": "Main page",
@@ -70,5 +70,17 @@
 	"year": "Year: {{year}}",
 	"written": "Written by: {{writer}}",
 	"actors": "Actors:",
-	"password_error": "Min length is 4 charcters. Must have letters and at least 1 number."
+	"password_error": "Characters 4-255. Must have letters and at least 1 number.",
+	"update": "Update",
+	"update_success": "Update was a success!",
+	"update_title": "Update your profile",
+	"upload_pic": "Upload Profile Pic",
+	"change_pic": "Change Profile Pic",
+	"profile_no_change": "Profile hasn't been changed!",
+	"profile_change_success": "Profile change was a success!",
+	"email_field_error": "Email must be valid!",
+	"name_error": "Characters 2-255. Must have only letters.",
+	"username_error": "Characters 3-255.",
+	"getting_user": "Getting user...",
+	"close": "Close"
 }
