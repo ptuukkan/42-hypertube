@@ -13,19 +13,19 @@ import {
 
 interface IProps {
 	show: boolean;
-	usersId: string;
+	username: string;
 	setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const UsersProfileModal: React.FC<IProps> = ({ show, usersId, setShow }) => {
+const UsersProfileModal: React.FC<IProps> = ({ show, username, setShow }) => {
 	const { t } = useTranslation();
 	const rootStore = useContext(RootStoreContext);
 	const { getUsersProfile } = rootStore.userStore;
 	const [user, setUser] = useState<IUser | null>(null);
 
 	useEffect(() => {
-		if (show && (!user || user._id !== usersId)) {
-			getUsersProfile(usersId).then((res) => {
+		if (show && (!user || user.username !== username)) {
+			getUsersProfile(username).then((res) => {
 				if (res?.user) {
 					setUser(res.user);
 				} else {
@@ -33,12 +33,12 @@ const UsersProfileModal: React.FC<IProps> = ({ show, usersId, setShow }) => {
 				}
 			});
 		}
-	}, [show, usersId, getUsersProfile, user]);
+	}, [show, username, getUsersProfile, user]);
 
 	return (
 		<>
 			{show && !user && (
-				<Dimmer active>
+				<Dimmer active page>
 					<Loader size="massive">{t('getting_user')}</Loader>
 				</Dimmer>
 			)}
