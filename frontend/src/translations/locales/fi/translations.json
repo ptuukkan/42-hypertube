@@ -80,5 +80,7 @@
 	"profile_change_success": "Profiilin muutos onnistui!",
 	"email_field_error": "Sähköposti pitää olla päteva!",
 	"name_error": "2-255 merkkiä. On oltava vain kirjaimia.",
-	"username_error": "3-255 merkkiä."
+	"username_error": "3-255 merkkiä.",
+	"getting_user": "Hane käyttäjää...",
+	"close": "Sulje"
 }

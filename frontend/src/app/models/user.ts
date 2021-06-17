@@ -22,6 +22,7 @@ export interface IUser {
 	lastName: string;
 	profilePicName: string;
 	removePic?: boolean;
+	_id: string;
 }
 
 export interface IAccessToken {

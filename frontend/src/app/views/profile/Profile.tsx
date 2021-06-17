@@ -94,7 +94,7 @@ const Profile: React.FC = () => {
 			)}
 			{isLoading && (
 				<Dimmer active page>
-					<Loader content="Getting user..." size="massive" />
+					<Loader content={t('getting_user')} size="massive" />
 				</Dimmer>
 			)}
 			{!isLoading && (

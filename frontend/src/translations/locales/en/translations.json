@@ -80,5 +80,7 @@
 	"profile_change_success": "Profile change was a success!",
 	"email_field_error": "Email must be valid!",
 	"name_error": "Characters 2-255. Must have only letters.",
-	"username_error": "Characters 3-255."
+	"username_error": "Characters 3-255.",
+	"getting_user": "Getting user...",
+	"close": "Close"
 }
