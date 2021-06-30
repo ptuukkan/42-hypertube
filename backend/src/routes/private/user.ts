@@ -9,7 +9,7 @@ import updateProfileMulter from 'application/multer';
 
 const userRouter = Router();
 
-userRouter.get('/:id', getProfileController);
+userRouter.get('/:username', getProfileController);
 userRouter.get('/', getCurrentProfileController);
 userRouter.post('/', updateProfileMulter, updateProfileController);
 userRouter.post('/logout', logoutController);

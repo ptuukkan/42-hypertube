@@ -20,6 +20,8 @@ import {
 } from 'semantic-ui-react';
 import { IActorObj } from 'app/models/movie';
 import { useTranslation } from 'react-i18next';
+import Comments from './Comments';
+import UsersProfileModal from './UsersProfileModal';
 
 interface IParams {
 	id: string;
@@ -32,6 +34,8 @@ const Movie = () => {
 	const [loading, setLoading] = useState(true);
 	const [playerLoader, setPlayerLoader] = useState(false);
 	const [playMovie, setPlayMovie] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+	const [modalUsername, setModalUsername] = useState('');
 	const { movie, getMovie } = rootStore.movieStore;
 
 	useEffect(() => {
@@ -47,11 +51,16 @@ const Movie = () => {
 		}, 5000);
 	};
 
+	const openModal = (username: string): void => {
+		setModalUsername(username);
+		setShowModal(true);
+	};
+
 	if (loading) return <MovieLoader />;
 
 	return (
 		movie && (
-			<Segment style={{ marginTop: '60px' }}>
+			<Segment style={{ marginTop: 60, paddingBottom: 40 }}>
 				<Grid>
 					<Grid.Row columns="1">
 						<GridColumn>
@@ -110,6 +119,9 @@ const Movie = () => {
 											key={actor.imdb_code}
 											as="a"
 											href={`https://www.imdb.com/name/nm${actor.imdb_code}`}
+											style={{ marginRight: 5, marginTop: 5 }}
+											target="_blank"
+											rel="noreferrer noopener"
 										>
 											<img
 												src={actor.url_small_image || '/NoImage.png'}
@@ -122,6 +134,12 @@ const Movie = () => {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
+				<Comments comments={movie.comments} showModal={openModal} />
+				<UsersProfileModal
+					show={showModal}
+					username={modalUsername}
+					setShow={setShowModal}
+				/>
 			</Segment>
 		)
 	);

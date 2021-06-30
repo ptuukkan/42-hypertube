@@ -6,10 +6,10 @@ import asyncHandler from 'express-async-handler';
 import { BadRequest } from 'http-errors';
 
 export const getProfileController = asyncHandler(async (req, res) => {
-	const { id } = req.params;
+	const { username } = req.params;
 
 	const user = await UserModel.findOne(
-		{ _id: id },
+		{ username },
 		'firstName lastName profilePicName username'
 	);
 	if (!user) throw new BadRequest('User not found');
