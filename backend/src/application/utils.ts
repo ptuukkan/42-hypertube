@@ -42,32 +42,3 @@ export const omdbDetailsToMovieThumbnail = (
 	}
 	throw new Error('omdbDetails data not complete');
 };
-
-export interface IRange {
-	start: number;
-	end: number;
-}
-
-export const readRangeHeader = (range: string, fileSize: number): IRange => {
-	const parts = range.split(/bytes=([0-9]*)-([0-9]*)/);
-	const start = parseInt(parts[1]);
-	const end = parseInt(parts[2]);
-
-	const videoRange: IRange = {
-		start: isNaN(start) ? 0 : start,
-		end: isNaN(end) ? fileSize - 1 : end,
-	};
-
-	if (videoRange.end > fileSize - 1) {
-		videoRange.end = fileSize - 1;
-	}
-	if (videoRange.start > videoRange.end) {
-		throw new Error();
-	}
-	if (isNaN(start) && !isNaN(end)) {
-		videoRange.start = fileSize - end;
-		videoRange.end = fileSize - 1;
-	}
-
-	return videoRange;
-};

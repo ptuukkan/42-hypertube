@@ -8,11 +8,13 @@ import {
 import lodash, { isString, toLower } from 'lodash';
 import { details } from 'application/movie';
 import { Request } from 'express';
-import { streamMovieFile } from 'application/stream';
 import MovieModel from 'models/movie';
 import { startMovieDownload } from 'application/torrent';
 import Path from 'path';
 import Fs from 'fs';
+import { BadRequest } from 'http-errors';
+import { movieStream } from 'application/stream';
+import { torrentEngine } from 'app';
 
 export interface IQueryParams {
 	query: string;
@@ -109,7 +111,7 @@ export const getMovie = asyncHandler(async (req, res) => {
 	res.json(movie);
 });
 
-export const streamMovie = asyncHandler(async (req, res) => {
+export const prepareMovie = asyncHandler(async (req, res) => {
 	let movieDocument = await MovieModel.findOne({
 		imdbCode: req.params.imdbCode,
 	});
@@ -118,21 +120,35 @@ export const streamMovie = asyncHandler(async (req, res) => {
 			imdbCode: req.params.imdbCode,
 			status: 0,
 		});
-		movieDocument.save();
 	}
 
 	if (movieDocument.status === 2) {
 		const videoPath = Path.resolve(
 			__dirname,
-			`../../public/movies/${movieDocument.imdbCode}/${movieDocument.path}`
+			`../../public/movies/${movieDocument.imdbCode}/${movieDocument.fileName}`
 		);
 		if (!Fs.existsSync(videoPath)) {
 			movieDocument.status = 0;
 		}
 	}
+
+	if (
+		movieDocument.status === 1 &&
+		!torrentEngine.instances.get(movieDocument.torrentHash)
+	) {
+		movieDocument.status = 0;
+	}
 	if (movieDocument.status === 0) {
-		movieDocument.status = 1;
+		console.log('Starting download');
 		await startMovieDownload(movieDocument);
 	}
-	await streamMovieFile(req, res);
+	res.send('OK');
+});
+
+export const streamMovie = asyncHandler(async (req, res) => {
+	const movieDocument = await MovieModel.findOne({
+		imdbCode: req.params.imdbCode,
+	});
+	if (!movieDocument) throw new BadRequest('Movie not found in database');
+	movieStream(req, res, movieDocument);
 });

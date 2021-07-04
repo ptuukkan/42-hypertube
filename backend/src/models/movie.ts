@@ -37,15 +37,15 @@ export interface IMovie extends IMovieThumbnail {
 export interface IMovieDocument extends Document {
 	imdbCode: string;
 	status: number;
-	path: string;
-	size: number;
+	fileName: string;
+	torrentHash: string;
 }
 
 const MovieSchema = new Schema<IMovieDocument>({
 	imdbCode: { type: String, required: true },
 	status: { type: Number, required: true }, // 0 = not downloaded, 1 = downloading, 2 = download completed
-	path: { type: String },
-	size: { type: Number },
+	fileName: { type: String },
+	torrentHash: { type: String },
 });
 
 export default model<IMovieDocument>('Movie', MovieSchema);

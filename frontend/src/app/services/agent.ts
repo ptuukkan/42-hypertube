@@ -69,6 +69,8 @@ const Movies = {
 		requests.getAuth(`movies/search?query=${title}`, token),
 	get: (imdbCode: string, token: string): Promise<IMovie> =>
 		requests.getAuth(`movies/${imdbCode}`, token),
+	prepare: (imdbCode: string): Promise<void> =>
+		requests.post(`movies/${imdbCode}/prepare`, {}),
 };
 
 const OAuth = {

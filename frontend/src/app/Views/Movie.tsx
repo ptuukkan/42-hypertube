@@ -1,8 +1,7 @@
 import { RootStoreContext } from 'app/stores/rootStore';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import ReactPlayer from 'react-player';
 import {
 	Grid,
 	GridColumn,
@@ -14,7 +13,10 @@ import {
 	Header,
 	Dimmer,
 	Loader,
+	Button,
 } from 'semantic-ui-react';
+import Player from './Player';
+import agent from 'app/services/agent';
 
 interface IParams {
 	id: string;
@@ -24,13 +26,27 @@ const Movie = () => {
 	const rootStore = useContext(RootStoreContext);
 	const [loading, setLoading] = useState(true);
 	const { movie, getMovie } = rootStore.movieStore;
-	const [buffering, setBuffering] = useState(false);
+	const [movieReady, setMovieReady] = useState(false);
+	const [movieLoading, setMovieLoading] = useState(false);
 
 	useEffect(() => {
 		getMovie(id)
 			.catch((error) => console.log(error))
 			.finally(() => setLoading(false));
 	}, [id, getMovie]);
+
+	const prepareMovie = () => {
+		setMovieLoading(true);
+		agent.Movies.prepare(movie!.imdb)
+			.then(() => {
+				setMovieLoading(false);
+				setMovieReady(true);
+			})
+			.catch((error) => {
+				setMovieLoading(false);
+				console.log(error);
+			});
+	};
 
 	if (loading)
 		return (
@@ -46,25 +62,15 @@ const Movie = () => {
 					<Grid.Row columns="1">
 						<GridColumn>
 							<Header as="h1">{movie.title}</Header>
-							<Loader inverted active={buffering} size="huge">
-								Buffering
-							</Loader>
-							<ReactPlayer
-								muted={true}
-								onBufferEnd={() => {
-									setBuffering(false);
-									console.log('bufferend');
-								}}
-								onBuffer={() => {
-									setBuffering(true);
-									console.log('buffer');
-								}}
-								onError={(error) => console.dir(error)}
-								width="1000px"
-								height="418px"
-								controls
-								url={`http://localhost:8080/api/movies/${movie.imdb}/stream`}
-							/>
+							{movieReady ? (
+								<Player movie={movie} />
+							) : (
+								<Button
+									onClick={prepareMovie}
+									loading={movieLoading}
+									content="Watch movie"
+								/>
+							)}
 						</GridColumn>
 						<Grid.Column style={{ marginTop: '10px' }}>
 							<Item.Content>

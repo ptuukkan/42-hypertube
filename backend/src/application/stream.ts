@@ -1,9 +1,13 @@
 import { Request, Response } from 'express';
 import Path from 'path';
 import Fs from 'fs';
-import MovieModel from 'models/movie';
+import { IMovieDocument } from 'models/movie';
 import Debug from 'debug';
-import { NotFound } from 'http-errors';
+import { InternalServerError } from 'http-errors';
+import { pipeline } from 'stream';
+import { Readable } from 'stream';
+import { torrentEngine } from 'app';
+import { TorrentInstance } from './torrentEngine/instance';
 const debug = Debug('stream');
 
 interface IRange {
@@ -11,7 +15,7 @@ interface IRange {
 	end: number;
 }
 
-const readRangeHeader = (range: string, fileSize: number): IRange => {
+export const readRangeHeader = (range: string, fileSize: number): IRange => {
 	const parts = range.split(/bytes=([0-9]*)-([0-9]*)/);
 	const start = parseInt(parts[1]);
 	const end = parseInt(parts[2]);
@@ -27,64 +31,124 @@ const readRangeHeader = (range: string, fileSize: number): IRange => {
 	if (videoRange.start > videoRange.end) {
 		throw new Error();
 	}
+
 	if (isNaN(start) && !isNaN(end)) {
 		videoRange.start = fileSize - end;
 		videoRange.end = fileSize - 1;
 	}
 
+	if (videoRange.end < 0) videoRange.end = 0;
+
 	return videoRange;
 };
 
-export const streamMovieFile = async (
+export const movieStream = (
 	req: Request,
-	res: Response
-): Promise<void> => {
-	const movieDocument = await MovieModel.findOne({
-		imdbCode: req.params.imdbCode,
-	});
-	if (!movieDocument) throw new NotFound('Movie document not found');
+	res: Response,
+	movieDocument: IMovieDocument
+): void => {
+	if (movieDocument.status === 2) {
+		streamFile(req, res, movieDocument);
+	} else {
+		const instance = torrentEngine.instances.get(movieDocument.torrentHash);
+		if (!instance) throw new InternalServerError('No torrent instance');
+		streamTorrent(req, res, instance);
+	}
+};
 
-	if (!movieDocument.status)
-		throw new NotFound('Movie file not yet downloading');
-
+const streamFile = (
+	req: Request,
+	res: Response,
+	movieDocument: IMovieDocument
+) => {
 	const videoPath = Path.resolve(
 		__dirname,
-		`../../public/movies/${movieDocument.imdbCode}/${movieDocument.path}`
+		`../../public/movies/${movieDocument.imdbCode}/${movieDocument.fileName}`
 	);
-
-	if (!Fs.existsSync(videoPath)) throw new NotFound('Movie file not found');
-
 	const videoStat = Fs.statSync(videoPath);
-	const fileSize = videoStat.size;
+
 	if (req.headers.range) {
 		try {
-			const videoRange = readRangeHeader(req.headers.range, fileSize);
-			const chunkSize = videoRange.end - videoRange.start + 1;
-			const file = Fs.createReadStream(videoPath, {
+			const videoRange = readRangeHeader(req.headers.range, videoStat.size);
+			debug(
+				`Creating a stream for bytes ${videoRange.start}-${videoRange.end}`
+			);
+			const stream = Fs.createReadStream(videoPath, {
 				start: videoRange.start,
 				end: videoRange.end,
 			});
-			const head = {
-				'Content-Range': `bytes ${videoRange.start}-${videoRange.end}/${movieDocument.size}`,
-				'Accept-Ranges': 'bytes',
-				'Content-Length': chunkSize,
-				'Content-Type': 'video/mp4',
-			};
-			res.writeHead(206, head);
-			file.pipe(res);
+			createResponse(stream, res, videoStat.size, videoRange);
 		} catch (_error) {
 			const head = {
-				'Content-Range': `bytes */${movieDocument.size}`,
+				'Content-Range': `bytes */${videoStat.size}`,
 			};
 			res.writeHead(416, head);
 			res.end();
 		}
 	} else {
+		const stream = Fs.createReadStream(videoPath);
+		createResponse(stream, res, videoStat.size);
+	}
+};
+
+const streamTorrent = (
+	req: Request,
+	res: Response,
+	instance: TorrentInstance
+) => {
+	if (req.headers.range) {
+		try {
+			const videoRange = readRangeHeader(
+				req.headers.range,
+				instance.metadata.file.length
+			);
+			debug(
+				`Creating a stream for bytes ${videoRange.start}-${videoRange.end}`
+			);
+			const stream = instance.file.stream(videoRange.start, videoRange.end);
+			createResponse(stream, res, instance.metadata.file.length, videoRange);
+		} catch (_error) {
+			const head = {
+				'Content-Range': `bytes */${instance.metadata.file.length}`,
+			};
+			res.writeHead(416, head);
+			res.end();
+		}
+	} else {
+		const stream = instance.file.stream();
+		createResponse(stream, res, instance.metadata.file.length);
+	}
+};
+
+const createResponse = (
+	stream: Readable,
+	res: Response,
+	size: number,
+	videoRange?: IRange
+) => {
+	stream.on('error', (err) => console.log('Stream Error: ', err));
+	stream.on('close', () => console.log('Stream close'));
+	stream.on('end', () => console.log('Stream end'));
+	if (videoRange) {
 		const head = {
-			'Content-Length': fileSize,
+			'Content-Range': `bytes ${videoRange.start}-${videoRange.end}/${size}`,
+			'Accept-Ranges': 'bytes',
+			'Content-Length': videoRange.end - videoRange.start + 1,
+			'Content-Type': 'video/mp4',
+		};
+		res.writeHead(206, head);
+	} else {
+		const head = {
+			'Content-Length': size,
 			'Content-Type': 'video/mp4',
 		};
 		res.writeHead(200, head);
-		Fs.createReadStream(videoPath).pipe(res);
 	}
+	pipeline(stream, res, (err) => {
+		if (err) {
+			debug('Pipeline failed', err);
+		} else {
+			debug('Pipeline succeeded');
+		}
+	});
 };
