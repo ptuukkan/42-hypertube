@@ -66,7 +66,17 @@ export const startMovieDownload = async (
 			movieDocument.fileName = instance.metadata.file.name;
 			movieDocument.status = 1;
 			await movieDocument.save();
-			resolve();
+			const checkReady = () => {
+				debug('Checking if pieces 0-4 are downloaded ');
+				for (let i = 0; i < 4; i++) {
+					if (!instance.bitfield.get(i)) return;
+				}
+				instance.removeListener('piece', checkReady);
+				debug('resolving');
+				resolve();
+			};
+			instance.on('piece', checkReady);
+			checkReady();
 		} catch (error) {
 			reject(error);
 		}

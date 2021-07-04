@@ -11,7 +11,7 @@ import {
 } from '../models/user';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 20000;
 axios.defaults.withCredentials = true;
 
 axios.interceptors.response.use(
@@ -69,8 +69,12 @@ const Movies = {
 		requests.getAuth(`movies/search?query=${title}`, token),
 	get: (imdbCode: string, token: string): Promise<IMovie> =>
 		requests.getAuth(`movies/${imdbCode}`, token),
-	prepare: (imdbCode: string): Promise<void> =>
-		requests.post(`movies/${imdbCode}/prepare`, {}),
+	prepare: (imdbCode: string, token: string): Promise<void> =>
+		axios.post(
+			`movies/${imdbCode}/prepare`,
+			{},
+			{ headers: { Authorization: `Bearer ${token}` }, timeout: 0 }
+		),
 };
 
 const OAuth = {

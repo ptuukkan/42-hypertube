@@ -86,7 +86,7 @@ export class TorrentInstance extends EventEmitter {
 		}
 	};
 
-	updateInterest = (peer: Peer): void  => {
+	updateInterest = (peer: Peer): void => {
 		let shouldWeInterest = false;
 		for (let i = this.file.startPiece; i <= this.file.endPiece; i++) {
 			if (!this.bitfield.get(i) && peer.wire.peerPieces.get(i)) {
@@ -103,7 +103,7 @@ export class TorrentInstance extends EventEmitter {
 		}
 	};
 
-	buildPieces = (): void  => {
+	buildPieces = (): void => {
 		const numOfPieces = this.metadata.pieces.length;
 		for (let i = this.file.startPiece; i <= this.file.endPiece; i++) {
 			if (this.bitfield.get(i)) continue;
@@ -119,7 +119,7 @@ export class TorrentInstance extends EventEmitter {
 		}
 	};
 
-	prioritize = (startPiece: number, length: number): void  => {
+	prioritize = (startPiece: number, length: number): void => {
 		for (let i = 0; i <= length; i++) {
 			if (this.bitfield.get(startPiece + i)) continue;
 			const piece = this.pieceQueue.find((p) => p.index === startPiece + i);
@@ -132,7 +132,7 @@ export class TorrentInstance extends EventEmitter {
 		}
 	};
 
-	queueRequests = (): void  => {
+	queueRequests = (): void => {
 		process.nextTick(() => {
 			this.discovery.peers.forEach((peer) => {
 				this.requestBlocks(peer);
@@ -174,7 +174,7 @@ export class TorrentInstance extends EventEmitter {
 		}
 	};
 
-	requestBlock = (request: IPieceRequest): void  => {
+	requestBlock = (request: IPieceRequest): void => {
 		// this.debug(
 		// 	`request block ${request.piece.index}:${request.reservation} from ${request.peer.address.ip}`
 		// );
@@ -210,7 +210,7 @@ export class TorrentInstance extends EventEmitter {
 		this.queueRequests();
 	};
 
-	requestTimeout = (request: IPieceRequest): void  => {
+	requestTimeout = (request: IPieceRequest): void => {
 		// this.debug(
 		// 	`Timeout request ${request.piece.index}:${request.reservation} from ${request.peer.address.ip}`
 		// );
@@ -223,7 +223,7 @@ export class TorrentInstance extends EventEmitter {
 		this.queueRequests();
 	};
 
-	onChunk = (request: IPieceRequest, buffer: Buffer): void  => {
+	onChunk = (request: IPieceRequest, buffer: Buffer): void => {
 		// If piece is not done, make new request.
 		if (
 			!request.piece.piece.set(request.reservation, buffer, request.peer.wire)
@@ -260,7 +260,7 @@ export class TorrentInstance extends EventEmitter {
 		this.queueRequests();
 	};
 
-	onPieceComplete = (index: number, buffer: Buffer): void  => {
+	onPieceComplete = (index: number, buffer: Buffer): void => {
 		this.bitfield.set(index);
 		this.file.put(index, buffer, (err) => {
 			if (err) {
@@ -269,6 +269,7 @@ export class TorrentInstance extends EventEmitter {
 		});
 		this.debug(`Piece ${index} validated`);
 		this.emit(`piece${index}`);
+		this.emit('piece', index);
 		this.discovery.peers.forEach((peer) => {
 			peer.wire.have(index);
 		});

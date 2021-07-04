@@ -12,7 +12,6 @@ import {
 	Rating,
 	Segment,
 	Header,
-	Embed,
 	Label,
 	Loader,
 	Dimmer,
@@ -23,6 +22,7 @@ import { IActorObj } from 'app/models/movie';
 import { useTranslation } from 'react-i18next';
 import Comments from './Comments';
 import UsersProfileModal from './UsersProfileModal';
+import ReactPlayer from 'react-player';
 
 interface IParams {
 	id: string;
@@ -37,7 +37,7 @@ const Movie = () => {
 	const [playMovie, setPlayMovie] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [modalUsername, setModalUsername] = useState('');
-	const { movie, getMovie } = rootStore.movieStore;
+	const { movie, getMovie, prepareMovie } = rootStore.movieStore;
 
 	useEffect(() => {
 		if (movie === null || movie.imdb !== id) getMovie(id);
@@ -46,10 +46,9 @@ const Movie = () => {
 
 	const startPlay = () => {
 		setPlayerLoader(true);
-		setInterval(() => {
-			setPlayMovie(true);
-			setPlayerLoader(false);
-		}, 5000);
+		prepareMovie()
+			.then(() => setPlayMovie(true))
+			.finally(() => setPlayerLoader(false));
 	};
 
 	const openModal = (username: string): void => {
@@ -100,11 +99,12 @@ const Movie = () => {
 							)}
 
 							{!playerLoader && playMovie && (
-								<Embed
-									id="LsGZ_2RuJ2A"
-									placeholder="/background.png"
-									source="youtube"
-									autoplay
+								<ReactPlayer
+									url={`http://localhost:8080/api/stream/${movie.imdb}`}
+									width="100%"
+									height="auto"
+									controls
+									muted
 								/>
 							)}
 						</GridColumn>

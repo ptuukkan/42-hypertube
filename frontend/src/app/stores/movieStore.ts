@@ -43,4 +43,15 @@ export default class MovieStore {
 			console.log(error);
 		}
 	};
+
+	prepareMovie = async (): Promise<void> => {
+		if (!this.movie) return;
+		const token = await this.rootStore.userStore.getToken();
+		try {
+			await agent.Movies.prepare(this.movie.imdb, token);
+		} catch (error) {
+			console.log(error);
+			throw error;
+		}
+	};
 }

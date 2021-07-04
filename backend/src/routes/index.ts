@@ -5,12 +5,14 @@ import oAuthRouter from './oauth';
 import { checkAccessToken } from 'middleware/checkAccessToken';
 import { accessTokenController } from 'controllers/accessToken';
 import userRouter from 'routes/private/user';
+import streamRouter from './stream';
 
 const mountRoutes = (app: Application): void => {
 	// Public routes
 	app.use('/api/pre-auth/', preAuthRouter);
 	app.use('/api/auth/', oAuthRouter);
 	app.post('/api/accessToken', accessTokenController);
+	app.use('/api/stream', streamRouter);
 	// Private routes
 	app.use('/api/movies', checkAccessToken, movieRouter);
 	app.use('/api/user', checkAccessToken, userRouter);
