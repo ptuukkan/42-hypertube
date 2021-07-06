@@ -17,6 +17,7 @@ import {
 	Loader,
 	Dimmer,
 	Image,
+	Icon,
 } from 'semantic-ui-react';
 import { IActorObj } from 'app/models/movie';
 import { useTranslation } from 'react-i18next';
@@ -58,13 +59,27 @@ const Movie = () => {
 
 	if (loading) return <MovieLoader />;
 
+	const headerStyles: any = {};
+	if (true) headerStyles.marginBottom = '5px'; // TODO change true to watched value
+
 	return (
 		movie && (
 			<Segment style={{ marginTop: 60, paddingBottom: 40 }}>
 				<Grid>
 					<Grid.Row columns="1">
 						<GridColumn>
-							<Header as="h1">{movie.title}</Header>
+							<Header as="h1" style={headerStyles}>
+								{movie.title}
+							</Header>
+							{true && ( // TODO change true to watched value
+								<Header
+									sub
+									style={{ color: 'teal', fontSize: '1.1rem', marginTop: 0 }}
+								>
+									<Icon name="eye" />
+									{t('watched')}
+								</Header>
+							)}
 							{!playMovie && (
 								<Dimmer.Dimmable
 									dimmed={playerLoader}
