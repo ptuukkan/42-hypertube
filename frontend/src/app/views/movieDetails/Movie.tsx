@@ -60,7 +60,7 @@ const Movie = () => {
 
 	return (
 		movie && (
-			<Segment style={{ marginTop: 60, paddingBottom: 40 }}>
+			<Segment style={{ marginTop: 80, paddingBottom: 40 }}>
 				<Grid>
 					<Grid.Row columns="1">
 						<GridColumn>
@@ -101,12 +101,14 @@ const Movie = () => {
 									maxRating={10}
 									rating={movie.rating}
 								/>
+								<Item.Meta style={{ fontWeight: 600, marginBottom: 10 }}>
+									{movie.summary}
+								</Item.Meta>
 								<ItemExtra>
 									{t('directed', { director: movie.director })}
 								</ItemExtra>
 								<ItemExtra>{t('runtime', { time: movie.runtime })}</ItemExtra>
 								<Item.Content>{t('year', { year: movie.year })}</Item.Content>
-								<Item.Meta>{movie.summary}</Item.Meta>
 								<ItemExtra>{t('written', { writer: movie.writer })}</ItemExtra>
 								{typeof movie.actors !== 'undefined' && (
 									<Header as="h5">{t('actors')}</Header>

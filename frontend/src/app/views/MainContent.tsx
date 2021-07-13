@@ -11,6 +11,11 @@ const MainContent: React.FC = () => {
 	const searchTimer = useRef<NodeJS.Timeout>();
 	const [searchQuery, setQuery] = useState(savedSearch);
 	const [loading, setLoading] = useState(false);
+	const [isMounted, setIsMounted] = useState(true);
+
+	useEffect(() => {
+		return () => setIsMounted(false);
+	}, []);
 
 	useEffect(() => {
 		if (movies.count !== 0 || savedSearch !== '') return;
@@ -19,21 +24,23 @@ const MainContent: React.FC = () => {
 	}, [getMovies, movies.count, savedSearch, searchQuery]);
 
 	useEffect(() => {
-		if (savedSearch === '' && searchQuery === '') return;
+		if ((savedSearch === '' && searchQuery === '') || !isMounted) return;
 		if (savedSearch && searchQuery === savedSearch) return;
 		if (searchTimer.current) clearTimeout(searchTimer.current!);
 		searchTimer.current = setTimeout(() => {
 			setLoading(true);
-			getMovies(searchQuery).then(() => setLoading(false));
+			getMovies(searchQuery).then(() => {
+				if (isMounted) setLoading(false);
+			});
 		}, 700);
 		return () => {
 			if (searchTimer.current) clearTimeout(searchTimer.current!);
 		};
-	}, [searchQuery, getMovies, savedSearch]);
+	}, [searchQuery, getMovies, savedSearch, isMounted]);
 
 	return (
 		<Segment
-			style={{ minHeight: 500, padding: 60, paddingTop: 30, marginTop: 80 }}
+			style={{ minHeight: 500, padding: 30, paddingTop: 30, marginTop: 80 }}
 		>
 			<SearchMovies
 				setQuery={setQuery}

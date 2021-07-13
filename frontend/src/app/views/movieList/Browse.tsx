@@ -38,7 +38,9 @@ const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
 								<Item.Description>
 									{movie.genres &&
 										movie.genres.map((genre) => (
-											<Label key={genre}>{t(genre.toLowerCase())}</Label>
+											<Label key={genre} style={{ marginBottom: 4 }}>
+												{t(genre.toLowerCase())}
+											</Label>
 										))}
 								</Item.Description>
 							</Item.Content>
