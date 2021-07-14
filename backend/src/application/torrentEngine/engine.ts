@@ -13,6 +13,7 @@ interface IOptions {
 export class TorrentEngine extends EventEmitter {
 	options: IOptions;
 	instances = new Map<string, TorrentInstance>();
+	torrentStreams = new Map<string, TorrentStream.TorrentEngine>();
 	debug = Debug('engine');
 
 	constructor(options: IOptions) {
@@ -29,6 +30,7 @@ export class TorrentEngine extends EventEmitter {
 			const discoveryTimeout = setTimeout(() => {
 				discovery.destroy();
 				reject('No metadata');
+				return;
 			}, 30000);
 			if (discoveryTimeout.unref) discoveryTimeout.unref();
 
@@ -39,6 +41,7 @@ export class TorrentEngine extends EventEmitter {
 				if (!torrentMetadata) {
 					discovery.destroy();
 					reject('Metadata validation failed');
+					return;
 				}
 				const instance = new TorrentInstance(
 					discovery,
@@ -49,6 +52,7 @@ export class TorrentEngine extends EventEmitter {
 				instance.on('ready', () => {
 					this.debug('ready');
 					resolve(instance);
+					// setInterval(() => instance.queueRequests(), 30000);
 				});
 			});
 		});
@@ -62,6 +66,7 @@ export class TorrentEngine extends EventEmitter {
 			metadata.files!.forEach((file) => {
 				if (file.name.endsWith(type) && !data) {
 					data = {
+						length: metadata.length!,
 						pieces: metadata.pieces!,
 						pieceLength: metadata.pieceLength!,
 						lastPieceLength: metadata.lastPieceLength!,

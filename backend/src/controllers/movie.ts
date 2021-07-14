@@ -9,7 +9,7 @@ import lodash, { isString, toLower } from 'lodash';
 import { details } from 'application/movie';
 import { Request } from 'express';
 import MovieModel from 'models/movie';
-import { startMovieDownload } from 'application/torrent';
+import { startMovieDownload, startTorrentEngine } from 'application/torrent';
 import Path from 'path';
 import Fs from 'fs';
 import { BadRequest } from 'http-errors';
@@ -141,6 +141,7 @@ export const prepareMovie = asyncHandler(async (req, res) => {
 	if (movieDocument.status === 0) {
 		console.log('Starting download');
 		await startMovieDownload(movieDocument);
+		// await startTorrentEngine(movieDocument);
 	}
 	res.send('OK');
 });

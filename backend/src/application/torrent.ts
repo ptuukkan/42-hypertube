@@ -3,6 +3,7 @@ import { IMovieDocument } from 'models/movie';
 import ytsService from 'services/yts';
 import Debug from 'debug';
 import { torrentEngine } from 'app';
+import torrentStream from 'torrent-stream';
 const debug = Debug('torrent');
 
 interface ITorrent {
@@ -62,6 +63,7 @@ export const startMovieDownload = async (
 				torrent.hash,
 				movieDocument.imdbCode
 			);
+			instance.startDownload();
 			movieDocument.torrentHash = torrent.hash;
 			movieDocument.fileName = instance.metadata.file.name;
 			movieDocument.status = 1;
@@ -75,10 +77,72 @@ export const startMovieDownload = async (
 				debug('resolving');
 				resolve();
 			};
+			instance.on('piece', (index: number) => {
+				debug(`Downloaded piece ${index} for ${movieDocument.imdbCode}`);
+			});
+			instance.on('idle', () => {
+				debug(`${movieDocument.imdbCode} idle`);
+			});
 			instance.on('piece', checkReady);
+			setInterval(() => {
+				const peers = instance.discovery.peers.filter(
+					(p) => !p.wire.peerChoking
+				);
+				debug(
+					`Peers not choking: ${peers.length}/${instance.discovery.peers.length}`
+				);
+				// peers.forEach((peer) => {
+				// 	debug(`${peer.address.ip}:${peer.address.port}`);
+				// });
+			}, 10000);
 			checkReady();
+			// resolve();
 		} catch (error) {
 			reject(error);
 		}
+	});
+};
+
+export const startTorrentEngine = async (
+	movieDocument: IMovieDocument
+): Promise<void> => {
+	const torrent = await findTorrent(movieDocument.imdbCode);
+	return new Promise(async (resolve, reject) => {
+		const engine = torrentStream(torrent.hash, {
+			uploads: 0,
+			path: `public/movies/${movieDocument.imdbCode}`,
+			dht: true,
+			tracker: false,
+		});
+		engine.on('download', (index) => {
+			debug(`Downloaded piece ${index} for ${movieDocument.imdbCode}`);
+		});
+		engine.on('idle', () => {
+			debug(`${movieDocument.imdbCode} is idle`);
+		});
+		engine.on('upload', (index) => {
+			debug(`Uploaded piece ${index} for ${movieDocument.imdbCode}`);
+		});
+		engine.on('torrent', () => {
+			engine.files.forEach((file) => {
+				if (file.name.endsWith('.mp4')) {
+					movieDocument.torrentHash = torrent.hash;
+					movieDocument.fileName = file.name;
+					movieDocument.status = 1;
+					movieDocument.save();
+				}
+			});
+			torrentEngine.torrentStreams.set(torrent.hash, engine);
+			setInterval(() => {
+				const peers = engine.swarm.wires.filter((p: any) => !p.peerChoking);
+				debug(
+					`Peers not choking: ${peers.length}/${engine.swarm.wires.length}`
+				);
+				// peers.forEach((peer) => {
+				// 	debug(peer.peerAddress);
+				// });
+			}, 10000);
+			resolve();
+		});
 	});
 };

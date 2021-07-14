@@ -8,6 +8,7 @@ import Debug from 'debug';
 import sha1 from 'simple-sha1';
 
 export interface IMetadata {
+	length: number;
 	pieces: string[];
 	pieceLength: number;
 	lastPieceLength: number;
@@ -31,7 +32,7 @@ export interface IPieceRequest {
 }
 
 const CONCURRENT_REQUESTS = 5;
-const BLOCK_TIMEOUT = 10000;
+const BLOCK_TIMEOUT = 30000;
 
 export class TorrentInstance extends EventEmitter {
 	discovery: TorrentDiscovery;
@@ -41,6 +42,7 @@ export class TorrentInstance extends EventEmitter {
 	pieceQueue: ITorrentPiece[] = [];
 	priorityPieceQueue: ITorrentPiece[] = [];
 	requestQueue: IPieceRequest[] = [];
+	numOfPieces: number;
 	debug = Debug('instance');
 
 	constructor(discovery: TorrentDiscovery, metadata: IMetadata, path: string) {
@@ -54,24 +56,37 @@ export class TorrentInstance extends EventEmitter {
 			offset: metadata.file.offset,
 			length: metadata.file.length,
 			chunkLength: metadata.pieceLength,
+			leftOver: metadata.length - metadata.file.length,
+			lastChunkLength: metadata.lastPieceLength,
 		});
+		this.numOfPieces = this.metadata.pieces.length - 1;
 		this.verify();
 		this.on('verified', () => {
-			this.buildPieces();
 			this.discovery.instance = this;
-			this.discovery.peers.forEach((peer) => {
-				this.updateInterest(peer);
-				// this.requestBlocks(peer);
-			});
 			this.emit('ready');
 		});
 	}
+
+	startDownload = () => {
+		this.buildPieces();
+		this.refresh();
+	};
+
+	refresh = () => {
+		if (!this.pieceQueue.length && !this.priorityPieceQueue.length) return;
+		process.nextTick(() => {
+			this.discovery.peers.forEach((peer) => {
+				this.updateInterest(peer);
+				this.requestBlocks(peer);
+			});
+		});
+	};
 
 	verify = (): void => {
 		let callbacks = 0;
 		for (let i = this.file.startPiece; i <= this.file.endPiece; i++) {
 			callbacks++;
-			this.file.get(i, (err, buf) => {
+			this.file.store.get(i, undefined, (err, buf) => {
 				if (!err && buf) {
 					if (sha1.sync(buf) === this.metadata.pieces[i]) {
 						this.bitfield.set(i);
@@ -104,35 +119,55 @@ export class TorrentInstance extends EventEmitter {
 	};
 
 	buildPieces = (): void => {
-		const numOfPieces = this.metadata.pieces.length;
 		for (let i = this.file.startPiece; i <= this.file.endPiece; i++) {
 			if (this.bitfield.get(i)) continue;
-			const length =
-				i === numOfPieces
-					? this.metadata.lastPieceLength
-					: this.metadata.pieceLength;
-			this.pieceQueue.push({
-				index: i,
-				piece: new Piece(length),
-				priority: false,
-			});
+			if (i === this.numOfPieces) {
+				this.pieceQueue.push({
+					index: i,
+					piece: new Piece(this.metadata.lastPieceLength),
+					priority: false,
+				});
+			} else if (i === this.file.endPiece) {
+				this.pieceQueue.push({
+					index: i,
+					piece: new Piece(this.metadata.pieceLength),
+					priority: false,
+				});
+			} else {
+				this.pieceQueue.push({
+					index: i,
+					piece: new Piece(this.metadata.pieceLength),
+					priority: false,
+				});
+			}
 		}
 	};
 
 	prioritize = (startPiece: number, length: number): void => {
 		for (let i = 0; i <= length; i++) {
 			if (this.bitfield.get(startPiece + i)) continue;
-			const piece = this.pieceQueue.find((p) => p.index === startPiece + i);
-			if (!piece) continue;
+			if (this.priorityPieceQueue.find((p) => p.index === startPiece + i))
+				continue;
 			this.debug(`prioritizing piece ${startPiece + i}`);
-			this.pieceQueue = this.pieceQueue.filter(
-				(p) => p.index !== startPiece + i
-			);
-			this.priorityPieceQueue.push({ ...piece, priority: true });
+			const piece = this.pieceQueue.find((p) => p.index === startPiece + i);
+			if (piece) {
+				this.priorityPieceQueue.push({ ...piece, priority: true });
+			} else {
+				let length = this.metadata.pieceLength;
+				if (startPiece + i === this.numOfPieces) {
+					length = this.metadata.lastPieceLength;
+				}
+				this.priorityPieceQueue.push({
+					index: startPiece + i,
+					piece: new Piece(length),
+					priority: true,
+				});
+			}
 		}
 	};
 
 	queueRequests = (): void => {
+		if (!this.pieceQueue.length && !this.priorityPieceQueue.length) return;
 		process.nextTick(() => {
 			this.discovery.peers.forEach((peer) => {
 				this.requestBlocks(peer);
@@ -150,6 +185,10 @@ export class TorrentInstance extends EventEmitter {
 				this.requestBlock(request);
 			} else {
 				this.debug('No request');
+				return;
+				// this.debug(
+				// 	`piecequeue: ${this.pieceQueue.length}, priorityqueue: ${this.priorityPieceQueue.length}`
+				// );
 			}
 		}
 	};
@@ -175,9 +214,9 @@ export class TorrentInstance extends EventEmitter {
 	};
 
 	requestBlock = (request: IPieceRequest): void => {
-		// this.debug(
-		// 	`request block ${request.piece.index}:${request.reservation} from ${request.peer.address.ip}`
-		// );
+		this.debug(
+			`request block ${request.piece.index}:${request.reservation} from ${request.peer.address.ip}`
+		);
 		const timeout = setTimeout(
 			() => this.requestTimeout(request),
 			BLOCK_TIMEOUT
@@ -189,15 +228,15 @@ export class TorrentInstance extends EventEmitter {
 			(err, buffer) => {
 				clearTimeout(timeout);
 				if (err) {
-					// this.debug(
-					// 	`Error request ${request.piece.index}:${request.reservation} from ${request.peer.address.ip}`
-					// );
+					this.debug(
+						`Error request ${request.piece.index}:${request.reservation} from ${request.peer.address.ip}`
+					);
 					request.piece.piece.cancel(request.reservation);
 					this.queueRequests();
 				} else if (buffer) {
-					// this.debug(
-					// 	`Received block ${request.piece.index}:${request.reservation} from ${request.peer.address.ip}`
-					// );
+					this.debug(
+						`Received block ${request.piece.index}:${request.reservation} from ${request.peer.address.ip}`
+					);
 					this.onChunk(request, buffer);
 				} else {
 					this.debug(
@@ -236,6 +275,11 @@ export class TorrentInstance extends EventEmitter {
 		this.pieceQueue = this.pieceQueue.filter(
 			(p) => p.index !== request.piece.index
 		);
+		if (request.piece.priority) {
+			this.priorityPieceQueue = this.priorityPieceQueue.filter(
+				(p) => p.index !== request.piece.index
+			);
+		}
 
 		const pieceBuffer = request.piece.piece.flush();
 		sha1(pieceBuffer, (hash) => {
@@ -262,16 +306,19 @@ export class TorrentInstance extends EventEmitter {
 
 	onPieceComplete = (index: number, buffer: Buffer): void => {
 		this.bitfield.set(index);
-		this.file.put(index, buffer, (err) => {
+		this.file.store.put(index, buffer, (err?: Error) => {
 			if (err) {
-				this.debug(`Error writing data piece ${index}`, err);
+				this.debug(`Error writing data piece ${index}`, err, buffer.length);
 			}
 		});
-		this.debug(`Piece ${index} validated`);
+		// this.debug(`Piece ${index} validated`);
 		this.emit(`piece${index}`);
 		this.emit('piece', index);
 		this.discovery.peers.forEach((peer) => {
 			peer.wire.have(index);
 		});
+		if (!this.pieceQueue.length && !this.priorityPieceQueue.length) {
+			this.emit('idle');
+		}
 	};
 }

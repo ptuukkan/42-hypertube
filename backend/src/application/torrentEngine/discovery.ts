@@ -52,10 +52,12 @@ export class TorrentDiscovery extends EventEmitter {
 		peer.once('metadata', (metadata: ParseTorrentFile.Instance) =>
 			this.onMetadata(metadata)
 		);
-		peer.wire.on('unchoke', () => this.onUnchoke());
+		peer.wire.on('unchoke', () => this.onUnchoke(peer));
+		peer.wire.on('choke', () => this.onChoke(peer));
 		peer.once('destroy', () => this.onDestroy(peer));
 		peer.wire.on('bitfield', () => this.onBitField(peer));
 		peer.wire.on('have', () => this.onHave(peer));
+		peer.wire.on('interested', () => this.onInterested());
 		peer.connect();
 	};
 
@@ -72,10 +74,15 @@ export class TorrentDiscovery extends EventEmitter {
 		this.emit('metadata', metadata);
 	};
 
-	onUnchoke = (): void => {
+	onUnchoke = (peer: Peer): void => {
+		this.debug(`Peer ${peer.address.ip} unchoked us`);
 		if (this.instance) {
 			this.instance.queueRequests();
 		}
+	};
+
+	onChoke = (peer: Peer): void => {
+		this.debug(`Peer ${peer.address.ip} choked us`);
 	};
 
 	onDestroy = (peer: Peer): void => {
@@ -93,6 +100,10 @@ export class TorrentDiscovery extends EventEmitter {
 			this.instance.updateInterest(peer);
 		}
 	};
+
+	onInterested = (): void => {
+		this.debug('Received interested');
+	}
 
 	destroy = (): void => {
 		this.peers.forEach((peer) => peer.destroy());
