@@ -17,7 +17,7 @@ declare module 'immediate-chunk-store' {
 			get(index: number, cb: (err?: Error, chunk?: Buffer) => void): void;
 		}
 		export interface Options {
-			offset: number;
+			offset?: number;
 			length?: number;
 		}
 	}

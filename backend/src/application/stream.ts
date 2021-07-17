@@ -53,10 +53,6 @@ export const movieStream = (
 		const instance = torrentEngine.instances.get(movieDocument.torrentHash);
 		if (!instance) throw new InternalServerError('No torrent instance');
 		streamTorrent(req, res, instance);
-
-		// const engine = torrentEngine.torrentStreams.get(movieDocument.torrentHash);
-		// if (!engine) throw new InternalServerError('No torrent instance');
-		// streamTorrent2(req, res, engine, movieDocument);
 	}
 };
 
@@ -67,7 +63,7 @@ const streamFile = (
 ) => {
 	const videoPath = Path.resolve(
 		__dirname,
-		`../../public/movies/${movieDocument.imdbCode}/${movieDocument.fileName}`
+		`../../movies/${movieDocument.imdbCode}/${movieDocument.fileName}`
 	);
 	const videoStat = Fs.statSync(videoPath);
 
@@ -121,38 +117,6 @@ const streamTorrent = (
 	} else {
 		const stream = instance.file.stream();
 		createResponse(stream, res, instance.metadata.file.length);
-	}
-};
-
-const streamTorrent2 = (
-	req: Request,
-	res: Response,
-	engine: TorrentStream.TorrentEngine,
-	movieDocument: IMovieDocument
-) => {
-	const file = engine.files.find((f) => f.name === movieDocument.fileName);
-	if (!file) throw new InternalServerError('StreamTorrent2: No file found');
-	if (req.headers.range) {
-		try {
-			const videoRange = readRangeHeader(req.headers.range, file.length);
-			debug(
-				`Creating a stream for bytes ${videoRange.start}-${videoRange.end}`
-			);
-			const stream = file.createReadStream({
-				start: videoRange.start,
-				end: videoRange.end,
-			});
-			createResponse(stream, res, file.length, videoRange);
-		} catch (_error) {
-			const head = {
-				'Content-Range': `bytes */${file.length}`,
-			};
-			res.writeHead(416, head);
-			res.end();
-		}
-	} else {
-		const stream = file.createReadStream();
-		createResponse(stream, res, file.length);
 	}
 };
 

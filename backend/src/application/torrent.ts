@@ -3,7 +3,9 @@ import { IMovieDocument } from 'models/movie';
 import ytsService from 'services/yts';
 import Debug from 'debug';
 import { torrentEngine } from 'app';
-import torrentStream from 'torrent-stream';
+import MovieModel from 'models/movie';
+import { downloadSubtitles } from './subtitles';
+import { IUserDocument } from 'models/user';
 const debug = Debug('torrent');
 
 interface ITorrent {
@@ -54,8 +56,9 @@ const findTorrent = async (imdbCode: string): Promise<ITorrent> => {
 };
 
 export const startMovieDownload = async (
-	movieDocument: IMovieDocument
-): Promise<void> => {
+	movieDocument: IMovieDocument,
+	user: IUserDocument
+): Promise<string[]> => {
 	const torrent = await findTorrent(movieDocument.imdbCode);
 	return new Promise(async (resolve, reject) => {
 		try {
@@ -68,81 +71,46 @@ export const startMovieDownload = async (
 			movieDocument.fileName = instance.metadata.file.name;
 			movieDocument.status = 1;
 			await movieDocument.save();
-			const checkReady = () => {
-				debug('Checking if pieces 0-4 are downloaded ');
-				for (let i = 0; i < 4; i++) {
-					if (!instance.bitfield.get(i)) return;
-				}
-				instance.removeListener('piece', checkReady);
-				debug('resolving');
-				resolve();
-			};
 			instance.on('piece', (index: number) => {
 				debug(`Downloaded piece ${index} for ${movieDocument.imdbCode}`);
 			});
 			instance.on('idle', () => {
 				debug(`${movieDocument.imdbCode} idle`);
+				torrentEngine.close(torrent.hash);
+				MovieModel.findOne({
+					imdbCode: movieDocument.imdbCode,
+				})
+					.then((m) => {
+						if (m) {
+							m.status = 2;
+							m.save().catch((error) => debug(error));
+						}
+					})
+					.catch((error) => debug(error));
 			});
-			instance.on('piece', checkReady);
-			setInterval(() => {
-				const peers = instance.discovery.peers.filter(
-					(p) => !p.wire.peerChoking
-				);
-				debug(
-					`Peers not choking: ${peers.length}/${instance.discovery.peers.length}`
-				);
-				// peers.forEach((peer) => {
-				// 	debug(`${peer.address.ip}:${peer.address.port}`);
-				// });
-			}, 10000);
-			checkReady();
-			// resolve();
+			instance.on('moviehash', async (hash: string) => {
+				console.log('moviehash event');
+				debug(hash);
+				movieDocument.movieHash = hash;
+				try {
+					await movieDocument.save();
+					const subtitles = await downloadSubtitles(movieDocument, user);
+					debug(subtitles);
+					const interval = setInterval(() => {
+						debug('Checking if pieces 0-4 are downloaded ');
+						for (let i = 0; i < 4; i++) {
+							if (!instance.bitfield.get(i)) return;
+						}
+						clearInterval(interval);
+						debug('resolving');
+						resolve(subtitles);
+					}, 5000);
+				} catch (error) {
+					reject();
+				}
+			});
 		} catch (error) {
 			reject(error);
 		}
-	});
-};
-
-export const startTorrentEngine = async (
-	movieDocument: IMovieDocument
-): Promise<void> => {
-	const torrent = await findTorrent(movieDocument.imdbCode);
-	return new Promise(async (resolve, reject) => {
-		const engine = torrentStream(torrent.hash, {
-			uploads: 0,
-			path: `public/movies/${movieDocument.imdbCode}`,
-			dht: true,
-			tracker: false,
-		});
-		engine.on('download', (index) => {
-			debug(`Downloaded piece ${index} for ${movieDocument.imdbCode}`);
-		});
-		engine.on('idle', () => {
-			debug(`${movieDocument.imdbCode} is idle`);
-		});
-		engine.on('upload', (index) => {
-			debug(`Uploaded piece ${index} for ${movieDocument.imdbCode}`);
-		});
-		engine.on('torrent', () => {
-			engine.files.forEach((file) => {
-				if (file.name.endsWith('.mp4')) {
-					movieDocument.torrentHash = torrent.hash;
-					movieDocument.fileName = file.name;
-					movieDocument.status = 1;
-					movieDocument.save();
-				}
-			});
-			torrentEngine.torrentStreams.set(torrent.hash, engine);
-			setInterval(() => {
-				const peers = engine.swarm.wires.filter((p: any) => !p.peerChoking);
-				debug(
-					`Peers not choking: ${peers.length}/${engine.swarm.wires.length}`
-				);
-				// peers.forEach((peer) => {
-				// 	debug(peer.peerAddress);
-				// });
-			}, 10000);
-			resolve();
-		});
 	});
 };

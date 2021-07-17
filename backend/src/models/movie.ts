@@ -39,6 +39,8 @@ export interface IMovieDocument extends Document {
 	status: number;
 	fileName: string;
 	torrentHash: string;
+	movieHash: string;
+	subtitles: string[];
 }
 
 const MovieSchema = new Schema<IMovieDocument>({
@@ -46,6 +48,8 @@ const MovieSchema = new Schema<IMovieDocument>({
 	status: { type: Number, required: true }, // 0 = not downloaded, 1 = downloading, 2 = download completed
 	fileName: { type: String },
 	torrentHash: { type: String },
+	movieHash: { type: String },
+	subtitles: { type: Array },
 });
 
 export default model<IMovieDocument>('Movie', MovieSchema);

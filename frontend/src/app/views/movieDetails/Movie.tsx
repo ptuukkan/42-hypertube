@@ -37,7 +37,7 @@ const Movie = () => {
 	const [playMovie, setPlayMovie] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [modalUsername, setModalUsername] = useState('');
-	const { movie, getMovie, prepareMovie } = rootStore.movieStore;
+	const { movie, getMovie, prepareMovie, getSubtitles } = rootStore.movieStore;
 
 	useEffect(() => {
 		if (movie === null || movie.imdb !== id) getMovie(id);
@@ -105,6 +105,11 @@ const Movie = () => {
 									height="auto"
 									controls
 									muted
+									config={{
+										file: {
+											tracks: getSubtitles,
+										},
+									}}
 								/>
 							)}
 						</GridColumn>

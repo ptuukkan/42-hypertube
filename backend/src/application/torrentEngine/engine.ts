@@ -13,7 +13,7 @@ interface IOptions {
 export class TorrentEngine extends EventEmitter {
 	options: IOptions;
 	instances = new Map<string, TorrentInstance>();
-	torrentStreams = new Map<string, TorrentStream.TorrentEngine>();
+	intervals = new Map<string, NodeJS.Timeout>();
 	debug = Debug('engine');
 
 	constructor(options: IOptions) {
@@ -45,14 +45,15 @@ export class TorrentEngine extends EventEmitter {
 				}
 				const instance = new TorrentInstance(
 					discovery,
-					torrentMetadata!,
+					torrentMetadata,
 					Path.resolve(this.options.path, imdbCode)
 				);
 				this.instances.set(infoHash, instance);
 				instance.on('ready', () => {
 					this.debug('ready');
 					resolve(instance);
-					// setInterval(() => instance.queueRequests(), 30000);
+					const interval = setInterval(() => instance.refresh(), 30000);
+					this.intervals.set(infoHash, interval);
 				});
 			});
 		});
@@ -81,5 +82,17 @@ export class TorrentEngine extends EventEmitter {
 		});
 
 		return data;
+	};
+
+	close = (infoHash: string): void => {
+		const instance = this.instances.get(infoHash);
+		if (!instance) return;
+		instance.discovery.destroy();
+		instance.removeAllListeners();
+		this.instances.delete(infoHash);
+		const interval = this.intervals.get(infoHash);
+		if (!interval) return;
+		clearInterval(interval);
+		this.intervals.delete(infoHash);
 	};
 }

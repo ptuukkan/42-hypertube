@@ -69,12 +69,14 @@ const Movies = {
 		requests.getAuth(`movies/search?query=${title}`, token),
 	get: (imdbCode: string, token: string): Promise<IMovie> =>
 		requests.getAuth(`movies/${imdbCode}`, token),
-	prepare: (imdbCode: string, token: string): Promise<void> =>
-		axios.post(
-			`movies/${imdbCode}/prepare`,
-			{},
-			{ headers: { Authorization: `Bearer ${token}` }, timeout: 0 }
-		),
+	prepare: (imdbCode: string, token: string): Promise<string[]> =>
+		axios
+			.post(
+				`movies/${imdbCode}/prepare`,
+				{},
+				{ headers: { Authorization: `Bearer ${token}` }, timeout: 0 }
+			)
+			.then(responseBody),
 };
 
 const OAuth = {

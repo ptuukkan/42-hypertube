@@ -55,7 +55,7 @@ export class TorrentFile {
 				path: Path.resolve(options.path, 'dummy2'),
 				offset: options.offset + options.length,
 				length: options.leftOver,
-			})
+			});
 		}
 
 		const storage = new FsChunkStore(options.chunkLength, {
@@ -84,14 +84,17 @@ export class TorrentFile {
 		const startByte = start ?? 0;
 		const endByte = end ?? this.options.length - 1;
 		const stream = new FileStream(this, startByte, endByte);
-		this.debug('Stream open');
+		this.debug(`Stream ${startByte}-${endByte} ${stream.startPiece}-${stream.endPiece} open`);
 		const instance = this.instance;
 
 		eos(stream, () => {
-			this.debug('Stream closed');
+			this.debug(`Stream ${startByte}-${endByte} ${this.startPiece}-${this.endPiece} closed`);
 			instance.priorityPieceQueue = instance.priorityPieceQueue.filter((p) => {
-				p.index < this.startPiece || p.index > this.endPiece;
+				return p.index < this.startPiece || p.index > this.endPiece;
 			});
+			if (!instance.pieceQueue.length && !instance.priorityPieceQueue.length) {
+				instance.emit('idle');
+			}
 		});
 
 		this.instance.refresh();

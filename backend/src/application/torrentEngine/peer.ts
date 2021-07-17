@@ -23,6 +23,7 @@ export class Peer extends EventEmitter {
 	conn: net.Socket | null = null;
 	chokeTimeout: NodeJS.Timeout | undefined;
 	handshakeTimeout: NodeJS.Timeout | undefined;
+	destroyed = false;
 
 	constructor(address: IPeerAddress, discovery: TorrentDiscovery) {
 		super();
@@ -49,13 +50,8 @@ export class Peer extends EventEmitter {
 			this.debug(`Timeout from ${this.address.ip}`);
 		});
 
-		this.wire.on('choke', () => {
-			this.debug(`${this.address.ip} choked us`);
-			// this.chokeTimeout = setTimeout(() => {
-			// 	this.debug(`Choke timeout ${this.address.ip}`);
-			// 	this.destroy();
-			// }, CHOKE_TIMEOUT);
-			// if (this.chokeTimeout.unref) this.chokeTimeout.unref();
+		this.wire.on('interested', () => {
+			this.debug(`Interested from ${this.address.ip}`);
 		});
 
 		this.wire.ut_metadata.on('metadata', (metadata: Buffer) => {
@@ -81,15 +77,23 @@ export class Peer extends EventEmitter {
 		});
 		conn.on('timeout', () => {
 			this.debug(`TCP to ${this.address.ip} timeout`);
+			this.destroy();
 		});
 		conn.on('error', (err) => {
 			this.debug(`TCP to ${this.address.ip} error`, err);
+			this.destroy();
 		});
 		conn.on('connect', () => {
 			this.conn = conn;
 			this.conn.pipe(this.wire).pipe(this.conn);
 			this.handshake();
 			this.handshakeTimeout = setTimeout(this.destroy, HANDSHAKE_TIMEOUT);
+		});
+		conn.on('close', (had_error) => {
+			this.debug(
+				`Connection to ${this.address.ip} closed, error: ${had_error}`
+			);
+			this.destroy();
 		});
 	};
 
@@ -107,6 +111,10 @@ export class Peer extends EventEmitter {
 	};
 
 	destroy = (): void => {
+		if (this.destroyed) return;
+		this.destroyed = true;
+		this.removeAllListeners();
+		this.wire.removeAllListeners();
 		this.emit('destroy');
 		this.debug(`Peer ${this.address.ip} destroyed`);
 		this.wire.destroy();

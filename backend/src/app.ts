@@ -25,6 +25,11 @@ connectToDb().then(() => {
 	cronScheduler.addJobsForEachMovie();
 });
 
+export const torrentEngine = new TorrentEngine({
+	path: Path.resolve(__dirname, '../movies'),
+	supportedTypes: ['mp4'],
+});
+
 app.use(cors({ origin: process.env.REACT_APP_BASE_URL, credentials: true }));
 app.use(logger('dev'));
 app.use(express.json());
@@ -34,10 +39,6 @@ app.use(express.static(`${__dirname}/../public`));
 
 mountRoutes(app);
 
-export const torrentEngine = new TorrentEngine({
-	path: Path.resolve(__dirname, '../public/movies'),
-	supportedTypes: ['mp4'],
-});
 
 app.use((_req: Request, _res: Response, next: NextFunction) => {
 	next(createError(404));

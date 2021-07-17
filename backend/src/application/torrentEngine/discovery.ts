@@ -103,10 +103,12 @@ export class TorrentDiscovery extends EventEmitter {
 
 	onInterested = (): void => {
 		this.debug('Received interested');
-	}
+	};
 
 	destroy = (): void => {
-		this.peers.forEach((peer) => peer.destroy());
+		this.removeAllListeners();
 		this.discovery.destroy();
+		this.peers.forEach((peer) => peer.destroy());
+		this.peers = [];
 	};
 }

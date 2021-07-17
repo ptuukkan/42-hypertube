@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 declare module 'bittorrent-protocol' {
 	import * as stream from 'stream';
 	import BitField from 'bitfield';
@@ -10,9 +11,7 @@ declare module 'bittorrent-protocol' {
 			(): Wire;
 		}
 
-		interface ExtensionConstructor {
-			new (wire: Wire): Extension;
-		}
+		type ExtensionConstructor = new (wire: Wire) => Extension;
 
 		interface Extension {
 			onHandshake?(
@@ -45,6 +44,7 @@ declare module 'bittorrent-protocol' {
 			readonly extendedMapping: { [key: number]: string };
 			readonly peerExtendedMapping: { [key: string]: number };
 			readonly peerPieces: BitField;
+			downloadSpeed(): number;
 
 			setKeepAlive(enable: boolean): void;
 

@@ -9,12 +9,14 @@ import lodash, { isString, toLower } from 'lodash';
 import { details } from 'application/movie';
 import { Request } from 'express';
 import MovieModel from 'models/movie';
-import { startMovieDownload, startTorrentEngine } from 'application/torrent';
+import { startMovieDownload } from 'application/torrent';
 import Path from 'path';
 import Fs from 'fs';
-import { BadRequest } from 'http-errors';
+import { BadRequest, Unauthorized } from 'http-errors';
 import { movieStream } from 'application/stream';
 import { torrentEngine } from 'app';
+import { downloadSubtitles } from 'application/subtitles';
+import UserModel from 'models/user';
 
 export interface IQueryParams {
 	query: string;
@@ -112,6 +114,9 @@ export const getMovie = asyncHandler(async (req, res) => {
 });
 
 export const prepareMovie = asyncHandler(async (req, res) => {
+	const user = await UserModel.findOne({ _id: req.authPayload?.userId });
+	if (!user) throw new Unauthorized('not logged in');
+
 	let movieDocument = await MovieModel.findOne({
 		imdbCode: req.params.imdbCode,
 	});
@@ -122,13 +127,17 @@ export const prepareMovie = asyncHandler(async (req, res) => {
 		});
 	}
 
+	let subtitles: string[] = [];
+
 	if (movieDocument.status === 2) {
 		const videoPath = Path.resolve(
 			__dirname,
-			`../../public/movies/${movieDocument.imdbCode}/${movieDocument.fileName}`
+			`../../public/subtitles/${movieDocument.imdbCode}/${movieDocument.fileName}`
 		);
 		if (!Fs.existsSync(videoPath)) {
 			movieDocument.status = 0;
+		} else {
+			subtitles = await downloadSubtitles(movieDocument, user);
 		}
 	}
 
@@ -140,10 +149,9 @@ export const prepareMovie = asyncHandler(async (req, res) => {
 	}
 	if (movieDocument.status === 0) {
 		console.log('Starting download');
-		await startMovieDownload(movieDocument);
-		// await startTorrentEngine(movieDocument);
+		subtitles = await startMovieDownload(movieDocument, user);
 	}
-	res.send('OK');
+	res.json(subtitles);
 });
 
 export const streamMovie = asyncHandler(async (req, res) => {
