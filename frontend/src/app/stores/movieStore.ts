@@ -48,14 +48,10 @@ export default class MovieStore {
 	prepareMovie = async (): Promise<void> => {
 		if (!this.movie) return;
 		const token = await this.rootStore.userStore.getToken();
-		try {
 			const subtitles = await agent.Movies.prepare(this.movie.imdb, token);
 			runInAction(() => {
 				this.subtitles = subtitles;
 			});
-		} catch (error) {
-			console.log(error);
-		}
 	};
 
 	get getSubtitles(): any[] {

@@ -7,6 +7,7 @@ import Piece from 'torrent-piece';
 import Debug from 'debug';
 import sha1 from 'simple-sha1';
 import hat from 'hat';
+import { TorrentEngine } from './engine';
 
 export interface IMetadata {
 	length: number;
@@ -48,11 +49,18 @@ export class TorrentInstance extends EventEmitter {
 	priorityPieceQueue: ITorrentPiece[] = [];
 	requests: IPieceRequest[] = [];
 	numOfPieces: number;
+	engine: TorrentEngine;
 	rack = hat.rack();
 	debug = Debug('instance');
 
-	constructor(discovery: TorrentDiscovery, metadata: IMetadata, path: string) {
+	constructor(
+		discovery: TorrentDiscovery,
+		metadata: IMetadata,
+		engine: TorrentEngine,
+		path: string
+	) {
 		super();
+		this.engine = engine;
 		this.discovery = discovery;
 		this.metadata = metadata;
 		this.bitfield = new BitField(this.metadata.pieces.length);
@@ -220,7 +228,8 @@ export class TorrentInstance extends EventEmitter {
 
 		while (peer.wire.requests.length < CONCURRENT_REQUESTS) {
 			let request = this.reserveBlock(peer, this.priorityPieceQueue);
-			if (!request) request = this.reserveBlock(peer, this.pieceQueue);
+			if (!request && this.engine.clear())
+				request = this.reserveBlock(peer, this.pieceQueue);
 			if (request) {
 				this.requestBlock(request);
 			} else {

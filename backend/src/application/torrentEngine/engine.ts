@@ -4,6 +4,7 @@ import ParseTorrentFile from 'parse-torrent-file';
 import { IMetadata, TorrentInstance } from 'application/torrentEngine/instance';
 import Debug from 'debug';
 import Path from 'path';
+import { BadRequest } from 'http-errors';
 
 interface IOptions {
 	path: string;
@@ -23,13 +24,16 @@ export class TorrentEngine extends EventEmitter {
 
 	add = (infoHash: string, imdbCode: string): Promise<TorrentInstance> =>
 		new Promise<TorrentInstance>((resolve, reject) => {
+			if (this.instances.size > 4) {
+				reject(new BadRequest('Too many instances'));
+			}
 			if (this.instances.get(infoHash)) {
-				reject('Duplicate torrent');
+				reject(new BadRequest('Duplicate torrent'));
 			}
 			const discovery = new TorrentDiscovery(infoHash);
 			const discoveryTimeout = setTimeout(() => {
 				discovery.destroy();
-				reject('No metadata');
+				reject(new BadRequest('No metadata'));
 				return;
 			}, 30000);
 			if (discoveryTimeout.unref) discoveryTimeout.unref();
@@ -40,17 +44,18 @@ export class TorrentEngine extends EventEmitter {
 				const torrentMetadata = this.validateMetadata(metadata);
 				if (!torrentMetadata) {
 					discovery.destroy();
-					reject('Metadata validation failed');
+					reject(new BadRequest('Metadata validation failed'));
 					return;
 				}
 				const instance = new TorrentInstance(
 					discovery,
 					torrentMetadata,
+					this,
 					Path.resolve(this.options.path, imdbCode)
 				);
 				this.instances.set(infoHash, instance);
 				instance.on('ready', () => {
-					this.debug('ready');
+					this.debug(`Instance ${imdbCode} ready`);
 					resolve(instance);
 					const interval = setInterval(() => instance.refresh(), 30000);
 					this.intervals.set(infoHash, interval);
@@ -82,6 +87,23 @@ export class TorrentEngine extends EventEmitter {
 		});
 
 		return data;
+	};
+
+	clear = (): boolean => {
+		const array = Array.from(this.instances.values());
+		return !array.some((i) => {
+			return i.priorityPieceQueue.length;
+		});
+	};
+
+	speed = (): number => {
+		let speed = 0;
+		this.instances.forEach((instance) => {
+			instance.discovery.peers.forEach((peer) => {
+				speed = speed + peer.wire.downloadSpeed();
+			});
+		});
+		return speed;
 	};
 
 	close = (infoHash: string): void => {

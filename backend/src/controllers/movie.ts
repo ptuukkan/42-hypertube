@@ -132,7 +132,7 @@ export const prepareMovie = asyncHandler(async (req, res) => {
 	if (movieDocument.status === 2) {
 		const videoPath = Path.resolve(
 			__dirname,
-			`../../public/subtitles/${movieDocument.imdbCode}/${movieDocument.fileName}`
+			`../../movies/${movieDocument.imdbCode}/${movieDocument.fileName}`
 		);
 		if (!Fs.existsSync(videoPath)) {
 			movieDocument.status = 0;
@@ -148,7 +148,6 @@ export const prepareMovie = asyncHandler(async (req, res) => {
 		movieDocument.status = 0;
 	}
 	if (movieDocument.status === 0) {
-		console.log('Starting download');
 		subtitles = await startMovieDownload(movieDocument, user);
 	}
 	res.json(subtitles);

@@ -66,11 +66,6 @@ export const startMovieDownload = async (
 				torrent.hash,
 				movieDocument.imdbCode
 			);
-			instance.startDownload();
-			movieDocument.torrentHash = torrent.hash;
-			movieDocument.fileName = instance.metadata.file.name;
-			movieDocument.status = 1;
-			await movieDocument.save();
 			instance.on('piece', (index: number) => {
 				debug(`Downloaded piece ${index} for ${movieDocument.imdbCode}`);
 			});
@@ -89,13 +84,11 @@ export const startMovieDownload = async (
 					.catch((error) => debug(error));
 			});
 			instance.on('moviehash', async (hash: string) => {
-				console.log('moviehash event');
-				debug(hash);
+				debug(`Received moviehash for ${movieDocument.imdbCode}`, hash);
 				movieDocument.movieHash = hash;
 				try {
 					await movieDocument.save();
 					const subtitles = await downloadSubtitles(movieDocument, user);
-					debug(subtitles);
 					const interval = setInterval(() => {
 						debug('Checking if pieces 0-4 are downloaded ');
 						for (let i = 0; i < 4; i++) {
@@ -106,9 +99,15 @@ export const startMovieDownload = async (
 						resolve(subtitles);
 					}, 5000);
 				} catch (error) {
-					reject();
+					reject(error);
 				}
 			});
+			movieDocument.torrentHash = torrent.hash;
+			movieDocument.fileName = instance.metadata.file.name;
+			movieDocument.status = 1;
+			await movieDocument.save();
+
+			instance.startDownload();
 		} catch (error) {
 			reject(error);
 		}

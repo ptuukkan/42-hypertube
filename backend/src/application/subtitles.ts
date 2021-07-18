@@ -31,7 +31,7 @@ const searchSubtitles = async (
 	return subtitlesByLanguage;
 };
 
-const checkSubtitles = (movieDocument: IMovieDocument, languages: string[]) => {
+const checkSubtitles = async (movieDocument: IMovieDocument, languages: string[]) => {
 	const subtitles = languages.reduce((list: string[], current) => {
 		if (!movieDocument.subtitles.includes(current)) return [...list, current];
 		const path = Path.resolve(
@@ -39,14 +39,14 @@ const checkSubtitles = (movieDocument: IMovieDocument, languages: string[]) => {
 			`${movieDocument.imdbCode}/${current}.webvtt`
 		);
 		if (Fs.existsSync(path) && Fs.statSync(path).size > 1000) {
-			movieDocument.subtitles = movieDocument.subtitles.filter(
-				(s) => s !== current
-			);
 			return list;
 		}
+		movieDocument.subtitles = movieDocument.subtitles.filter(
+			(s) => s !== current
+		);
 		return [...list, current];
 	}, []);
-	movieDocument.save().catch((error) => console.log(error));
+	await movieDocument.save();
 	return subtitles;
 };
 
@@ -82,7 +82,7 @@ export const downloadSubtitles = async (
 
 	const languages = [user.language ?? 'en'];
 	if (!languages.includes('en')) languages.push('en');
-	const languagesToGet = checkSubtitles(movieDocument, languages);
+	const languagesToGet = await checkSubtitles(movieDocument, languages);
 	if (languagesToGet.length === 0) return languages;
 	const subtitlesByLanguage = await searchSubtitles(
 		movieDocument,

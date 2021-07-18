@@ -48,6 +48,7 @@ const Movie = () => {
 		setPlayerLoader(true);
 		prepareMovie()
 			.then(() => setPlayMovie(true))
+			.catch((err) => console.log(err))
 			.finally(() => setPlayerLoader(false));
 	};
 
