@@ -2,7 +2,6 @@
 	"landing_title": "HyperTube",
 	"landing_subtitle": "Vaata kõiki filme mida tahad!",
 	"landing_btn_start": "Alusta",
-	"landing_btn_browse": "Vaata filme",
 	"register": "Registreeri",
 	"login": "Logi sisse",
 	"username": "Kasutaja nimi",
@@ -82,5 +81,6 @@
 	"name_error": "Märke 2-255. Ainult tähed.",
 	"username_error": "Märke 3-255.",
 	"getting_user": "Laen kasutajat...",
-	"close": "Sulge"
+	"close": "Sulge",
+	"watched": "Vaadatud"
 }

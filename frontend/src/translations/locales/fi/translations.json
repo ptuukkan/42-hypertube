@@ -2,7 +2,6 @@
 	"landing_title": "HyperTube",
 	"landing_subtitle": "Katso leffoja mitä haluat!",
 	"landing_btn_start": "Aloita",
-	"landing_btn_browse": "Katso leffoja",
 	"register": "Rekisteröi",
 	"login": "Kirjaudu sisään",
 	"username": "Käyttäjänimi",
@@ -82,5 +81,6 @@
 	"name_error": "2-255 merkkiä. On oltava vain kirjaimia.",
 	"username_error": "3-255 merkkiä.",
 	"getting_user": "Hane käyttäjää...",
-	"close": "Sulje"
+	"close": "Sulje",
+	"watched": "Katsottu"
 }

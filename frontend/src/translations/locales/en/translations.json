@@ -2,7 +2,6 @@
 	"landing_title": "HyperTube",
 	"landing_subtitle": "Watch all movies you like!",
 	"landing_btn_start": "Get started",
-	"landing_btn_browse": "Browse movies",
 	"register": "Register",
 	"login": "Login",
 	"username": "Username",
@@ -13,7 +12,7 @@
 	"have_account": "Have an account?",
 	"continue_with": "Continue with {{type}}",
 	"or": "Or",
-	"getting_data": "Verying...",
+	"getting_data": "Verifying...",
 	"register_title": "Register your account",
 	"email": "Email",
 	"first_name": "First name",
@@ -82,5 +81,6 @@
 	"name_error": "Characters 2-255. Must have only letters.",
 	"username_error": "Characters 3-255.",
 	"getting_user": "Getting user...",
-	"close": "Close"
+	"close": "Close",
+	"watched": "Watched"
 }

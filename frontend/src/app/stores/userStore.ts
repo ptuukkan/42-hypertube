@@ -71,7 +71,7 @@ export default class UserStore {
 				resolve(data.accessToken);
 			} catch (error) {
 				if (error.logUserOut) this.logoutUser();
-				console.log(error);
+				console.log('ERROR getNewToken ->', error);
 				reject();
 			}
 		});

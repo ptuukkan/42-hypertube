@@ -8,11 +8,11 @@ import PublicMenuItems from './PublicMenuItems';
 
 const { Media, MediaContextProvider } = AppMedia;
 
-export interface NavigationProps {
+export interface IProps {
 	token: string | null;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ token }) => {
+const Navigation: React.FC<IProps> = ({ token }) => {
 	return (
 		<MediaContextProvider>
 			<Menu fixed="top" icon="labeled" borderless>

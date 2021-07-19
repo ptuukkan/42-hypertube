@@ -1,6 +1,6 @@
 import { history } from '../..';
 import { RootStoreContext } from 'app/stores/rootStore';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import {
 	Button,
@@ -9,7 +9,6 @@ import {
 	Grid,
 	Header,
 	Icon,
-	Image,
 	Segment,
 } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
@@ -33,6 +32,11 @@ const ChangePassword = () => {
 
 	const formValidation = getChangePasswordFormValidator(t);
 
+	useEffect(() => {
+		// In order when on mobile scolled to bottom and this view is opened
+		window.scrollTo(0, 0);
+	}, []);
+
 	const onSubmit = async (
 		data: IResetPassword
 	): Promise<Record<string, any> | void> => await sendResetPassword(data, id);
@@ -50,7 +54,6 @@ const ChangePassword = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" />
 								{t('enter_password')}
 							</Header>
 							<Segment stacked>

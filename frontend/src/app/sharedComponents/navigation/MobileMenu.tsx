@@ -23,7 +23,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 					<Menu.Item as={Link} to={token ? '/movies' : '/'} header>
 						<Image
 							size="small"
-							src="./logo_128.png"
+							src="/logo_128.png"
 							floated="left"
 							style={{ marginRight: '1em', maxWidth: 60 }}
 						/>
@@ -36,7 +36,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 									{t('menu')}
 								</Menu.Item>
 							}
-							position="bottom center"
+							position={`bottom ${token ? 'center' : 'right'}`}
 							on="click"
 							pinned
 							style={{ padding: 0 }}
@@ -57,7 +57,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 									</Menu.Item>
 									<Menu.Item
 										as={Link}
-										to="#"
+										to="/movies"
 										name="my movies"
 										onClick={() => setMenuOpen(false)}
 									>
@@ -75,6 +75,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 										name="Login"
 										onClick={() => setMenuOpen(false)}
 									>
+										<Icon name="sign in alternate" />
 										{t('login')}
 									</Menu.Item>
 									<Menu.Item
@@ -83,6 +84,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 										name="Register"
 										onClick={() => setMenuOpen(false)}
 									>
+										<Icon name="user circle" />
 										{t('register')}
 									</Menu.Item>
 									<LanguageSelector isMobile />
@@ -91,7 +93,7 @@ const MobileMenu: React.FC<IProps> = ({ token }) => {
 						</Popup>
 						{token && (
 							<Menu.Item onClick={logoutUser}>
-								<Icon name="times" />
+								<Icon name="sign out" />
 								{t('logout')}
 							</Menu.Item>
 						)}

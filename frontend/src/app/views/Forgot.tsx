@@ -1,19 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
 import {
 	Grid,
 	Form,
 	Header,
-	Image,
 	Segment,
 	Button,
 	Dimmer,
 	Icon,
 } from 'semantic-ui-react';
-import { history } from '../..';
+import { history } from 'index';
 import TextInput from 'app/sharedComponents/form/TextInput';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
-import { RootStoreContext } from '../stores/rootStore';
+import { RootStoreContext } from 'app/stores/rootStore';
 import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import { getForgotPasswordFormValidator } from 'app/sharedComponents/form/validators';
@@ -25,6 +24,11 @@ const Forgot = () => {
 	const CloseForgot = () => history.push('/');
 
 	const formValidation = getForgotPasswordFormValidator(t);
+
+	useEffect(() => {
+		// In order when on mobile scolled to bottom and this view is opened
+		window.scrollTo(0, 0);
+	}, []);
 
 	return (
 		<FinalForm
@@ -39,7 +43,6 @@ const Forgot = () => {
 					<Form onSubmit={handleSubmit} error size="large">
 						<Grid.Column style={{ maxWidth: 450 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" />
 								{t('request_password')}
 							</Header>
 							<Segment stacked>

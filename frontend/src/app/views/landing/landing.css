@@ -1,0 +1,12 @@
+#landing-title {
+	font-size: 4em;
+	font-weight: normal;
+	margin-bottom: 0;
+	margin-top: 3em;
+}
+
+@media screen and (max-width: 400px) {
+	#landing-title {
+		font-size: 3.8rem;
+	}
+}

@@ -8,11 +8,11 @@ const PublicMenuItems: React.FC = () => {
 	const { t } = useTranslation();
 
 	return (
-		<Menu.Menu position="right">
-			<Menu.Item as={Link} to="/register">
+		<Menu.Menu position="right" style={{ height: '100%' }}>
+			<Menu.Item as={Link} to="/register" style={{ justifyContent: 'center' }}>
 				{t('register')}
 			</Menu.Item>
-			<Menu.Item as={Link} to="/login">
+			<Menu.Item as={Link} to="/login" style={{ justifyContent: 'center' }}>
 				{t('login')}
 			</Menu.Item>
 			<LanguageSelector />

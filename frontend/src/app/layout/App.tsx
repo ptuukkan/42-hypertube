@@ -14,7 +14,7 @@ import OAuthRoute from 'app/sharedComponents/navigation/OAuthRoute';
 import ChangePassword from 'app/views/ChangePassword';
 import Forgot from 'app/views/Forgot';
 import Login from 'app/views/Login';
-import MainContentPublic from 'app/views/MainContentPublic';
+import Landing from 'app/views/landing/Landing';
 import Movie from 'app/views/movieDetails/Movie';
 import Profile from 'app/views/profile/Profile';
 
@@ -58,7 +58,7 @@ const App = () => {
 			<Navigation token={token} />
 			{message !== '' && (
 				<Message
-					style={{ marginTop: 65 }}
+					style={{ marginTop: 80, marginBottom: -30 }}
 					success={emailStatus === 'success'}
 					negative={isMessageNegative}
 				>
@@ -70,18 +70,11 @@ const App = () => {
 				<Route path="/login" component={Login} />
 				<Route path="/forgot" component={Forgot} />
 				<Route path="/reset-password/:id" component={ChangePassword} />
-				<OAuthRoute exact path="/oauth" />
+				<OAuthRoute path="/oauth" />
 				<Privateroute path="/profile" component={Profile} />
 				<Privateroute path="/movies/:id" component={Movie} />
-				<Privateroute
-					path="/movies"
-					component={(props) => <MainContent {...props} />}
-				/>
-				<Route
-					exact
-					path="/"
-					render={(props) => <MainContentPublic {...props} token={token} />}
-				/>
+				<Privateroute path="/movies" component={MainContent} />
+				<Route exact path="/" component={Landing} />
 				<Route component={NotFound} />
 			</Switch>
 		</Container>
