@@ -15,6 +15,7 @@ export class TorrentEngine extends EventEmitter {
 	options: IOptions;
 	instances = new Map<string, TorrentInstance>();
 	intervals = new Map<string, NodeJS.Timeout>();
+	enabled = false;
 	debug = Debug('engine');
 
 	constructor(options: IOptions) {
@@ -24,6 +25,9 @@ export class TorrentEngine extends EventEmitter {
 
 	add = (infoHash: string, imdbCode: string): Promise<TorrentInstance> =>
 		new Promise<TorrentInstance>((resolve, reject) => {
+			if (!this.enabled) {
+				reject(new BadRequest('Engine disabled'));
+			}
 			if (this.instances.size > 4) {
 				reject(new BadRequest('Too many instances'));
 			}

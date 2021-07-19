@@ -48,10 +48,10 @@ export default class MovieStore {
 	prepareMovie = async (): Promise<void> => {
 		if (!this.movie) return;
 		const token = await this.rootStore.userStore.getToken();
-			const subtitles = await agent.Movies.prepare(this.movie.imdb, token);
-			runInAction(() => {
-				this.subtitles = subtitles;
-			});
+		const subtitles = await agent.Movies.prepare(this.movie.imdb, token);
+		runInAction(() => {
+			this.subtitles = subtitles;
+		});
 	};
 
 	get getSubtitles(): any[] {
@@ -65,4 +65,15 @@ export default class MovieStore {
 			};
 		});
 	}
+
+	setWatched = async (): Promise<void> => {
+		if (!this.movie) return;
+		try {
+			const token = await this.rootStore.userStore.getToken();
+			await agent.Movies.setWatched(this.movie.imdb, token);
+		} catch (error) {
+			console.log(error);
+		}
+		this.movie.watched = true;
+	};
 }

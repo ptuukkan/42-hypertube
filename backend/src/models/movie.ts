@@ -14,6 +14,7 @@ export interface IMovieThumbnail {
 	genres: string[];
 	rating: number;
 	imdb: string;
+	watched: boolean;
 }
 
 // Used for type checking.
@@ -24,6 +25,7 @@ export const dummyThumbnail: IMovieThumbnail = {
 	genres: ['genre1', 'genre2'],
 	rating: 9,
 	imdb: 'imdb code',
+	watched: false,
 };
 
 export interface IMovie extends IMovieThumbnail {

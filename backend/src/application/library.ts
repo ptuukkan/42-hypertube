@@ -5,15 +5,18 @@ import omdbService from 'services/omdb';
 import ytsService, { IYtsMovie } from 'services/yts';
 import { thumbnailCache } from 'config';
 import { omdbDetailsToMovieThumbnail, ytsMovieToMovieThumbnail } from './utils';
+import ViewingModel, { IViewingDocument } from 'models/viewing';
+import { IUserDocument } from 'models/user';
 
 const debug = Debug('app');
 
 export const ytsToThumbnail = (
-	ytsMovieList: IYtsMovie[]
+	ytsMovieList: IYtsMovie[],
+	viewings: IViewingDocument[]
 ): IMovieThumbnail[] => {
 	const thumbnailList = ytsMovieList.reduce((list: IMovieThumbnail[], yts) => {
 		try {
-			return [...list, ytsMovieToMovieThumbnail(yts)];
+			return [...list, ytsMovieToMovieThumbnail(viewings, yts)];
 		} catch (_error) {
 			return list;
 		}
@@ -23,7 +26,8 @@ export const ytsToThumbnail = (
 };
 
 export const getMovieInfo = async (
-	bayMovieList: IBayMovie[]
+	bayMovieList: IBayMovie[],
+	viewings: IViewingDocument[]
 ): Promise<IMovieThumbnail[]> => {
 	// Make the promises and then resolve them in parallel.
 	const promiseList = await Promise.allSettled(
@@ -34,12 +38,12 @@ export const getMovieInfo = async (
 				if (ytsEnvelope.status !== 'ok' || ytsEnvelope.data.movie_count !== 1) {
 					throw new Error('status not ok or movie count not 1');
 				}
-				return ytsToThumbnail(ytsEnvelope.data.movies)[0];
+				return ytsToThumbnail(ytsEnvelope.data.movies, viewings)[0];
 			} catch (error) {
 				debug(error);
 				const omdbDetails = await omdbService.details(movie.imdb);
 				if ('Title' in omdbDetails && omdbDetails.Type === 'movie') {
-					return omdbDetailsToMovieThumbnail(omdbDetails);
+					return omdbDetailsToMovieThumbnail(viewings, omdbDetails);
 				}
 				return Promise.reject('Movie data not found');
 			}
@@ -56,7 +60,8 @@ export const getMovieInfo = async (
 
 export const bayToThumbnail = async (
 	thumbnailList: IMovieThumbnail[],
-	bayMovieList: IBayMovie[]
+	bayMovieList: IBayMovie[],
+	viewings: IViewingDocument[]
 ): Promise<IMovieThumbnail[]> => {
 	// We probably have duplicate movies
 	// First reduce to distinct movies and remove null imdb codes.
@@ -83,13 +88,16 @@ export const bayToThumbnail = async (
 
 	// Get movie info for bay movies to be added to thumbnail list.
 	if (moviesNotIncluded.length > 0) {
-		const bayThumbnails = await getMovieInfo(moviesNotIncluded);
+		const bayThumbnails = await getMovieInfo(moviesNotIncluded, viewings);
 		thumbnailList.push(...bayThumbnails);
 	}
 	return thumbnailList;
 };
 
-export const search = async (query: string): Promise<IMovieThumbnail[]> => {
+export const search = async (
+	query: string,
+	user: IUserDocument
+): Promise<IMovieThumbnail[]> => {
 	let ytsPromise;
 	let bayPromise;
 	let thumbnailList: IMovieThumbnail[] | undefined;
@@ -97,6 +105,11 @@ export const search = async (query: string): Promise<IMovieThumbnail[]> => {
 	// First check if we have the results in cache and return immediately if we do.
 	thumbnailList = thumbnailCache.get(query);
 	if (thumbnailList) return thumbnailList;
+
+	const viewings = await ViewingModel.find({ user: user._id }).populate(
+		'movie',
+		{ imdbCode: 1 }
+	);
 
 	// Re-initialize thumbnailList so it is not undefined.
 	thumbnailList = [];
@@ -118,10 +131,13 @@ export const search = async (query: string): Promise<IMovieThumbnail[]> => {
 		ytsPromiseResult.status === 'fulfilled' &&
 		ytsPromiseResult.value.data.movie_count > 0
 	) {
-		thumbnailList = ytsToThumbnail(ytsPromiseResult.value.data.movies);
+		thumbnailList = ytsToThumbnail(
+			ytsPromiseResult.value.data.movies,
+			viewings
+		);
 	}
 	if (bayPromiseResult.status === 'fulfilled' && bayPromiseResult.value) {
-		thumbnailList = await bayToThumbnail(thumbnailList, bayPromiseResult.value);
+		thumbnailList = await bayToThumbnail(thumbnailList, bayPromiseResult.value, viewings);
 	}
 
 	// Store result in cache only if we got results from either service.

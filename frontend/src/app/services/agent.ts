@@ -77,6 +77,8 @@ const Movies = {
 				{ headers: { Authorization: `Bearer ${token}` }, timeout: 0 }
 			)
 			.then(responseBody),
+	setWatched: (imdbCode: string, token: string): Promise<void> =>
+		requests.postAuth(`movies/${imdbCode}/watch`, token, {}),
 };
 
 const OAuth = {

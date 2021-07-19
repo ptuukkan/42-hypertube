@@ -17,6 +17,7 @@ import { movieStream } from 'application/stream';
 import { torrentEngine } from 'app';
 import { downloadSubtitles } from 'application/subtitles';
 import UserModel from 'models/user';
+import ViewingModel from 'models/viewing';
 
 export interface IQueryParams {
 	query: string;
@@ -84,8 +85,10 @@ export const paginate = (
 };
 
 export const searchMovies = asyncHandler(async (req, res) => {
+	const user = await UserModel.findById(req.authPayload?.userId);
+	if (!user) throw new Unauthorized('not logged in');
 	const params = parseParams(req);
-	let thumbnailList = await search(params.query);
+	let thumbnailList = await search(params.query, user);
 
 	// Get list of genres included in the result before filtering.
 	const genres = lodash(thumbnailList)
@@ -108,13 +111,15 @@ export const searchMovies = asyncHandler(async (req, res) => {
 });
 
 export const getMovie = asyncHandler(async (req, res) => {
+	const user = await UserModel.findById(req.authPayload?.userId);
+	if (!user) throw new Unauthorized('not logged in');
 	const imdbCode = req.params.imdbCode;
-	const movie = await details(imdbCode);
+	const movie = await details(imdbCode, user);
 	res.json(movie);
 });
 
 export const prepareMovie = asyncHandler(async (req, res) => {
-	const user = await UserModel.findOne({ _id: req.authPayload?.userId });
+	const user = await UserModel.findById(req.authPayload?.userId);
 	if (!user) throw new Unauthorized('not logged in');
 
 	let movieDocument = await MovieModel.findOne({
@@ -159,4 +164,25 @@ export const streamMovie = asyncHandler(async (req, res) => {
 	});
 	if (!movieDocument) throw new BadRequest('Movie not found in database');
 	movieStream(req, res, movieDocument);
+});
+
+export const setWatched = asyncHandler(async (req, res) => {
+	const user = await UserModel.findById(req.authPayload?.userId);
+	if (!user) throw new Unauthorized('not logged in');
+	const movie = await MovieModel.findOne({
+		imdbCode: req.params.imdbCode,
+	});
+	if (!movie) throw new BadRequest('not such movie');
+
+	if (await ViewingModel.findOne({ user: user._id, movie: movie._id })) {
+		res.send('OK');
+		return;
+	}
+	const viewing = new ViewingModel({
+		user: user._id,
+		movie: movie._id,
+		timestamp: Date.now(),
+	});
+	await viewing.save();
+	res.send('OK');
 });

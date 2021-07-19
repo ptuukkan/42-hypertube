@@ -22,7 +22,7 @@ import { IActorObj } from 'app/models/movie';
 import { useTranslation } from 'react-i18next';
 import Comments from './Comments';
 import UsersProfileModal from './UsersProfileModal';
-import ReactPlayer from 'react-player';
+import MoviePlayer from './MoviePlayer';
 
 interface IParams {
 	id: string;
@@ -37,7 +37,7 @@ const Movie = () => {
 	const [playMovie, setPlayMovie] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [modalUsername, setModalUsername] = useState('');
-	const { movie, getMovie, prepareMovie, getSubtitles } = rootStore.movieStore;
+	const { movie, getMovie, prepareMovie } = rootStore.movieStore;
 
 	useEffect(() => {
 		if (movie === null || movie.imdb !== id) getMovie(id);
@@ -98,20 +98,8 @@ const Movie = () => {
 									<Image src="/background.png" onClick={() => startPlay()} />
 								</Dimmer.Dimmable>
 							)}
-
 							{!playerLoader && playMovie && (
-								<ReactPlayer
-									url={`http://localhost:8080/api/stream/${movie.imdb}`}
-									width="100%"
-									height="auto"
-									controls
-									muted
-									config={{
-										file: {
-											tracks: getSubtitles,
-										},
-									}}
-								/>
+								<MoviePlayer />
 							)}
 						</GridColumn>
 						<Grid.Column style={{ marginTop: '10px' }}>
