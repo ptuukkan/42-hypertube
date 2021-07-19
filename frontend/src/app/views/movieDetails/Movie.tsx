@@ -60,7 +60,7 @@ const Movie = () => {
 	if (loading) return <MovieLoader />;
 
 	const headerStyles: any = {};
-	if (true) headerStyles.marginBottom = '5px'; // TODO change true to watched value
+	if (movie && movie.watched) headerStyles.marginBottom = '5px';
 
 	return (
 		movie && (
@@ -71,7 +71,7 @@ const Movie = () => {
 							<Header as="h1" style={headerStyles}>
 								{movie.title}
 							</Header>
-							{true && ( // TODO change true to watched value
+							{movie.watched && (
 								<Header
 									sub
 									style={{ color: 'teal', fontSize: '1.1rem', marginTop: 0 }}
