@@ -29,6 +29,7 @@ const SearchMovies: React.FC<SearchMoviesProps> = ({
 			onChange={(e) => setQuery(e.target.value)}
 			value={searchQuery}
 			ref={inputRef}
+			style={{ width: '100%', maxWidth: '230px' }}
 		/>
 	);
 };

@@ -1,25 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Form as FinalForm, Field } from 'react-final-form';
-import { history } from '../..';
 import { Link } from 'react-router-dom';
 import {
 	Grid,
 	Form,
 	Header,
-	Image,
 	Segment,
 	Button,
 	Message,
 	Dimmer,
 	Icon,
 } from 'semantic-ui-react';
-import { RootStoreContext } from '../stores/rootStore';
 import ErrorMessage from 'app/sharedComponents/form/ErrorMessage';
 import { observer } from 'mobx-react-lite';
 import OAuthButtons from 'app/sharedComponents/form/OAuthButtons';
 import TextInput from 'app/sharedComponents/form/TextInput';
 import { useTranslation } from 'react-i18next';
 import { getRegisterFormValidator } from 'app/sharedComponents/form/validators';
+import { history } from 'index';
+import { RootStoreContext } from 'app/stores/rootStore';
 
 const Register: React.FC = () => {
 	const { t } = useTranslation();
@@ -28,6 +27,11 @@ const Register: React.FC = () => {
 	const CloseRegister = () => history.push('/');
 
 	const formValidation = getRegisterFormValidator(t);
+
+	useEffect(() => {
+		// In order when on mobile scolled to bottom and this view is opened
+		window.scrollTo(0, 0);
+	}, []);
 
 	return (
 		<FinalForm
@@ -45,9 +49,8 @@ const Register: React.FC = () => {
 					verticalAlign="middle"
 				>
 					<Form onSubmit={handleSubmit} error size="large">
-						<Grid.Column style={{ maxWidth: 450 }}>
+						<Grid.Column style={{ maxWidth: 450, marginBottom: 30 }}>
 							<Header as="h2" color="teal" textAlign="center">
-								<Image src="/logo_128.png" />
 								{t('register_title')}
 							</Header>
 							<Segment stacked>

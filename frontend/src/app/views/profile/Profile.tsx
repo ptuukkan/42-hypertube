@@ -79,6 +79,9 @@ const Profile: React.FC = () => {
 			setPicFile(null);
 			form.change('password', undefined);
 			setMessage(t('profile_change_success'));
+			setTimeout(() => {
+				window.scrollTo(0, 0);
+			}, 0);
 			setTimeout(() => setMessage(null), 4000);
 		} else {
 			return { [FORM_ERROR]: t('profile_no_change') };
@@ -88,7 +91,7 @@ const Profile: React.FC = () => {
 	return (
 		<>
 			{message && (
-				<Message style={{ marginTop: 65 }} success>
+				<Message style={{ marginTop: 80, marginBottom: -30 }} success>
 					<Message.Header>{message}</Message.Header>
 				</Message>
 			)}

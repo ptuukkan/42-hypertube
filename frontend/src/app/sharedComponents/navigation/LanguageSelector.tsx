@@ -31,6 +31,7 @@ const LanguageSelector: React.FC<IProps> = ({ isMobile = false }) => {
 			text={activeLanguageName()}
 			onChange={handleChange}
 			value={i18n.language}
+			style={{ justifyContent: 'center' }}
 		/>
 	);
 };
