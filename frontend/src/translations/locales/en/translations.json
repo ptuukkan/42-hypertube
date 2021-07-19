@@ -81,5 +81,6 @@
 	"name_error": "Characters 2-255. Must have only letters.",
 	"username_error": "Characters 3-255.",
 	"getting_user": "Getting user...",
-	"close": "Close"
+	"close": "Close",
+	"watched": "Watched"
 }

@@ -81,5 +81,6 @@
 	"name_error": "Märke 2-255. Ainult tähed.",
 	"username_error": "Märke 3-255.",
 	"getting_user": "Laen kasutajat...",
-	"close": "Sulge"
+	"close": "Sulge",
+	"watched": "Vaadatud"
 }
