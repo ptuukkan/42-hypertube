@@ -10,15 +10,18 @@ import Debug from 'debug';
 import cookieParser from 'cookie-parser';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import { NOT_VALID_FILE } from './application/multer';
-
 import cors from 'cors';
 import { MulterError } from 'multer';
+import cronScheduler from 'cron';
 
 const debug = Debug('app');
 const app = express();
 const PORT = process.env.PORT!;
 
-connectToDb();
+connectToDb().then(() => {
+	// Add deletion cron jobs for each downloaded movie
+	cronScheduler.addJobsForEachMovie();
+});
 
 app.use(cors({ origin: process.env.REACT_APP_BASE_URL, credentials: true }));
 app.use(logger('dev'));
