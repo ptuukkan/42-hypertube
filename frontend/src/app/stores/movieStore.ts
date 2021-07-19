@@ -74,6 +74,6 @@ export default class MovieStore {
 		} catch (error) {
 			console.log(error);
 		}
-		this.movie.watched = true;
+		this.movie.watched = Date.now();
 	};
 }

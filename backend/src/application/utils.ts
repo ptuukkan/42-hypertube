@@ -20,9 +20,9 @@ export const ytsMovieToMovieThumbnail = (
 			genres: ytsMovie.genres,
 			rating: ytsMovie.rating,
 			imdb: ytsMovie.imdb_code,
-			watched: !!viewings.find(
+			watched: viewings.find(
 				(v) => 'imdbCode' in v.movie && v.movie.imdbCode === ytsMovie.imdb_code
-			),
+			)?.timestamp,
 		} as IMovieThumbnail;
 	}
 	throw new Error('ytsMovie data not complete');
@@ -44,9 +44,9 @@ export const omdbDetailsToMovieThumbnail = (
 			genres: omdbDetails.Genre.split(',').map((g) => g.trim()),
 			rating: parseFloat(omdbDetails.imdbRating),
 			imdb: omdbDetails.imdbID,
-			watched: !!viewings.find(
+			watched: viewings.find(
 				(v) => 'imdbCode' in v.movie && v.movie.imdbCode === omdbDetails.imdbID
-			),
+			)?.timestamp,
 		} as IMovieThumbnail;
 	}
 	throw new Error('omdbDetails data not complete');

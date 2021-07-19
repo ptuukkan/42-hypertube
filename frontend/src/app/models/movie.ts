@@ -11,7 +11,7 @@ export interface IMovie {
 	director: string;
 	actors: IActorObj[] | string | [];
 	comments?: IComment[];
-	watched: boolean;
+	watched?: number;
 }
 
 export interface IActorObj {

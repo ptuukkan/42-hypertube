@@ -174,15 +174,21 @@ export const setWatched = asyncHandler(async (req, res) => {
 	});
 	if (!movie) throw new BadRequest('not such movie');
 
-	if (await ViewingModel.findOne({ user: user._id, movie: movie._id })) {
-		res.send('OK');
-		return;
-	}
-	const viewing = new ViewingModel({
+	let viewing = await ViewingModel.findOne({
 		user: user._id,
 		movie: movie._id,
-		timestamp: Date.now(),
 	});
-	await viewing.save();
+	if (viewing) {
+		viewing.timestamp = Date.now();
+		await viewing.save();
+	} else {
+		viewing = new ViewingModel({
+			user: user._id,
+			movie: movie._id,
+			timestamp: Date.now(),
+		});
+		await viewing.save();
+	}
+
 	res.send('OK');
 });
