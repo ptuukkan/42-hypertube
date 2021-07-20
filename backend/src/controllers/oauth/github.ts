@@ -1,3 +1,4 @@
+import { BadRequest } from 'http-errors';
 import asyncHandler from 'express-async-handler';
 import { saveUrlImgToProfileImages } from './../../utils/index';
 import UserModel, { IUser } from './../../models/user';
@@ -15,6 +16,17 @@ export const oAuthGithubController = asyncHandler(
 		const code = req.oAuthPayload!.code;
 
 		const userData = await serviceGithub.getUser(code);
+		if (!userData.email) {
+			const params: any = {};
+			params.username = userData.login;
+			if (userData.name) {
+				const names = userData.name.split(' ');
+				if (names[0]) params.firstName = names[0];
+				if (names[names.length - 1]) params.lastName = names[names.length - 1];
+			}
+			throw new BadRequest(params);
+		}
+
 		let currentUser = await UserModel.findOne({ email: userData.email });
 
 		if (!currentUser) {
