@@ -19,6 +19,7 @@ import { downloadSubtitles } from 'application/subtitles';
 import UserModel from 'models/user';
 import ViewingModel from 'models/viewing';
 import CommentModel, { IComment } from 'models/comment';
+import cronScheduler from 'cron';
 
 export interface IQueryParams {
 	query: string;
@@ -166,6 +167,9 @@ export const prepareMovie = asyncHandler(async (req, res) => {
 		});
 	}
 
+	movieDocument.lastViewed = Date.now();
+	cronScheduler.addCronJob(movieDocument);
+
 	let subtitles: string[] = [];
 
 	if (movieDocument.status === 2) {
@@ -180,12 +184,14 @@ export const prepareMovie = asyncHandler(async (req, res) => {
 		}
 	}
 
-	if (
-		movieDocument.status === 1 &&
-		!torrentEngine.instances.get(movieDocument.torrentHash)
-	) {
-		movieDocument.status = 0;
+	if (movieDocument.status === 1) {
+		if (!torrentEngine.instances.get(movieDocument.torrentHash)) {
+			movieDocument.status = 0;
+		} else {
+			subtitles = await downloadSubtitles(movieDocument, user);
+		}
 	}
+
 	if (movieDocument.status === 0) {
 		subtitles = await startMovieDownload(movieDocument, user);
 	}
@@ -212,18 +218,13 @@ export const setWatched = asyncHandler(async (req, res) => {
 		user: user._id,
 		movie: movie._id,
 	});
-	if (viewing) {
-		viewing.timestamp = Date.now();
-		await viewing.save();
-	} else {
+	if (!viewing) {
 		viewing = new ViewingModel({
 			user: user._id,
 			movie: movie._id,
-			timestamp: Date.now(),
 		});
 		await viewing.save();
 	}
-
 	res.send('OK');
 });
 

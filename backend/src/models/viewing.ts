@@ -4,7 +4,6 @@ import { IMovieDocument } from './movie';
 export interface IViewingDocument extends Document {
 	user: Schema.Types.ObjectId;
 	movie: Schema.Types.ObjectId | IMovieDocument;
-	timestamp: number;
 }
 
 const ViewingSchema = new Schema<IViewingDocument>({
