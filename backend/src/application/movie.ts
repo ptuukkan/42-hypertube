@@ -75,7 +75,7 @@ export const details = async (
 
 	const viewings = await ViewingModel.find({ user: user._id }).populate(
 		'movie',
-		{ imdbCode: 1 }
+		'imdbCode'
 	);
 
 	let ytsMovie: IYtsMovie | undefined;

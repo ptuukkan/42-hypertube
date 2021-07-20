@@ -108,7 +108,7 @@ export const search = async (
 
 	const viewings = await ViewingModel.find({ user: user._id }).populate(
 		'movie',
-		{ imdbCode: 1 }
+		'imdbCode'
 	);
 
 	// Re-initialize thumbnailList so it is not undefined.
@@ -137,7 +137,11 @@ export const search = async (
 		);
 	}
 	if (bayPromiseResult.status === 'fulfilled' && bayPromiseResult.value) {
-		thumbnailList = await bayToThumbnail(thumbnailList, bayPromiseResult.value, viewings);
+		thumbnailList = await bayToThumbnail(
+			thumbnailList,
+			bayPromiseResult.value,
+			viewings
+		);
 	}
 
 	// Store result in cache only if we got results from either service.
