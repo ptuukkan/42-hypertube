@@ -215,10 +215,16 @@ export const setWatched = asyncHandler(async (req, res) => {
 export const commentMovie = asyncHandler(async (req, res) => {
 	const user = await UserModel.findById(req.authPayload?.userId);
 	if (!user) throw new Unauthorized('not logged in');
-	const movie = await MovieModel.findOne({
+	let movie = await MovieModel.findOne({
 		imdbCode: req.params.imdbCode,
 	});
-	if (!movie) throw new BadRequest('not such movie');
+	if (!movie) {
+		movie = new MovieModel({
+			imdbCode: req.params.imdbCode,
+			status: 0,
+		});
+		await movie.save();
+	}
 	const commentText = req.body.comment;
 	if (
 		!isString(commentText) ||
