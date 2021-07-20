@@ -89,7 +89,7 @@ export const searchMovies = asyncHandler(async (req, res) => {
 	const user = await UserModel.findById(req.authPayload?.userId);
 	if (!user) throw new Unauthorized('not logged in');
 	const params = parseParams(req);
-	let thumbnailList = await search(params.query, user);
+	let thumbnailList = await search(params.query);
 
 	// Get list of genres included in the result before filtering.
 	const genres = lodash(thumbnailList)
@@ -103,6 +103,16 @@ export const searchMovies = asyncHandler(async (req, res) => {
 	const count = thumbnailList.length;
 	thumbnailList = paginate(thumbnailList, params);
 
+	const viewings = await ViewingModel.find({ user: user._id }).populate(
+		'movie',
+		'imdbCode'
+	);
+	thumbnailList.forEach((thumbnail) => {
+		thumbnail.watched = viewings.find(
+			(v) => 'imdbCode' in v.movie && v.movie.imdbCode === thumbnail.imdb
+		)?.timestamp;
+	});
+
 	const envelope: IMovieThumbnailEnvelope = {
 		count,
 		genres,
@@ -115,7 +125,7 @@ export const getMovie = asyncHandler(async (req, res) => {
 	const user = await UserModel.findById(req.authPayload?.userId);
 	if (!user) throw new Unauthorized('not logged in');
 	const imdbCode = req.params.imdbCode;
-	const movie = await details(imdbCode, user);
+	const movie = await details(imdbCode);
 	const movieDocument = await MovieModel.findOne({ imdbCode });
 	if (movieDocument) {
 		const commentDocuments = await CommentModel.find({
@@ -133,6 +143,11 @@ export const getMovie = asyncHandler(async (req, res) => {
 			}
 		});
 		movie.comments = comments.sort((a, b) => a.timestamp - b.timestamp);
+		const viewing = await ViewingModel.findOne({
+			user: user._id,
+			movie: movieDocument._id,
+		});
+		movie.watched = viewing?.timestamp;
 	}
 	res.json(movie);
 });

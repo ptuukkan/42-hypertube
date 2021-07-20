@@ -4,14 +4,11 @@ import { IMovie, IMovieThumbnail } from 'models/movie';
 import omdbService, { IOmdbMovieDetails } from 'services/omdb';
 import ytsService, { IYtsMovie, IYtsMovieDetails } from 'services/yts';
 import { omdbDetailsToMovieThumbnail, ytsMovieToMovieThumbnail } from './utils';
-import ViewingModel, { IViewingDocument } from 'models/viewing';
-import { IUserDocument } from 'models/user';
 
 export const buildMovie = (
 	ytsMovie: IYtsMovie | undefined,
 	ytsDetails: IYtsMovieDetails | undefined,
-	omdbDetails: IOmdbMovieDetails | undefined,
-	viewings: IViewingDocument[]
+	omdbDetails: IOmdbMovieDetails | undefined
 ): IMovie => {
 	let ytsThumbnail: IMovieThumbnail | undefined;
 	let omdbThumbnail: IMovieThumbnail | undefined;
@@ -22,11 +19,11 @@ export const buildMovie = (
 
 	// Try to get movie thumbnails from both services.
 	try {
-		ytsThumbnail = ytsMovieToMovieThumbnail(viewings, ytsMovie);
+		ytsThumbnail = ytsMovieToMovieThumbnail(ytsMovie);
 		// eslint-disable-next-line no-empty
 	} catch (_error) {}
 	try {
-		omdbThumbnail = omdbDetailsToMovieThumbnail(viewings, omdbDetails);
+		omdbThumbnail = omdbDetailsToMovieThumbnail(omdbDetails);
 		// eslint-disable-next-line no-empty
 	} catch (_error) {}
 
@@ -62,21 +59,13 @@ export const buildMovie = (
 	return movie;
 };
 
-export const details = async (
-	imdbCode: string,
-	user: IUserDocument
-): Promise<IMovie> => {
+export const details = async (imdbCode: string): Promise<IMovie> => {
 	if (!imdbCode.match(/^tt\d+$/)) {
 		throw new BadRequest('imdb code not valid');
 	}
 
 	const cachedMovie = movieCache.get(imdbCode);
 	if (cachedMovie) return cachedMovie;
-
-	const viewings = await ViewingModel.find({ user: user._id }).populate(
-		'movie',
-		'imdbCode'
-	);
 
 	let ytsMovie: IYtsMovie | undefined;
 	let ytsDetails: IYtsMovieDetails | undefined;
@@ -110,7 +99,7 @@ export const details = async (
 
 	// Then try to construct a IMovie type from them.
 	try {
-		const movie = buildMovie(ytsMovie, ytsDetails, omdbDetails, viewings);
+		const movie = buildMovie(ytsMovie, ytsDetails, omdbDetails);
 		movieCache.set(imdbCode, movie);
 		return movie;
 	} catch (error) {

@@ -1,10 +1,8 @@
 import { IMovieThumbnail } from 'models/movie';
-import { IViewingDocument } from 'models/viewing';
 import { IOmdbMovieDetails } from 'services/omdb';
 import { IYtsMovie } from 'services/yts';
 
 export const ytsMovieToMovieThumbnail = (
-	viewings: IViewingDocument[],
 	ytsMovie?: IYtsMovie
 ): IMovieThumbnail => {
 	if (
@@ -20,16 +18,12 @@ export const ytsMovieToMovieThumbnail = (
 			genres: ytsMovie.genres,
 			rating: ytsMovie.rating,
 			imdb: ytsMovie.imdb_code,
-			watched: viewings.find(
-				(v) => 'imdbCode' in v.movie && v.movie.imdbCode === ytsMovie.imdb_code
-			)?.timestamp,
 		} as IMovieThumbnail;
 	}
 	throw new Error('ytsMovie data not complete');
 };
 
 export const omdbDetailsToMovieThumbnail = (
-	viewings: IViewingDocument[],
 	omdbDetails?: IOmdbMovieDetails
 ): IMovieThumbnail => {
 	if (
@@ -44,9 +38,6 @@ export const omdbDetailsToMovieThumbnail = (
 			genres: omdbDetails.Genre.split(',').map((g) => g.trim()),
 			rating: parseFloat(omdbDetails.imdbRating),
 			imdb: omdbDetails.imdbID,
-			watched: viewings.find(
-				(v) => 'imdbCode' in v.movie && v.movie.imdbCode === omdbDetails.imdbID
-			)?.timestamp,
 		} as IMovieThumbnail;
 	}
 	throw new Error('omdbDetails data not complete');
