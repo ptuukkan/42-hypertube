@@ -18,6 +18,7 @@ import { torrentEngine } from 'app';
 import { downloadSubtitles } from 'application/subtitles';
 import UserModel from 'models/user';
 import ViewingModel from 'models/viewing';
+import CommentModel, { IComment } from 'models/comment';
 
 export interface IQueryParams {
 	query: string;
@@ -115,6 +116,24 @@ export const getMovie = asyncHandler(async (req, res) => {
 	if (!user) throw new Unauthorized('not logged in');
 	const imdbCode = req.params.imdbCode;
 	const movie = await details(imdbCode, user);
+	const movieDocument = await MovieModel.findOne({ imdbCode });
+	if (movieDocument) {
+		const commentDocuments = await CommentModel.find({
+			movie: movieDocument._id,
+		});
+		const promises = await Promise.allSettled(
+			commentDocuments.map(async (c) => {
+				return await c.toDto();
+			})
+		);
+		const comments: IComment[] = [];
+		promises.forEach((p) => {
+			if (p.status === 'fulfilled' && p.value) {
+				comments.push(p.value);
+			}
+		});
+		movie.comments = comments.sort((a, b) => a.timestamp - b.timestamp);
+	}
 	res.json(movie);
 });
 
@@ -191,4 +210,30 @@ export const setWatched = asyncHandler(async (req, res) => {
 	}
 
 	res.send('OK');
+});
+
+export const commentMovie = asyncHandler(async (req, res) => {
+	const user = await UserModel.findById(req.authPayload?.userId);
+	if (!user) throw new Unauthorized('not logged in');
+	const movie = await MovieModel.findOne({
+		imdbCode: req.params.imdbCode,
+	});
+	if (!movie) throw new BadRequest('not such movie');
+	const commentText = req.body.comment;
+	if (
+		!isString(commentText) ||
+		commentText.length < 2 ||
+		/^\s+$/.test(commentText)
+	) {
+		throw new BadRequest('invalid comment');
+	}
+	const comment = new CommentModel({
+		user: user._id,
+		movie: movie._id,
+		timestamp: Date.now(),
+		text: commentText,
+	});
+
+	await comment.save();
+	res.json(await comment.toDto());
 });

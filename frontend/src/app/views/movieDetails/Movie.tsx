@@ -37,7 +37,7 @@ const Movie = () => {
 	const [playMovie, setPlayMovie] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [modalUsername, setModalUsername] = useState('');
-	const { movie, getMovie, prepareMovie } = rootStore.movieStore;
+	const { movie, getMovie, prepareMovie, createComment } = rootStore.movieStore;
 
 	useEffect(() => {
 		if (movie === null || movie.imdb !== id) getMovie(id);
@@ -98,9 +98,7 @@ const Movie = () => {
 									<Image src="/background.png" onClick={() => startPlay()} />
 								</Dimmer.Dimmable>
 							)}
-							{!playerLoader && playMovie && (
-								<MoviePlayer />
-							)}
+							{!playerLoader && playMovie && <MoviePlayer />}
 						</GridColumn>
 						<Grid.Column style={{ marginTop: '10px' }}>
 							<Item.Content>
@@ -145,7 +143,11 @@ const Movie = () => {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-				<Comments comments={movie.comments} showModal={openModal} />
+				<Comments
+					comments={movie.comments}
+					createComment={createComment}
+					showModal={openModal}
+				/>
 				<UsersProfileModal
 					show={showModal}
 					username={modalUsername}

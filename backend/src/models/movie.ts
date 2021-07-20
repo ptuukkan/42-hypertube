@@ -1,5 +1,6 @@
 import { Schema, Document, model } from 'mongoose';
 import { IYtsCast } from 'services/yts';
+import { IComment } from './comment';
 
 export interface IMovieThumbnailEnvelope {
 	count: number;
@@ -33,6 +34,7 @@ export interface IMovie extends IMovieThumbnail {
 	director?: string;
 	writer?: string;
 	actors?: string | IYtsCast[];
+	comments: IComment[];
 }
 
 export interface IMovieDocument extends Document {

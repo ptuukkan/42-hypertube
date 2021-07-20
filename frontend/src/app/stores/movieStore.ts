@@ -76,4 +76,25 @@ export default class MovieStore {
 		}
 		this.movie.watched = Date.now();
 	};
+
+	createComment = async (comment: string): Promise<void> => {
+		if (!this.movie) {
+			return;
+		}
+		try {
+			const token = await this.rootStore.userStore.getToken();
+			const newComment = await agent.Movies.comment(
+				this.movie.imdb,
+				comment,
+				token
+			);
+			runInAction(() => {
+				if (this.movie) {
+					this.movie.comments.push(newComment);
+				}
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
 }

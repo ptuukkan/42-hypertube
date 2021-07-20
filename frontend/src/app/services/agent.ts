@@ -1,7 +1,7 @@
 import { IGetUser } from 'app/models/user';
 import { ILink } from 'app/models/oAuth';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { IMovie, IMovieList } from 'app/models/movie';
+import { IComment, IMovie, IMovieList } from 'app/models/movie';
 import {
 	IForgetPassword,
 	ILoginFormValues,
@@ -79,6 +79,14 @@ const Movies = {
 			.then(responseBody),
 	setWatched: (imdbCode: string, token: string): Promise<void> =>
 		requests.postAuth(`movies/${imdbCode}/watch`, token, {}),
+	comment: (
+		imdbCode: string,
+		comment: string,
+		token: string
+	): Promise<IComment> =>
+		requests.postAuth(`movies/${imdbCode}/comment`, token, {
+			comment: comment,
+		}),
 };
 
 const OAuth = {

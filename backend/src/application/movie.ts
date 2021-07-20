@@ -40,6 +40,7 @@ export const buildMovie = (
 		...movieThumbnail,
 		summary: '',
 		runtime: 0,
+		comments: [],
 	};
 
 	// Then assign rest of the properties.
