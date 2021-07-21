@@ -10,7 +10,8 @@ export interface IMovie {
 	writer: string;
 	director: string;
 	actors: IActorObj[] | string | [];
-	comments?: IComment[];
+	comments: IComment[];
+	watched?: number;
 }
 
 export interface IActorObj {
@@ -22,9 +23,9 @@ export interface IActorObj {
 
 export interface IComment {
 	username: string;
-	profilePicName: string;
-	comment: string;
-	date: Date;
+	profilePicName?: string;
+	text: string;
+	timestamp: number;
 }
 
 export interface IMovieList {

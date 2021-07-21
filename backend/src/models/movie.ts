@@ -1,4 +1,6 @@
+import { Schema, Document, model } from 'mongoose';
 import { IYtsCast } from 'services/yts';
+import { IComment } from './comment';
 
 export interface IMovieThumbnailEnvelope {
 	count: number;
@@ -13,6 +15,7 @@ export interface IMovieThumbnail {
 	genres: string[];
 	rating: number;
 	imdb: string;
+	watched?: number;
 }
 
 // Used for type checking.
@@ -31,4 +34,25 @@ export interface IMovie extends IMovieThumbnail {
 	director?: string;
 	writer?: string;
 	actors?: string | IYtsCast[];
+	comments: IComment[];
 }
+
+export interface IMovieDocument extends Document {
+	imdbCode: string;
+	status: number;
+	fileName: string;
+	torrentHash: string;
+	movieHash: string;
+	subtitles: string[];
+}
+
+const MovieSchema = new Schema<IMovieDocument>({
+	imdbCode: { type: String, required: true },
+	status: { type: Number, required: true }, // 0 = not downloaded, 1 = downloading, 2 = download completed
+	fileName: { type: String },
+	torrentHash: { type: String },
+	movieHash: { type: String },
+	subtitles: { type: Array },
+});
+
+export default model<IMovieDocument>('Movie', MovieSchema);

@@ -13,6 +13,8 @@ import { NOT_VALID_FILE } from './application/multer';
 import cors from 'cors';
 import { MulterError } from 'multer';
 import cronScheduler from 'cron';
+import { TorrentEngine } from 'application/torrentEngine/engine';
+import Path from 'path';
 
 const debug = Debug('app');
 const app = express();
@@ -23,6 +25,11 @@ connectToDb().then(() => {
 	cronScheduler.addJobsForEachMovie();
 });
 
+export const torrentEngine = new TorrentEngine({
+	path: Path.resolve(__dirname, '../movies'),
+	supportedTypes: ['mp4'],
+});
+
 app.use(cors({ origin: process.env.REACT_APP_BASE_URL, credentials: true }));
 app.use(logger('dev'));
 app.use(express.json());
@@ -31,6 +38,7 @@ app.use(cookieParser());
 app.use(express.static(`${__dirname}/../public`));
 
 mountRoutes(app);
+
 
 app.use((_req: Request, _res: Response, next: NextFunction) => {
 	next(createError(404));

@@ -1,7 +1,7 @@
 import { IGetUser } from 'app/models/user';
 import { ILink } from 'app/models/oAuth';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { IMovie, IMovieList } from 'app/models/movie';
+import { IComment, IMovie, IMovieList } from 'app/models/movie';
 import {
 	IForgetPassword,
 	ILoginFormValues,
@@ -11,7 +11,7 @@ import {
 } from '../models/user';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 20000;
 axios.defaults.withCredentials = true;
 
 axios.interceptors.response.use(
@@ -69,6 +69,24 @@ const Movies = {
 		requests.getAuth(`movies/search?query=${title}`, token),
 	get: (imdbCode: string, token: string): Promise<IMovie> =>
 		requests.getAuth(`movies/${imdbCode}`, token),
+	prepare: (imdbCode: string, token: string): Promise<string[]> =>
+		axios
+			.post(
+				`movies/${imdbCode}/prepare`,
+				{},
+				{ headers: { Authorization: `Bearer ${token}` }, timeout: 0 }
+			)
+			.then(responseBody),
+	setWatched: (imdbCode: string, token: string): Promise<void> =>
+		requests.postAuth(`movies/${imdbCode}/watch`, token, {}),
+	comment: (
+		imdbCode: string,
+		comment: string,
+		token: string
+	): Promise<IComment> =>
+		requests.postAuth(`movies/${imdbCode}/comment`, token, {
+			comment: comment,
+		}),
 };
 
 const OAuth = {

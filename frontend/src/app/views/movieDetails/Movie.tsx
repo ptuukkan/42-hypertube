@@ -12,7 +12,6 @@ import {
 	Rating,
 	Segment,
 	Header,
-	Embed,
 	Label,
 	Loader,
 	Dimmer,
@@ -23,6 +22,7 @@ import { IActorObj } from 'app/models/movie';
 import { useTranslation } from 'react-i18next';
 import Comments from './Comments';
 import UsersProfileModal from './UsersProfileModal';
+import MoviePlayer from './MoviePlayer';
 
 interface IParams {
 	id: string;
@@ -37,7 +37,7 @@ const Movie = () => {
 	const [playMovie, setPlayMovie] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [modalUsername, setModalUsername] = useState('');
-	const { movie, getMovie } = rootStore.movieStore;
+	const { movie, getMovie, prepareMovie, createComment } = rootStore.movieStore;
 
 	useEffect(() => {
 		if (movie === null || movie.imdb !== id) getMovie(id);
@@ -46,10 +46,10 @@ const Movie = () => {
 
 	const startPlay = () => {
 		setPlayerLoader(true);
-		setInterval(() => {
-			setPlayMovie(true);
-			setPlayerLoader(false);
-		}, 5000);
+		prepareMovie()
+			.then(() => setPlayMovie(true))
+			.catch((err) => console.log(err))
+			.finally(() => setPlayerLoader(false));
 	};
 
 	const openModal = (username: string): void => {
@@ -60,7 +60,7 @@ const Movie = () => {
 	if (loading) return <MovieLoader />;
 
 	const headerStyles: any = {};
-	if (true) headerStyles.marginBottom = '5px'; // TODO change true to watched value
+	if (movie && movie.watched) headerStyles.marginBottom = '5px';
 
 	return (
 		movie && (
@@ -71,7 +71,7 @@ const Movie = () => {
 							<Header as="h1" style={headerStyles}>
 								{movie.title}
 							</Header>
-							{true && ( // TODO change true to watched value
+							{movie.watched && (
 								<Header
 									sub
 									style={{ color: 'teal', fontSize: '1.1rem', marginTop: 0 }}
@@ -98,15 +98,7 @@ const Movie = () => {
 									<Image src="/background.png" onClick={() => startPlay()} />
 								</Dimmer.Dimmable>
 							)}
-
-							{!playerLoader && playMovie && (
-								<Embed
-									id="LsGZ_2RuJ2A"
-									placeholder="/background.png"
-									source="youtube"
-									autoplay
-								/>
-							)}
+							{!playerLoader && playMovie && <MoviePlayer />}
 						</GridColumn>
 						<Grid.Column style={{ marginTop: '10px' }}>
 							<Item.Content>
@@ -151,7 +143,11 @@ const Movie = () => {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-				<Comments comments={movie.comments} showModal={openModal} />
+				<Comments
+					comments={movie.comments}
+					createComment={createComment}
+					showModal={openModal}
+				/>
 				<UsersProfileModal
 					show={showModal}
 					username={modalUsername}

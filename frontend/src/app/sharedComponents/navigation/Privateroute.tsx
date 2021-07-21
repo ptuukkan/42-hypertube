@@ -39,7 +39,7 @@ const PrivateRoute: React.FC<IProps> = ({ component: Component, ...rest }) => {
 			render={(props) =>
 				loading ? (
 					<Dimmer active page>
-						<Loader content="Laoding..." size="massive" />
+						<Loader content="Loading..." size="massive" />
 					</Dimmer>
 				) : token ? (
 					<Component {...props} />

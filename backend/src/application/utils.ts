@@ -3,9 +3,10 @@ import { IOmdbMovieDetails } from 'services/omdb';
 import { IYtsMovie } from 'services/yts';
 
 export const ytsMovieToMovieThumbnail = (
-	ytsMovie: IYtsMovie
+	ytsMovie?: IYtsMovie
 ): IMovieThumbnail => {
 	if (
+		ytsMovie &&
 		ytsMovie.title_english.length > 0 &&
 		ytsMovie.imdb_code.length > 0 &&
 		ytsMovie.rating > 0
@@ -23,9 +24,13 @@ export const ytsMovieToMovieThumbnail = (
 };
 
 export const omdbDetailsToMovieThumbnail = (
-	omdbDetails: IOmdbMovieDetails
+	omdbDetails?: IOmdbMovieDetails
 ): IMovieThumbnail => {
-	if (omdbDetails.Title.length > 0 && parseFloat(omdbDetails.imdbRating) > 0) {
+	if (
+		omdbDetails &&
+		omdbDetails.Title.length > 0 &&
+		parseFloat(omdbDetails.imdbRating) > 0
+	) {
 		return {
 			title: omdbDetails.Title,
 			year: parseInt(omdbDetails.Year),

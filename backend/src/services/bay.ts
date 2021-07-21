@@ -4,7 +4,7 @@ export interface IBayMovie {
 	id: number;
 	name: string;
 	info_hash: string;
-	leechers: number;
+	size: number;
 	seeders: number;
 	imdb: string | null;
 }
