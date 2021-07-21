@@ -109,9 +109,9 @@ export const searchMovies = asyncHandler(async (req, res) => {
 		'imdbCode'
 	);
 	thumbnailList.forEach((thumbnail) => {
-		thumbnail.watched = viewings.find(
+		thumbnail.watched = !!viewings.find(
 			(v) => 'imdbCode' in v.movie && v.movie.imdbCode === thumbnail.imdb
-		)?.timestamp;
+		);
 	});
 
 	const envelope: IMovieThumbnailEnvelope = {
@@ -148,7 +148,7 @@ export const getMovie = asyncHandler(async (req, res) => {
 			user: user._id,
 			movie: movieDocument._id,
 		});
-		movie.watched = viewing?.timestamp;
+		movie.watched = !!viewing;
 	}
 	res.json(movie);
 });
