@@ -40,10 +40,7 @@ const Register: React.FC = () => {
 		<>
 			{githubHasPrivateEmail() && (
 				<Message style={{ marginTop: 80, marginBottom: -30 }} info>
-					<Message.Header>
-						Your github account email is private. Please register/login manually
-						or make email public in github and try again!
-					</Message.Header>
+					<Message.Header>{t('github_private_email_info')}</Message.Header>
 				</Message>
 			)}
 			<FinalForm
@@ -101,9 +98,7 @@ const Register: React.FC = () => {
 									<Button disabled={submitting} color="teal" fluid size="large">
 										{t('register')}
 									</Button>
-									{!githubHasPrivateEmail() && (
-										<OAuthButtons disabled={submitting} />
-									)}
+									<OAuthButtons disabled={submitting} />
 								</Segment>
 								<Message>
 									{t('have_account')} <Link to="/login">{t('login')}</Link>

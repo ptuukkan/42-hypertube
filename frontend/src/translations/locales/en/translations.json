@@ -82,5 +82,6 @@
 	"username_error": "Characters 3-255.",
 	"getting_user": "Getting user...",
 	"close": "Close",
-	"watched": "Watched"
+	"watched": "Watched",
+	"github_private_email_info": "Your Github account email is private. Please register/login manually or make email public in Github and try again!"
 }
