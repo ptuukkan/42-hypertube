@@ -22,7 +22,8 @@ export const oAuthGithubController = asyncHandler(
 			if (userData.name) {
 				const names = userData.name.split(' ');
 				if (names[0]) params.firstName = names[0];
-				if (names[names.length - 1]) params.lastName = names[names.length - 1];
+				if (names[0] !== names[names.length - 1])
+					params.lastName = names[names.length - 1];
 			}
 			throw new BadRequest(params);
 		}
