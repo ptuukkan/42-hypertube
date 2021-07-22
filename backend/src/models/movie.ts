@@ -15,7 +15,7 @@ export interface IMovieThumbnail {
 	genres: string[];
 	rating: number;
 	imdb: string;
-	watched?: number;
+	watched: boolean;
 }
 
 // Used for type checking.
@@ -26,6 +26,7 @@ export const dummyThumbnail: IMovieThumbnail = {
 	genres: ['genre1', 'genre2'],
 	rating: 9,
 	imdb: 'imdb code',
+	watched: false,
 };
 
 export interface IMovie extends IMovieThumbnail {
@@ -44,6 +45,7 @@ export interface IMovieDocument extends Document {
 	torrentHash: string;
 	movieHash: string;
 	subtitles: string[];
+	lastViewed: number;
 }
 
 const MovieSchema = new Schema<IMovieDocument>({
@@ -53,6 +55,7 @@ const MovieSchema = new Schema<IMovieDocument>({
 	torrentHash: { type: String },
 	movieHash: { type: String },
 	subtitles: { type: Array },
+	lastViewed: { type: Number },
 });
 
 export default model<IMovieDocument>('Movie', MovieSchema);

@@ -10,13 +10,8 @@ const MoviePlayer = (): JSX.Element => {
 
 	if (!movie) return <MovieLoader />;
 
-	const watchedToday = !!(
-		movie.watched &&
-		new Date().toDateString() === new Date(movie.watched).toDateString()
-	);
-
 	const checkWatched = (played: number) => {
-		if (played > 0.9 && !watchedToday) {
+		if (played > 0.9 && !movie.watched) {
 			setWatched();
 		}
 	};

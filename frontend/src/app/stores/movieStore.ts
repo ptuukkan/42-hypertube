@@ -68,13 +68,13 @@ export default class MovieStore {
 
 	setWatched = async (): Promise<void> => {
 		if (!this.movie) return;
+		this.movie.watched = true;
 		try {
 			const token = await this.rootStore.userStore.getToken();
 			await agent.Movies.setWatched(this.movie.imdb, token);
 		} catch (error) {
 			console.log(error);
 		}
-		this.movie.watched = Date.now();
 	};
 
 	createComment = async (comment: string): Promise<void> => {

@@ -1,4 +1,8 @@
+import MovieModel, { IMovieDocument } from 'models/movie';
 import cron from 'node-cron';
+import Fs from 'fs';
+import Path from 'path';
+import Debug from 'debug';
 
 interface ICron {
 	[key: string]: cron.ScheduledTask;
@@ -6,26 +10,55 @@ interface ICron {
 
 class CronScheduler {
 	private activeCrons: ICron = {};
+	private debug = Debug('cron');
 
-	addJobsForEachMovie(): void {
-		// TODO fetch donwloaded movies from DB and add cron jobs for its deletion
-		// movies.forEach(({ name, lastWatched }}) => {
-		//   const newDate = lastWatched
-		//     .setMonth(lastWatched.getMonth() + 1)
-		//     .setMinutes(lastWatched.getMinutes() + 1)
-		//
-		//   might need to check if date is in the past just in case? delete the movie
-		//
-		//   const time = `${newDate.getMinutes()} ${newDate.getHour()} ${newDate.getDay()} ${newDate.getMonth()} *`
-		//   this.addCronJob(name, time, () => deleteTheMovie())
-		// })
-	}
+	addJobsForEachMovie = async (): Promise<void> => {
+		try {
+			const movieDocuments = await MovieModel.find({ status: { $gte: 1 } });
+			movieDocuments.forEach((movieDocument) => {
+				this.addCronJob(movieDocument);
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
-	// TODO if movie is fully downloaded, add cron for it
-	// TODO when update lastWatched time then add new date cron for it
-	addCronJob = (name: string, cronTime: string, fun: () => void): void => {
-		if (this.activeCrons[name]) this.activeCrons[name].destroy();
-		this.activeCrons[name] = cron.schedule(cronTime, fun);
+	addCronJob = (movieDocument: IMovieDocument): void => {
+		if (this.activeCrons[movieDocument.imdbCode]) {
+			this.activeCrons[movieDocument.imdbCode].stop();
+		}
+		const newDate = new Date(movieDocument.lastViewed);
+		newDate.setMonth(newDate.getMonth() + 1);
+		newDate.setMinutes(newDate.getMinutes() + 1);
+		if (newDate > new Date()) {
+			const time = `${newDate.getMinutes()} ${newDate.getHours()} ${newDate.getDate()} ${
+				newDate.getMonth() + 1
+			} *`;
+			this.activeCrons[movieDocument.imdbCode] = cron.schedule(time, async () =>
+				this.deleteMovie(movieDocument)
+			);
+			this.debug(`Added cron job for ${movieDocument.imdbCode}`);
+		} else {
+			this.deleteMovie(movieDocument);
+		}
+	};
+
+	deleteMovie = async (movieDocument: IMovieDocument) => {
+		this.debug(`Deleting ${movieDocument.imdbCode} movie file`);
+		if (this.activeCrons[movieDocument.imdbCode]) {
+			this.activeCrons[movieDocument.imdbCode].stop();
+			delete this.activeCrons[movieDocument.imdbCode];
+		}
+		const path = Path.resolve(__dirname, `../movies/${movieDocument.imdbCode}`);
+		if (Fs.existsSync(path)) {
+			Fs.rmdirSync(path, { recursive: true });
+		}
+		movieDocument.status = 0;
+		try {
+			await movieDocument.save();
+		} catch (error) {
+			console.log(error);
+		}
 	};
 }
 

@@ -38,12 +38,12 @@ const Comments: React.FC<IProps> = ({ comments, createComment, showModal }) => {
 		const minutes =
 			date.getMinutes() < 10 ? `0${date.getMinutes()}` : `${date.getMinutes()}`;
 		const month =
-			date.getMonth() < 10 ? `0${date.getMonth()}` : `${date.getMonth()}`;
-		const day = date.getDay() < 10 ? `0${date.getDay()}` : `${date.getDay()}`;
+			date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
+		const day = date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`;
 		if (date.getFullYear() === now.getFullYear()) {
-			if (date.getMonth() === now.getMonth() && date.getDay() === now.getDay())
+			if (date.getMonth() === now.getMonth() && date.getDate() === now.getDate())
 				return `Today ${hours}:${minutes}`;
-			return `${day}.${month} ${hours}:${minutes}`;
+			return `${day}.${month}. ${hours}:${minutes}`;
 		}
 		return `${day}.${month}.${date.getFullYear()} ${hours}:${minutes}`;
 	};
