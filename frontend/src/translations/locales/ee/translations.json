@@ -82,5 +82,6 @@
 	"username_error": "Märke 3-255.",
 	"getting_user": "Laen kasutajat...",
 	"close": "Sulge",
-	"watched": "Vaadatud"
+	"watched": "Vaadatud",
+	"github_private_email_info": "Sinu Github konto email on privaatne. Palun registreeru/logi sisse manuaalselt või muuda email avalikuks Githubis ja proovi uuesti!"
 }
