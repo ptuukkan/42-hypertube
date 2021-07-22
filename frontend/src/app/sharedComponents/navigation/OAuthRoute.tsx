@@ -3,7 +3,13 @@ import { LinkType } from 'app/stores/oAuthStore';
 import { RootStoreContext } from 'app/stores/rootStore';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Redirect, RouteProps, useLocation } from 'react-router-dom';
+import {
+	Route,
+	Redirect,
+	RouteProps,
+	useLocation,
+	useHistory,
+} from 'react-router-dom';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 const OAuthRoute: React.FC<RouteProps> = ({ ...rest }) => {
@@ -17,6 +23,7 @@ const OAuthRoute: React.FC<RouteProps> = ({ ...rest }) => {
 	const code = queryParams.get('code');
 	const state = queryParams.get('state');
 	const linkType = rootStore.oAuthStore.consumeLinkClicked();
+	const history = useHistory();
 
 	useEffect(() => {
 		if (!isMounted) return;
@@ -27,13 +34,23 @@ const OAuthRoute: React.FC<RouteProps> = ({ ...rest }) => {
 						setToken(res.accessToken);
 						setError(false);
 					})
-					.catch((err) => console.log(err))
+					.catch((err) => {
+						console.log(err);
+						// If email in github is private, needs to register manually
+						if (err.response.data?.message?.username) {
+							const data = err.response.data.message;
+							const queryParams = Object.keys(data)
+								.map((key) => `${key}=${encodeURI(data[key])}`)
+								.join('&');
+							history.push(`/register?${queryParams}`);
+						}
+					})
 					.finally(() => setLoading(false));
 			}
 			return;
 		} else setLoading(false);
 		return () => setIsMounted(false);
-	}, [code, linkType, setToken, state, isMounted]);
+	}, [code, linkType, setToken, state, isMounted, history]);
 
 	return (
 		<Route
