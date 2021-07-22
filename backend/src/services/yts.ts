@@ -32,9 +32,11 @@ export interface IYtsMovie {
 }
 
 export interface IYtsMovieDetails {
+	title_english: string;
 	runtime: number;
 	description_intro: string;
 	cast: IYtsCast[];
+	torrents: IYtsTorrent[];
 }
 
 export interface IYtsCast {
@@ -42,6 +44,14 @@ export interface IYtsCast {
 	character_name: string;
 	url_small_image: string;
 	imdb_code: string;
+}
+
+export interface IYtsTorrent {
+	hash: string;
+	quality: string;
+	seeds: number;
+	type: string;
+	size_bytes: number;
 }
 
 const agent = new AxiosAgent(process.env.YTS_API);

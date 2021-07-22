@@ -42,6 +42,7 @@ export default class UserStore {
 			if (callLogout) this.logOutBtnClicked = true;
 			this.token = null;
 			this.tokenExpiresDate = null;
+			this.rootStore.movieStore.movies = { count: 0, movies: [] };
 		});
 	};
 

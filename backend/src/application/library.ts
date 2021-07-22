@@ -11,7 +11,6 @@ const debug = Debug('app');
 export const ytsToThumbnail = (
 	ytsMovieList: IYtsMovie[]
 ): IMovieThumbnail[] => {
-	// All the required data exists in Yts response so only map here.
 	const thumbnailList = ytsMovieList.reduce((list: IMovieThumbnail[], yts) => {
 		try {
 			return [...list, ytsMovieToMovieThumbnail(yts)];

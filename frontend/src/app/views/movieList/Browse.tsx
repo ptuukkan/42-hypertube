@@ -32,7 +32,7 @@ const Browse: React.FC<BrowseProps> = ({ movies, loading }) => {
 						<Item key={movie.imdb} as={Link} to={`/movies/${movie.imdb}`}>
 							<Item.Image
 								src={movie.coverImage}
-								label={true ? label : null} // TODO replace true with watched value
+								label={movie.watched ? label : null}
 							/>
 							<Item.Content>
 								<Item.Header>{movie.title}</Item.Header>

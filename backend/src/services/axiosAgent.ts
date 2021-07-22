@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Debug from 'debug';
 
-const debug = Debug('app');
+const debug = Debug('axios');
 
 export class AxiosAgent {
 	axiosInstance: AxiosInstance;
