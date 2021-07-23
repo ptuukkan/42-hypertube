@@ -72,6 +72,7 @@ export class TorrentEngine extends EventEmitter {
 
 		this.options.supportedTypes.forEach((type) => {
 			metadata.files!.forEach((file) => {
+				this.debug(file.name);
 				if (file.name.endsWith(type) && !data) {
 					data = {
 						length: metadata.length!,

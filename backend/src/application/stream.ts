@@ -8,6 +8,11 @@ import { pipeline } from 'stream';
 import { Readable } from 'stream';
 import { torrentEngine } from 'app';
 import { TorrentInstance } from './torrentEngine/instance';
+// import ffmpegInstall from '@ffmpeg-installer/ffmpeg';
+import ffmpeg from 'fluent-ffmpeg';
+
+ffmpeg.setFfmpegPath('/usr/bin/ffmpeg');
+ffmpeg.setFfprobePath('/usr/bin/ffprobe');
 const debug = Debug('stream');
 
 interface IRange {
@@ -67,6 +72,8 @@ const streamFile = (
 	);
 	const videoStat = Fs.statSync(videoPath);
 
+	const convert = !movieDocument.fileName.endsWith('.mp4');
+
 	if (req.headers.range) {
 		try {
 			const videoRange = readRangeHeader(req.headers.range, videoStat.size);
@@ -77,7 +84,7 @@ const streamFile = (
 				start: videoRange.start,
 				end: videoRange.end,
 			});
-			createResponse(stream, res, videoStat.size, videoRange);
+			createResponse(stream, res, videoStat.size, convert, videoRange);
 		} catch (_error) {
 			const head = {
 				'Content-Range': `bytes */${videoStat.size}`,
@@ -87,7 +94,7 @@ const streamFile = (
 		}
 	} else {
 		const stream = Fs.createReadStream(videoPath);
-		createResponse(stream, res, videoStat.size);
+		createResponse(stream, res, videoStat.size, convert);
 	}
 };
 
@@ -96,6 +103,7 @@ const streamTorrent = (
 	res: Response,
 	instance: TorrentInstance
 ) => {
+	const convert = !instance.metadata.file.name.endsWith('.mp4');
 	if (req.headers.range) {
 		try {
 			const videoRange = readRangeHeader(
@@ -106,7 +114,13 @@ const streamTorrent = (
 				`Creating a stream for bytes ${videoRange.start}-${videoRange.end}`
 			);
 			const stream = instance.file.stream(videoRange.start, videoRange.end);
-			createResponse(stream, res, instance.metadata.file.length, videoRange);
+			createResponse(
+				stream,
+				res,
+				instance.metadata.file.length,
+				convert,
+				videoRange
+			);
 		} catch (_error) {
 			const head = {
 				'Content-Range': `bytes */${instance.metadata.file.length}`,
@@ -116,7 +130,7 @@ const streamTorrent = (
 		}
 	} else {
 		const stream = instance.file.stream();
-		createResponse(stream, res, instance.metadata.file.length);
+		createResponse(stream, res, instance.metadata.file.length, convert);
 	}
 };
 
@@ -124,6 +138,7 @@ const createResponse = (
 	stream: Readable,
 	res: Response,
 	size: number,
+	convert: boolean,
 	videoRange?: IRange
 ) => {
 	if (videoRange) {
@@ -131,21 +146,29 @@ const createResponse = (
 			'Content-Range': `bytes ${videoRange.start}-${videoRange.end}/${size}`,
 			'Accept-Ranges': 'bytes',
 			'Content-Length': videoRange.end - videoRange.start + 1,
-			'Content-Type': 'video/mp4',
+			'Content-Type': `video/${convert ? 'webm' : 'mp4'}`,
 		};
 		res.writeHead(206, head);
 	} else {
 		const head = {
 			'Content-Length': size,
-			'Content-Type': 'video/mp4',
+			'Content-Type': `video/${convert ? 'webm' : 'mp4'}`,
 		};
 		res.writeHead(200, head);
 	}
-	pipeline(stream, res, (err) => {
-		if (err) {
-			debug('Pipeline failed', err);
-		} else {
-			debug('Pipeline succeeded');
-		}
-	});
+	if (convert) {
+		ffmpeg(stream)
+			// .outputOptions('-c', 'copy')
+			.format('webm')
+			.on('error', (error) => debug(error))
+			.pipe(res);
+	} else {
+		pipeline(stream, res, (err) => {
+			if (err) {
+				debug('Pipeline failed', err);
+			} else {
+				debug('Pipeline succeeded');
+			}
+		});
+	}
 };

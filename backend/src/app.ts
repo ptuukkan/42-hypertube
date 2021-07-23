@@ -27,8 +27,10 @@ connectToDb().then(() => {
 
 export const torrentEngine = new TorrentEngine({
 	path: Path.resolve(__dirname, '../movies'),
-	supportedTypes: ['mp4'],
+	supportedTypes: ['mp4', 'mkv'],
 });
+
+torrentEngine.enabled = false;
 
 app.use(cors({ origin: process.env.REACT_APP_BASE_URL, credentials: true }));
 app.use(logger('dev'));
