@@ -26,19 +26,18 @@ export class TorrentEngine extends EventEmitter {
 	add = (infoHash: string, imdbCode: string): Promise<TorrentInstance> =>
 		new Promise<TorrentInstance>((resolve, reject) => {
 			if (!this.enabled) {
-				reject(new BadRequest('Engine disabled'));
+				return reject(new BadRequest('Engine disabled'));
 			}
 			if (this.instances.size > 4) {
-				reject(new BadRequest('Too many instances'));
+				return reject(new BadRequest('Too many instances'));
 			}
 			if (this.instances.get(infoHash)) {
-				reject(new BadRequest('Duplicate torrent'));
+				return reject(new BadRequest('Duplicate torrent'));
 			}
 			const discovery = new TorrentDiscovery(infoHash);
 			const discoveryTimeout = setTimeout(() => {
 				discovery.destroy();
-				reject(new BadRequest('No metadata'));
-				return;
+				return reject(new BadRequest('No metadata'));
 			}, 30000);
 			if (discoveryTimeout.unref) discoveryTimeout.unref();
 
@@ -48,8 +47,7 @@ export class TorrentEngine extends EventEmitter {
 				const torrentMetadata = this.validateMetadata(metadata);
 				if (!torrentMetadata) {
 					discovery.destroy();
-					reject(new BadRequest('Metadata validation failed'));
-					return;
+					return reject(new BadRequest('Metadata validation failed'));
 				}
 				const instance = new TorrentInstance(
 					discovery,
