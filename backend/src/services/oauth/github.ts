@@ -7,7 +7,7 @@ export interface IUserGithub {
 	avatar_url: string;
 }
 
-const agent = new AxiosAgent(process.env.GITHUB_URL_API);
+const agent = new AxiosAgent(process.env.GITHUB_URL_API, 10000);
 
 const makeParams = (code: string) => {
 	const params = new URLSearchParams();

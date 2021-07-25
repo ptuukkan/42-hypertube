@@ -23,10 +23,9 @@ const findYtsTorrent = async (imdbCode: string): Promise<ITorrent[]> => {
 		throw new Error();
 	}
 	const ytsMovieDetails = await ytsService.details(ytsSearch.data.movies[0].id);
-	const torrents = lodash(ytsMovieDetails.data.movie.torrents)
-		.filter((t) => t.seeds !== 0)
-		.orderBy(['seeds'], ['desc'])
-		.value();
+	const torrents = ytsMovieDetails.data.movie.torrents.filter(
+		(t) => t.seeds !== 0
+	);
 	return torrents.map((t) => ({
 		hash: t.hash,
 		seeds: t.seeds,
@@ -37,10 +36,7 @@ const findYtsTorrent = async (imdbCode: string): Promise<ITorrent[]> => {
 
 const findBayTorrent = async (imdbCode: string): Promise<ITorrent[]> => {
 	const bayMovieList = await bayService.search(imdbCode);
-	const torrents = lodash(bayMovieList)
-		.filter((t) => t.seeders !== '0')
-		.orderBy(['seeders'], ['desc'])
-		.value();
+	const torrents = bayMovieList.filter((t) => t.seeders !== '0');
 
 	return torrents.map((t) => {
 		const torrent: ITorrent = {
@@ -61,6 +57,7 @@ const findBayTorrent = async (imdbCode: string): Promise<ITorrent[]> => {
 		if (/webrip/i.test(t.name)) {
 			torrent.quality = 'web';
 		}
+
 		return torrent;
 	});
 };
@@ -68,11 +65,10 @@ const findBayTorrent = async (imdbCode: string): Promise<ITorrent[]> => {
 const findTorrent = async (imdbCode: string): Promise<ITorrent> => {
 	try {
 		let torrents: ITorrent[] = [];
-		const bayPromise = findBayTorrent(imdbCode);
-		const ytsPromise = findYtsTorrent(imdbCode);
+
 		const [ytsPromiseResult, bayPromiseResult] = await Promise.allSettled([
-			ytsPromise,
-			bayPromise,
+			findYtsTorrent(imdbCode),
+			findBayTorrent(imdbCode),
 		]);
 		if (ytsPromiseResult.status === 'fulfilled' && ytsPromiseResult.value) {
 			torrents = ytsPromiseResult.value;

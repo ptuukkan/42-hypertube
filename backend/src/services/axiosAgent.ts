@@ -6,10 +6,10 @@ const debug = Debug('axios');
 export class AxiosAgent {
 	axiosInstance: AxiosInstance;
 
-	constructor(baseUrl?: string) {
+	constructor(baseURL?: string, timeout?: number) {
 		this.axiosInstance = axios.create({
-			baseURL: baseUrl,
-			timeout: 10000, // changed from 2000, because 42 oauth can take some time
+			baseURL,
+			timeout,
 		});
 		this.axiosInstance.interceptors.request.use((config) => {
 			debug(
@@ -17,6 +17,19 @@ export class AxiosAgent {
 			);
 			return config;
 		});
+
+		this.axiosInstance.interceptors.response.use(
+			(value) => {
+				debug(
+					`${value.status} ${value.config.method} ${value.config.baseURL} ${value.config.url} ${value.config.params}`
+				);
+				return value;
+			},
+			(error) => {
+				debug(baseURL, 'error');
+				throw error;
+			}
+		);
 	}
 
 	responseBody = (response: AxiosResponse): any => response.data;

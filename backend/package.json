@@ -6,7 +6,6 @@
   "scripts": {
     "test": "jest",
     "dev": "NODE_PATH=./src ts-node-dev src/app.ts",
-    "last": "NODE_PATH=./src ts-node-dev src/torrentengine.ts",
     "lint": "eslint -c .eslintrc.js --ext .ts src/"
   },
   "author": "",

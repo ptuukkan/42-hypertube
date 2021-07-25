@@ -8,7 +8,7 @@ export interface IUser42 {
 	image_url: string;
 }
 
-const agent = new AxiosAgent(process.env.URL_42_API);
+const agent = new AxiosAgent(process.env.URL_42_API, 10000);
 
 const makeParams = (code: string) => {
 	const params = new URLSearchParams();
