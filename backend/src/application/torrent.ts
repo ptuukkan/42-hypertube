@@ -133,10 +133,10 @@ export const startMovieDownload = async (
 					await movieDocument.save();
 					const subtitles = await downloadSubtitles(movieDocument, user);
 					const interval = setInterval(() => {
-						debug('Checking if pieces 0-4 are downloaded ');
+						debug('Checking if first pieces are downloaded ');
 						for (
 							let i = instance.file.startPiece;
-							i < instance.file.startPiece + 4;
+							i < instance.file.startPiece + 9;
 							i++
 						) {
 							if (!instance.bitfield.get(i)) return;
