@@ -17,10 +17,6 @@ const ViewingSchema = new Schema<IViewingDocument>({
 		ref: 'Movie',
 		required: true,
 	},
-	timestamp: {
-		type: Number,
-		required: true,
-	},
 });
 
 export default model<IViewingDocument>('Viewing', ViewingSchema);

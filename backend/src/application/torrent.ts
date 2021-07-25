@@ -7,6 +7,7 @@ import { torrentEngine } from 'app';
 import MovieModel from 'models/movie';
 import { downloadSubtitles } from './subtitles';
 import { IUserDocument } from 'models/user';
+import { BadRequest } from 'http-errors';
 const debug = Debug('torrent');
 
 interface ITorrent {
@@ -32,27 +33,6 @@ const findYtsTorrent = async (imdbCode: string): Promise<ITorrent[]> => {
 		quality: t.quality,
 		type: t.type,
 	}));
-
-	// if (torrents.length === 0) throw new Error();
-
-	// // Torrent priority: 720p bluray, 1080p bluray, most seeds.
-	// let selected = torrents.find(
-	// 	(t) => t.quality === '720p' && t.type === 'bluray'
-	// );
-	// if (!selected) {
-	// 	selected = torrents.find(
-	// 		(t) => t.quality === '1080p' && t.type === 'bluray'
-	// 	);
-	// }
-	// if (!selected) {
-	// 	selected = torrents[0];
-	// }
-	// return {
-	// 	hash: selected.hash,
-	// 	seeds: selected.seeds,
-	// 	quality: selected.quality,
-	// 	type: selected.type,
-	// };
 };
 
 const findBayTorrent = async (imdbCode: string): Promise<ITorrent[]> => {
@@ -100,8 +80,8 @@ const findTorrent = async (imdbCode: string): Promise<ITorrent> => {
 		if (bayPromiseResult.status === 'fulfilled' && bayPromiseResult.value) {
 			torrents = [...torrents, ...bayPromiseResult.value];
 		}
+		if (!torrents.length) throw new BadRequest('no torrents with seeders');
 		torrents = lodash.orderBy(torrents, ['seeds'], ['desc']);
-		debug(torrents);
 		const mostSeeds = torrents[0];
 		const br1 = torrents.find(
 			(t) => t.quality === '720p' && t.type === 'bluray'
@@ -109,9 +89,9 @@ const findTorrent = async (imdbCode: string): Promise<ITorrent> => {
 		const br2 = torrents.find(
 			(t) => t.quality === '1080p' && t.type === 'bluray'
 		);
+		if (br1 && (mostSeeds.seeds - br1.seeds) / br1.seeds < 0.65) return br1;
+		if (br2 && (mostSeeds.seeds - br2.seeds) / br2.seeds < 0.65) return br2;
 		return mostSeeds;
-		// if (br1 && (mostSeeds.seeds - br1.seeds) / br1.seeds < 0.5) return br1;
-		// if (br2 && (mostSeeds.seeds - br2.seeds) / br2.seeds < 0.5) return br2;
 	} catch (error) {
 		debug(error);
 		throw error;
@@ -154,7 +134,11 @@ export const startMovieDownload = async (
 					const subtitles = await downloadSubtitles(movieDocument, user);
 					const interval = setInterval(() => {
 						debug('Checking if pieces 0-4 are downloaded ');
-						for (let i = 0; i < 4; i++) {
+						for (
+							let i = instance.file.startPiece;
+							i < instance.file.startPiece + 4;
+							i++
+						) {
 							if (!instance.bitfield.get(i)) return;
 						}
 						clearInterval(interval);

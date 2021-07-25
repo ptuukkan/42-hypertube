@@ -27,7 +27,7 @@ connectToDb().then(() => {
 
 export const torrentEngine = new TorrentEngine({
 	path: Path.resolve(__dirname, '../movies'),
-	supportedTypes: ['mp4', 'mkv'],
+	supportedTypes: ['mp4', 'webm', 'mkv'],
 });
 
 torrentEngine.enabled = false;
