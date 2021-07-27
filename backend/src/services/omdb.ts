@@ -20,7 +20,7 @@ export interface IOmdbError {
 	Error: string;
 }
 
-const agent = new AxiosAgent(process.env.OMDB_API);
+const agent = new AxiosAgent(process.env.OMDB_API, 2000);
 
 const apiKey = process.env.OMDB_API_KEY ?? '';
 

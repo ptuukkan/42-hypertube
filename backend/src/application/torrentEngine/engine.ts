@@ -70,9 +70,12 @@ export class TorrentEngine extends EventEmitter {
 	): IMetadata | undefined => {
 		let data: IMetadata | undefined;
 
+		if (!metadata.files || !metadata.files.length) return;
+
 		this.options.supportedTypes.forEach((type) => {
 			metadata.files!.forEach((file) => {
 				if (file.name.endsWith(type) && !data) {
+					this.debug(`Selected movie file: ${file.name}`);
 					data = {
 						length: metadata.length!,
 						pieces: metadata.pieces!,

@@ -8,11 +8,22 @@ import { pipeline } from 'stream';
 import { Readable } from 'stream';
 import { torrentEngine } from 'app';
 import { TorrentInstance } from './torrentEngine/instance';
+import ffmpegInstall from '@ffmpeg-installer/ffmpeg';
+import ffmpeg from 'fluent-ffmpeg';
+
+ffmpeg.setFfmpegPath(ffmpegInstall.path);
+
 const debug = Debug('stream');
 
 interface IRange {
 	start: number;
 	end: number;
+}
+
+interface IOptions {
+	size: number;
+	isMp4: boolean;
+	convert: boolean;
 }
 
 export const readRangeHeader = (range: string, fileSize: number): IRange => {
@@ -67,7 +78,12 @@ const streamFile = (
 	);
 	const videoStat = Fs.statSync(videoPath);
 
-	if (req.headers.range) {
+	const isMp4 = movieDocument.fileName.endsWith('.mp4');
+	const convert =
+		!movieDocument.fileName.endsWith('.mp4') &&
+		!movieDocument.fileName.endsWith('.webm');
+
+	if (req.headers.range && !convert) {
 		try {
 			const videoRange = readRangeHeader(req.headers.range, videoStat.size);
 			debug(
@@ -77,7 +93,12 @@ const streamFile = (
 				start: videoRange.start,
 				end: videoRange.end,
 			});
-			createResponse(stream, res, videoStat.size, videoRange);
+			createResponse(
+				stream,
+				res,
+				{ size: videoStat.size, isMp4, convert },
+				videoRange
+			);
 		} catch (_error) {
 			const head = {
 				'Content-Range': `bytes */${videoStat.size}`,
@@ -87,7 +108,7 @@ const streamFile = (
 		}
 	} else {
 		const stream = Fs.createReadStream(videoPath);
-		createResponse(stream, res, videoStat.size);
+		createResponse(stream, res, { size: videoStat.size, isMp4, convert });
 	}
 };
 
@@ -96,7 +117,12 @@ const streamTorrent = (
 	res: Response,
 	instance: TorrentInstance
 ) => {
-	if (req.headers.range) {
+	const isMp4 = instance.metadata.file.name.endsWith('.mp4');
+	const convert =
+		!instance.metadata.file.name.endsWith('.mp4') &&
+		!instance.metadata.file.name.endsWith('.webm');
+
+	if (req.headers.range && !convert) {
 		try {
 			const videoRange = readRangeHeader(
 				req.headers.range,
@@ -106,7 +132,12 @@ const streamTorrent = (
 				`Creating a stream for bytes ${videoRange.start}-${videoRange.end}`
 			);
 			const stream = instance.file.stream(videoRange.start, videoRange.end);
-			createResponse(stream, res, instance.metadata.file.length, videoRange);
+			createResponse(
+				stream,
+				res,
+				{ size: instance.metadata.file.length, isMp4, convert },
+				videoRange
+			);
 		} catch (_error) {
 			const head = {
 				'Content-Range': `bytes */${instance.metadata.file.length}`,
@@ -116,36 +147,62 @@ const streamTorrent = (
 		}
 	} else {
 		const stream = instance.file.stream();
-		createResponse(stream, res, instance.metadata.file.length);
+		createResponse(stream, res, {
+			size: instance.metadata.file.length,
+			isMp4,
+			convert,
+		});
 	}
 };
 
 const createResponse = (
 	stream: Readable,
 	res: Response,
-	size: number,
+	options: IOptions,
 	videoRange?: IRange
 ) => {
-	if (videoRange) {
+	if (videoRange && !options.convert) {
 		const head = {
-			'Content-Range': `bytes ${videoRange.start}-${videoRange.end}/${size}`,
+			'Content-Range': `bytes ${videoRange.start}-${videoRange.end}/${options.size}`,
 			'Accept-Ranges': 'bytes',
 			'Content-Length': videoRange.end - videoRange.start + 1,
-			'Content-Type': 'video/mp4',
+			'Content-Type': `video/${options.isMp4 ? 'mp4' : 'webm'}`,
 		};
 		res.writeHead(206, head);
+	} else if (options.convert) {
+		const head = {
+			'Transfer-Encoding': 'chunked',
+			'Content-Type': 'video/webm',
+			'Accept-Ranges': 'bytes',
+		};
+		res.writeHead(200, head);
 	} else {
 		const head = {
-			'Content-Length': size,
-			'Content-Type': 'video/mp4',
+			'Content-Length': options.size,
+			'Content-Type': `video/${options.isMp4 ? 'mp4' : 'webm'}`,
 		};
 		res.writeHead(200, head);
 	}
-	pipeline(stream, res, (err) => {
-		if (err) {
-			debug('Pipeline failed', err);
-		} else {
-			debug('Pipeline succeeded');
-		}
-	});
+	if (options.convert) {
+		ffmpeg(stream)
+			.outputOption('-movflags frag_keyframe+faststart')
+			.outputOption('-deadline realtime')
+			.outputOption('-cpu-used 2')
+			.outputOption('-threads 4')
+			.audioCodec('libvorbis')
+			.videoCodec('libvpx')
+			.audioBitrate(128)
+			.videoBitrate(1024)
+			.format('webm')
+			.on('error', (error) => debug(error))
+			.pipe(res, { end: true });
+	} else {
+		pipeline(stream, res, (err) => {
+			if (err) {
+				debug('Pipeline failed', err);
+			} else {
+				debug('Pipeline succeeded');
+			}
+		});
+	}
 };

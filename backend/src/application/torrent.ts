@@ -1,54 +1,93 @@
 import lodash from 'lodash';
 import { IMovieDocument } from 'models/movie';
 import ytsService from 'services/yts';
+import bayService from 'services/bay';
 import Debug from 'debug';
 import { torrentEngine } from 'app';
 import MovieModel from 'models/movie';
 import { downloadSubtitles } from './subtitles';
 import { IUserDocument } from 'models/user';
+import { BadRequest } from 'http-errors';
 const debug = Debug('torrent');
 
 interface ITorrent {
-	title: string;
 	hash: string;
-	size: number;
 	seeds: number;
+	quality: string;
+	type: string;
 }
 
-const findTorrent = async (imdbCode: string): Promise<ITorrent> => {
-	// prefer Yts torrents. Try to find one from there first.
-	try {
-		const ytsSearch = await ytsService.search(imdbCode);
-		if (ytsSearch.status !== 'ok' || ytsSearch.data.movie_count !== 1) {
-			throw new Error();
-		}
-		const ytsMovieDetails = await ytsService.details(
-			ytsSearch.data.movies[0].id
-		);
-		const torrents = lodash(ytsMovieDetails.data.movie.torrents)
-			.filter((t) => t.seeds !== 0)
-			.orderBy(['seeds'], ['desc'])
-			.value();
-		if (torrents.length === 0) throw new Error();
+const findYtsTorrent = async (imdbCode: string): Promise<ITorrent[]> => {
+	const ytsSearch = await ytsService.search(imdbCode);
+	if (ytsSearch.status !== 'ok' || ytsSearch.data.movie_count !== 1) {
+		throw new Error();
+	}
+	const ytsMovieDetails = await ytsService.details(ytsSearch.data.movies[0].id);
+	const torrents = ytsMovieDetails.data.movie.torrents.filter(
+		(t) => t.seeds !== 0
+	);
+	return torrents.map((t) => ({
+		hash: t.hash,
+		seeds: t.seeds,
+		quality: t.quality,
+		type: t.type,
+	}));
+};
 
-		// Torrent priority: 720p bluray, 1080p bluray, most seeds.
-		let selected = torrents.find(
+const findBayTorrent = async (imdbCode: string): Promise<ITorrent[]> => {
+	const bayMovieList = await bayService.search(imdbCode);
+	const torrents = bayMovieList.filter((t) => t.seeders !== '0');
+
+	return torrents.map((t) => {
+		const torrent: ITorrent = {
+			hash: t.info_hash,
+			seeds: parseInt(t.seeders),
+			quality: 'unknown',
+			type: 'unknown',
+		};
+		if (/720p/.test(t.name)) {
+			torrent.quality = '720p';
+		}
+		if (/1080p/.test(t.name)) {
+			torrent.quality = '1080p';
+		}
+		if (/brrip/i.test(t.name)) {
+			torrent.type = 'bluray';
+		}
+		if (/webrip/i.test(t.name)) {
+			torrent.quality = 'web';
+		}
+
+		return torrent;
+	});
+};
+
+const findTorrent = async (imdbCode: string): Promise<ITorrent> => {
+	try {
+		let torrents: ITorrent[] = [];
+
+		const [ytsPromiseResult, bayPromiseResult] = await Promise.allSettled([
+			findYtsTorrent(imdbCode),
+			findBayTorrent(imdbCode),
+		]);
+		if (ytsPromiseResult.status === 'fulfilled' && ytsPromiseResult.value) {
+			torrents = ytsPromiseResult.value;
+		}
+		if (bayPromiseResult.status === 'fulfilled' && bayPromiseResult.value) {
+			torrents = [...torrents, ...bayPromiseResult.value];
+		}
+		if (!torrents.length) throw new BadRequest('no torrents with seeders');
+		torrents = lodash.orderBy(torrents, ['seeds'], ['desc']);
+		const mostSeeds = torrents[0];
+		const br1 = torrents.find(
 			(t) => t.quality === '720p' && t.type === 'bluray'
 		);
-		if (!selected) {
-			selected = torrents.find(
-				(t) => t.quality === '1080p' && t.type === 'bluray'
-			);
-		}
-		if (!selected) {
-			selected = torrents[0];
-		}
-		return {
-			title: ytsMovieDetails.data.movie.title_english,
-			hash: selected.hash,
-			size: selected.size_bytes,
-			seeds: selected.seeds,
-		};
+		const br2 = torrents.find(
+			(t) => t.quality === '1080p' && t.type === 'bluray'
+		);
+		if (br1 && (mostSeeds.seeds - br1.seeds) / br1.seeds < 0.65) return br1;
+		if (br2 && (mostSeeds.seeds - br2.seeds) / br2.seeds < 0.65) return br2;
+		return mostSeeds;
 	} catch (error) {
 		debug(error);
 		throw error;
@@ -90,8 +129,12 @@ export const startMovieDownload = async (
 					await movieDocument.save();
 					const subtitles = await downloadSubtitles(movieDocument, user);
 					const interval = setInterval(() => {
-						debug('Checking if pieces 0-4 are downloaded ');
-						for (let i = 0; i < 4; i++) {
+						debug('Checking if first pieces are downloaded ');
+						for (
+							let i = instance.file.startPiece;
+							i < instance.file.startPiece + 9;
+							i++
+						) {
 							if (!instance.bitfield.get(i)) return;
 						}
 						clearInterval(interval);

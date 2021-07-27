@@ -5,11 +5,11 @@ export interface IBayMovie {
 	name: string;
 	info_hash: string;
 	size: number;
-	seeders: number;
+	seeders: string;
 	imdb: string | null;
 }
 
-const agent = new AxiosAgent(process.env.BAY_API);
+const agent = new AxiosAgent(process.env.BAY_API, 3000);
 
 const makeParams = (key: string, value: string) => {
 	const params = new URLSearchParams();
