@@ -83,5 +83,9 @@
 	"getting_user": "Getting user...",
 	"close": "Close",
 	"watched": "Watched",
-	"github_private_email_info": "Your Github account email is private. Please register/login manually or make email public in Github and try again!"
+	"github_private_email_info": "Your Github account email is private. Please register/login manually or make email public in Github and try again!",
+	"comments": "Comments",
+	"no_comments": "No comments",
+	"write_comment": "Write a comment",
+	"add_comment": "Add Comment"
 }

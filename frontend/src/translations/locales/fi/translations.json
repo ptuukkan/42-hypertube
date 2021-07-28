@@ -83,5 +83,9 @@
 	"getting_user": "Hane käyttäjää...",
 	"close": "Sulje",
 	"watched": "Katsottu",
-	"github_private_email_info": "Github-tilisi sähköpostiosoite on yksityinen. Rekisteröidy/kirjaudu sisään manuaalisesti tai tee sähköposti julkiseksi Githubissa ja yritä uudelleen!"
+	"github_private_email_info": "Github-tilisi sähköpostiosoite on yksityinen. Rekisteröidy/kirjaudu sisään manuaalisesti tai tee sähköposti julkiseksi Githubissa ja yritä uudelleen!",
+	"comments": "Kommentit",
+	"no_comments": "Ei kommentteja",
+	"write_comment": "Kirjoita kommentti",
+	"add_comment": "Lisää Kommentti"
 }
