@@ -1,7 +1,7 @@
 import { unlink } from 'fs';
 import path from 'path';
 import { IUpdateUser } from 'models/user';
-import UserModel from 'models/user';
+import UserModel, { Language } from 'models/user';
 import asyncHandler from 'express-async-handler';
 import { BadRequest } from 'http-errors';
 
@@ -63,4 +63,18 @@ export const updateProfileController = asyncHandler(async (req, res) => {
 		if (req.file) removeFile(req.file.filename);
 		throw e;
 	}
+});
+
+export const updateLanguageController = asyncHandler(async (req, res) => {
+	const { userId } = req.authPayload!;
+	const { language } = req.body;
+
+	const user = await UserModel.findOne({ _id: userId });
+	if (!user) throw new BadRequest('User not found');
+	if (!Object.values(Language).find((lng) => language === lng))
+		throw new BadRequest('Unknown language');
+
+	user.language = language;
+	await user.save();
+	return res.json({ status: 'OK' });
 });
