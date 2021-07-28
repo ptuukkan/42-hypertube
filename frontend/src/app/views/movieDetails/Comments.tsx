@@ -1,6 +1,7 @@
 import { IComment } from 'app/models/movie';
 import React, { KeyboardEvent, useState } from 'react';
 import { Button, Comment, Form, Header } from 'semantic-ui-react';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
 	comments: IComment[];
@@ -9,6 +10,7 @@ interface IProps {
 }
 
 const Comments: React.FC<IProps> = ({ comments, createComment, showModal }) => {
+	const { t } = useTranslation();
 	const [comment, setComment] = useState('');
 	const [loading, setLoading] = useState(false);
 
@@ -50,8 +52,8 @@ const Comments: React.FC<IProps> = ({ comments, createComment, showModal }) => {
 
 	return (
 		<Comment.Group style={{ maxWidth: '100%' }}>
-			<Header as="h4">Comments:</Header>
-			{!comments.length && <p style={{ color: 'gray' }}>No comments...</p>}
+			<Header as="h4">{t('comments')}:</Header>
+			{!comments.length && <p style={{ color: 'gray' }}>{t('no_comments')}...</p>}
 			{comments.map(({ username, profilePicName, timestamp, text }) => (
 				<Comment key={`${username}-${new Date(timestamp).toString()}`}>
 					<Comment.Avatar
@@ -74,14 +76,14 @@ const Comments: React.FC<IProps> = ({ comments, createComment, showModal }) => {
 			))}
 			<Form style={{ marginTop: 20, textAlign: 'center' }} loading={loading}>
 				<Form.TextArea
-					placeholder="Write a comment"
+					placeholder={t('write_comment')}
 					value={comment}
 					onChange={commentChange}
 					rows="2"
 					onKeyDown={handleKey}
 				/>
 				<Button
-					content="Add Comment"
+					content={t('add_comment')}
 					labelPosition="left"
 					icon="edit"
 					color="teal"

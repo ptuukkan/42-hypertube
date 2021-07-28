@@ -12,6 +12,9 @@ import { history } from '../..';
 import { FORM_ERROR } from 'final-form';
 import { MouseEvent } from 'react';
 
+export type Languages = 'en' | 'fi' | 'ee';
+export const languageArray = ['en', 'fi', 'ee'];
+
 export default class UserStore {
 	rootStore: RootStore;
 	loading = false;
@@ -167,6 +170,17 @@ export default class UserStore {
 		} catch (error) {
 			console.log(error);
 			return null;
+		}
+	};
+
+	updateLanguage = async (language: Languages): Promise<void> => {
+		try {
+			const token = await this.getToken();
+			await agent.User.changeLanguage(token, language);
+		} catch (error) {
+			if (error.logUserOut) return this.rootStore.userStore.logoutUser();
+			console.log(error);
+			throw error;
 		}
 	};
 }

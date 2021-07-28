@@ -63,11 +63,11 @@
 	"film-noir": "Film-Noir",
 	"short": "Lühi",
 	"adult": "Täiskasvanu",
-	"movie_loading": "Laen {{movieName}}",
-	"directed": "Režissöör: {{director}}",
+	"movie_loading": "Laen",
+	"directed": "Režissöör:",
 	"runtime": "Pikkus: {{time}} min",
-	"year": "Aasta: {{year}}",
-	"written": "Kirjutatud: {{writer}}",
+	"year": "Aasta:",
+	"written": "Kirjutatud:",
 	"actors": "Näitlejad:",
 	"password_error": "Märke 4-255. Peab olema vähemalt tähti ja 1 number.",
 	"update": "Uuenda",
@@ -83,5 +83,9 @@
 	"getting_user": "Laen kasutajat...",
 	"close": "Sulge",
 	"watched": "Vaadatud",
-	"github_private_email_info": "Sinu Github konto email on privaatne. Palun registreeru/logi sisse manuaalselt või muuda email avalikuks Githubis ja proovi uuesti!"
+	"github_private_email_info": "Sinu Github konto email on privaatne. Palun registreeru/logi sisse manuaalselt või muuda email avalikuks Githubis ja proovi uuesti!",
+	"comments": "Kommentaarid",
+	"no_comments": "Kommentaarid puuduvad",
+	"write_comment": "Kirjuta kommentaar",
+	"add_comment": "Lisa Kommentaar"
 }

@@ -9,6 +9,7 @@ import {
 	IResetPassword,
 	IAccessToken,
 } from '../models/user';
+import { Languages } from 'app/stores/userStore';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.timeout = 20000;
@@ -59,6 +60,8 @@ const User = {
 		requests.getAuth(`/user/${usersId}`, token),
 	update: (token: string, user: FormData): Promise<IGetUser> =>
 		requests.postAuth('/user', token, user),
+	changeLanguage: (token: string, language: Languages): Promise<void> =>
+		requests.postAuth('/user/language', token, { language }),
 	accessToken: (): Promise<IAccessToken> => requests.post('/accessToken', {}),
 	logout: (token: string): Promise<void> =>
 		requests.postAuth('/user/logout', token, {}),

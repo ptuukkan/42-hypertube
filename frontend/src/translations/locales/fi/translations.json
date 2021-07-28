@@ -63,11 +63,11 @@
 	"film-noir": "Film-Noir",
 	"short": "Lyhyt",
 	"adult": "Aikuis",
-	"movie_loading": "Lataan {{movieName}}",
-	"directed": "Ohjaaja: {{director}}",
+	"movie_loading": "Lataan",
+	"directed": "Ohjaaja:",
 	"runtime": "Aika: {{time}} min",
-	"year": "Vuosi: {{year}}",
-	"written": "Kirjottaja: {{writer}}",
+	"year": "Vuosi:",
+	"written": "Kirjottaja:",
 	"actors": "Näyttelijät:",
 	"password_error": "4-255 merkkiä. Pitää olla kirjaimia ja vähintään yksi numero.",
 	"update": "Päivitä",
@@ -83,5 +83,9 @@
 	"getting_user": "Hane käyttäjää...",
 	"close": "Sulje",
 	"watched": "Katsottu",
-	"github_private_email_info": "Github-tilisi sähköpostiosoite on yksityinen. Rekisteröidy/kirjaudu sisään manuaalisesti tai tee sähköposti julkiseksi Githubissa ja yritä uudelleen!"
+	"github_private_email_info": "Github-tilisi sähköpostiosoite on yksityinen. Rekisteröidy/kirjaudu sisään manuaalisesti tai tee sähköposti julkiseksi Githubissa ja yritä uudelleen!",
+	"comments": "Kommentit",
+	"no_comments": "Ei kommentteja",
+	"write_comment": "Kirjoita kommentti",
+	"add_comment": "Lisää Kommentti"
 }

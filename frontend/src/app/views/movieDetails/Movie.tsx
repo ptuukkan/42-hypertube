@@ -92,7 +92,7 @@ const Movie = () => {
 								>
 									<Dimmer active={playerLoader} inverted>
 										<Loader>
-											{t('movie_loading', { movieName: movie.title })}
+											{t('movie_loading')} {movie.title}
 										</Loader>
 									</Dimmer>
 									<Image src="/background.png" onClick={() => startPlay()} />
@@ -112,11 +112,15 @@ const Movie = () => {
 									{movie.summary}
 								</Item.Meta>
 								<ItemExtra>
-									{t('directed', { director: movie.director })}
+									{t('directed')} {movie.director}
 								</ItemExtra>
 								<ItemExtra>{t('runtime', { time: movie.runtime })}</ItemExtra>
-								<Item.Content>{t('year', { year: movie.year })}</Item.Content>
-								<ItemExtra>{t('written', { writer: movie.writer })}</ItemExtra>
+								<Item.Content>
+									{t('year')} {movie.year}
+								</Item.Content>
+								<ItemExtra>
+									{t('written')} {movie.writer}
+								</ItemExtra>
 								{typeof movie.actors !== 'undefined' && (
 									<Header as="h5">{t('actors')}</Header>
 								)}
