@@ -1,5 +1,5 @@
 # 42-hypertube
-Movie streaming web application. Created with Joel Palgi and Antti Vornanen.
+Movie streaming web application. Created with Joel Palgi and Antti Vornanen. This project is still a work in progress, though close to finish.
 ## Task
 Create a web application which allows user to search and watch movies. Application must include results from two external resources when user search for a movie. Movies must be downloaded using bittorrent protocol and be streamed on the video player at the same time.
 Subtitles are also downloaded automatically.
