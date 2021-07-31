@@ -5,7 +5,9 @@ Create a web application which allows user to search and watch movies. Applicati
 Subtitles are also downloaded automatically.
 
 ## Constraints
-Any library or a framework which creates a video stream from a torrent is forbidden.
+- Any library or a framework which creates a video stream from a torrent is forbidden.
+- Application must be mobile friendly.
+
 
 ## Solution
 For this project, we chose React, TypeScript, and MobX state management for front end, TypeScript, Express, and MongoDB for back end. We used mongoose to communicate with database.
